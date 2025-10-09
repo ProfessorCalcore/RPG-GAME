@@ -74,15 +74,9 @@ const voltageUpgrade = document.querySelector("#voltage-upgrade");
 hp.textContent = "HP: " + currentHealth + "/" + maxHealth;
 
 
-//PREVENTS ZOOMING IN ON MOBILE
-attack.addEventListener("touchstart", function(event) {
-    event.preventDefault();
-});
-
 
 //LOSES HEALTH  BUT GAINS XP WHEN U PRESS ATTACK
 attack.addEventListener("click", function(event) {
-	event.preventDefault();
 	
 
 //CALCULATES RANDOM XP GAINED AND HP LOST
@@ -395,6 +389,7 @@ document.addEventListener("keydown", function(event) {
     mrBox.style.left = fromLeft + "px";
 
 });
+
 
 
 

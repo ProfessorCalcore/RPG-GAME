@@ -74,7 +74,9 @@ hp.textContent = "HP: " + currentHealth + "/" + maxHealth;
 
 
 //LOSES HEALTH  BUT GAINS XP WHEN U PRESS ATTACK
-attack.addEventListener("click", function() {
+attack.addEventListener("click", function(event) {
+	event.preventDefault();
+	
 
 //CALCULATES RANDOM XP GAINED AND HP LOST
     randomDamage = Math.floor(Math.random() * maxDamage + minDamage);
@@ -386,4 +388,5 @@ document.addEventListener("keydown", function(event) {
     mrBox.style.left = fromLeft + "px";
 
 });
+
 

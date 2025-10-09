@@ -1,15 +1,21 @@
-
-//VARIABLES
+// ========== GAME VARIABLES ==========
 let xpInterval;
 let hpInterval;
-
 let voltageInterval;
+let enemyInterval;
+
+let enemyDamage = 1;
+
 let voltageSpeed = 1000;
 let voltageLevel = 1;
 
 let purchasedXP = false;
 let purchasedHP = false;
 
+let xpFactor;
+let randomXP;
+
+let healthFactor = 0;
 
 let currentHealth = 100;
 let maxHealth = 100;
@@ -18,57 +24,94 @@ let currentLevel = 1;
 let perks = 0;
 
 let requiredXP = 100;
+let voltage = 100;
+let maxVoltage = 100;
+
+let heal = 10;
+let minDamage = 1;
+let maxDamage = 10;
 
 let XPPercentage;
 let HPPercentage;
 
-let voltage = 100;
-let maxVoltage = 100;
+let EnemyHPPercentage;
+let enemyCurrentHealth = 10;
+let enemyMaxHealth = 10;
 
-let heal = 20;
-
-let minDamage = 1;
-let maxDamage = 10;
+let playerDamage = 1;
 
 
 
-//REFERENCING OUR ELEMENTS
+// ========== PLAYER / ENEMY UI ==========
 const hp = document.querySelector("#hp");
-const attack = document.querySelector("#attack");
 const healthBar = document.querySelector("#health-bar");
 const healthContainer = document.querySelector("#health-container");
+const playerDamageLabel = document.querySelector("#player-damage");
+
+const enemyHP = document.querySelector("#enemy-hp");
+const enemyHealthBar = document.querySelector("#enemy-health-bar");
+const enemyHealthContainer = document.querySelector("#enemy-health-container");
 
 const XPPoints = document.querySelector("#xp-points");
 const XPLabel = document.querySelector("#XP");
 const level = document.querySelector("#level");
 const perk = document.querySelector("#perk");
+const requiredXPLabel = document.querySelector("#required-xp");
 
+
+// ========== BUTTONS / ACTIONS ==========
+const attack = document.querySelector("#attack");
+const healButton = document.querySelector("#heal");
+const autoXP = document.querySelector("#auto-xp");
+const autoHP = document.querySelector("#regenerate-hp");
+
+
+// ========== UPGRADES ==========
 const upgrades = document.querySelector("#upgrades");
 const upgradesGUI = document.querySelector("#upgrades-gui");
+const upgradeDamage = document.querySelector("#upgrade-damage");
 
 const maxHealthUpgrade = document.querySelector("#max-health-upgrade");
 const healUpgrade = document.querySelector("#heal-upgrade");
+const refillHealthUpgrade = document.querySelector("#refill-health");
+const armourUpgrade = document.querySelector("#armour-upgrade");
+const voltageUpgrade = document.querySelector("#voltage-upgrade");
 
+
+// ========== VOLTAGE SYSTEM ==========
 const voltageBar = document.querySelector("#voltage-bar");
 const voltageText = document.querySelector("#voltage-text");
 
-const healButton = document.querySelector("#heal");
+
+// ========== MISC ELEMENTS ==========
 const healCost = document.querySelector("#heal-cost");
 const healPower = document.querySelector("#heal-power");
-
-const regenHP = document.querySelector("#heal-power");
-
-const armourUpgrade = document.querySelector("#armour-upgrade");
+const regenHP = document.querySelector("#heal-power"); // duplicate ref? maybe remove later
 const maxDamageLabel = document.querySelector("#max-damage");
-
-const autoXP = document.querySelector("#auto-xp");
-const requiredXPLabel = document.querySelector("#required-xp");
-
-const autoHP = document.querySelector("#regenerate-hp");
-
 const mrBox = document.querySelector("#box");
 
-const voltageUpgrade = document.querySelector("#voltage-upgrade");
+
+
+
+function updateHealthValues() {
+    	HPPercentage = (currentHealth/maxHealth) * 100;
+    	hp.textContent = "HP: " + currentHealth + "/" + maxHealth;
+    	healthBar.style.width = HPPercentage + "%";
+}
+
+function updateEnemyHealthValues() {
+    	enemyHPPercentage = (enemyCurrentHealth/enemyMaxHealth) * 100;
+    	enemyHP.textContent = "Enemy HP: " + enemyCurrentHealth + "/" + enemyMaxHealth;
+    	enemyHealthBar.style.width = enemyHPPercentage + "%";
+}
+
+function updateXPValues() {
+        XPPercentage = (currentXP/requiredXP) * 100;
+	XPPoints.style.width = XPPercentage + "%";
+	XPLabel.textContent = "XP: " + currentXP + "/" + requiredXP;
+}
+
+function updatePerks() {perk.textContent = "Perks: " + perks;}
 
 //UPDATES TEXT OF THE HEALTH BAR
 hp.textContent = "HP: " + currentHealth + "/" + maxHealth;
@@ -76,80 +119,73 @@ hp.textContent = "HP: " + currentHealth + "/" + maxHealth;
 
 
 //LOSES HEALTH  BUT GAINS XP WHEN U PRESS ATTACK
-attack.addEventListener("click", function(event) {
+attack.addEventListener("click", function() {
+   
+    currentXP += 1 * currentLevel;
+    updateXPValues();
+
+
+    if(enemyCurrentHealth - playerDamage > 0) {
+        enemyCurrentHealth -= playerDamage;
+	updateEnemyHealthValues();
+    
+    }
+
+    else{
+		
+        enemyCurrentHealth = enemyMaxHealth;
+        currentHealth += 5
+	currentHealth += healthFactor;
+	updateEnemyHealthValues();
 	
+	xpFactor = 50 + (currentLevel * 5)
+        randomXP = Math.floor(Math.random() * xpFactor + 1)
+	currentXP += randomXP; 
+	updateXPValues();
+    }
 
-//CALCULATES RANDOM XP GAINED AND HP LOST
-    randomDamage = Math.floor(Math.random() * maxDamage + minDamage);
-    randomXP = Math.floor(Math.random() * 50 + 1)
-    console.log(randomDamage);
-    console.log(randomXP);
+    if(currentHealth >= maxHealth) currentHealth = maxHealth;
 
 
-//UPDATES XP VALUES
-    currentXP += randomXP;
-    XPPercentage = (currentXP/requiredXP) * 100;
-    XPPoints.style.width = XPPercentage + "%";
-    XPLabel.textContent = "XP: " + currentXP + "/" + requiredXP;
+
+
+
+
+
 
 
 //CHECKS IF A NEW LEVEL HAS BEEN REACHED
-    if(randomXP + currentXP >= requiredXP) {
+    if(currentXP >= requiredXP) {
+	
+	enemyMaxHealth += 15;
+	enemyDamage += 1;
+	maxDamageLabel.textContent = "|Enemy DPS: " + enemyDamage + "|";
+	
+	enemyAttack();
+	enemyCurrentHealth = enemyMaxHealth;
+	updateEnemyHealthValues();
+
+
         currentXP = 0;
         currentLevel += 1;
         maxDamage += 3;
-	perks += 1;
+	perks += 3;
 	perk.textContent = "|Perks: " + perks + "|";
         level.textContent = "|Level: " + currentLevel + "|";
 
-        maxDamageLabel.textContent = "|Max Damage Taken: " + maxDamage + " HP" + "|";
+	updateXPValues();
 
-        XPPercentage = (currentXP/requiredXP) * 100;
-	XPPoints.style.width = XPPercentage + "%";
-        requiredXP += 50;
-	XPLabel.textContent = "XP: " + currentXP + "/" + requiredXP;
-
-      
+	requiredXP += 150;
 	requiredXPLabel.textContent = "|Required XP: " + requiredXP + "|";
-
-	let width = parseInt(mrBox.style.width);
-	let height = parseInt(mrBox.style.height);
-
-	width = width + 10 + "px";
-	height = height + 10 + "px";
-
-	mrBox.style.width = width;
-	mrBox.style.height = height;
 
 	
     }
     
-//UPDATES HP VALUES
-    currentHealth -= randomDamage;
-    if(currentHealth <= 0) {
-        currentHealth = 0
-        healthContainer.style.backgroundColor = "black";
 
-        setTimeout(function() {
-	    alert("You have died");
-	    location.reload();
-
-        }, 250);
-     }
-
-     else if(currentHealth <= 5) {
-         alert("WARNING: YOU ARE NEAR DEATH!");
      
 
 
 
-    }
-     
-
-
-    HPPercentage = (currentHealth/maxHealth) * 100;
-    hp.textContent = "HP: " + currentHealth + "/" + maxHealth;
-    healthBar.style.width = HPPercentage + "%";
 
 
 
@@ -237,7 +273,7 @@ maxHealthUpgrade.addEventListener("click", function() {
 healUpgrade.addEventListener("click", function() {
     if(perks >= 1) {
         perks -= 1;
-    heal += 10;
+    heal += 5;
 
 
     healPower.textContent = "|Heal Power: " + heal + " HP " + "|";
@@ -250,11 +286,11 @@ healUpgrade.addEventListener("click", function() {
 
 //ARMOUR UPGRADE
 armourUpgrade.addEventListener("click", function() {
-    if(perks >= 1) {
-        perks -= 1;
-    maxDamage -= 4;
+    if(perks >= 3) {
+        perks -= 3;
+    enemyDamage -=1;
 
-    maxDamageLabel.textContent = "|Max Damage Taken: " + maxDamage + " HP" + "|";
+    maxDamageLabel.textContent = "|Enemy DPS: " + enemyDamage + "|";
     perk.textContent = "Perks: " + perks;
 
    
@@ -371,9 +407,58 @@ voltageUpgrade.addEventListener("click", function() {
 
 });
 
+//REFILL HEALTH UPGRADE
+refillHealthUpgrade.addEventListener("click", function() {
+
+    if(perks >= 3 && currentHealth < maxHealth) {
+        perks -= 3;
+        currentHealth = maxHealth;
+        perk.textContent = "Perks: " + perks;
+	updateHealthValues();
+
+    
+    }
+
+});
 
 
+function enemyAttack() {
+    clearInterval(enemyInterval);
 
+    enemyInterval = setInterval(function() {
+        if(currentHealth <= 0) {
+	    document.body.style.backgroundColor = "black";
+
+	    currentHealth = 0;
+	    clearInterval(enemyInterval);
+            alert("You Have Died!");
+            location.reload();
+        }
+ 
+        else{
+            currentHealth -= enemyDamage;
+	    updateHealthValues();
+        }
+
+
+    },1000);
+
+
+}
+
+enemyAttack();
+
+upgradeDamage.addEventListener("click", function() {
+    if(perks >= 1) {
+        perks -= 1;
+        playerDamage += 2;
+	updatePerks();
+	playerDamageLabel.textContent = "|Player Damage: " + playerDamage + "|";
+        
+   
+    }
+
+});
 
 
 
@@ -389,6 +474,8 @@ document.addEventListener("keydown", function(event) {
     mrBox.style.left = fromLeft + "px";
 
 });
+
+
 
 
 

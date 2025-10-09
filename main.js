@@ -1,4 +1,3 @@
-alert("If you are playing on mobile please turn your phone landscape");
 
 //VARIABLES
 let xpInterval;
@@ -390,6 +389,7 @@ document.addEventListener("keydown", function(event) {
     mrBox.style.left = fromLeft + "px";
 
 });
+
 
 
 

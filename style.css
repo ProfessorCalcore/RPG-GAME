@@ -1,0 +1,111 @@
+	    #health-container{
+                position: relative;
+    		background-color: grey;
+    		width: 400px;
+    		height: 20px;
+		margin-top: 1px;
+                margin-bottom: 1px;
+		border: 2px solid black;
+            }
+
+            #health-bar{
+    		position: relative;
+		background: linear-gradient(to left, red, red, red, black);
+	        background-size: 400px 100%;
+   		width: 100%;
+    		height: 100%;
+		transition: all 0.5s ease;
+	    }
+
+	   #hp{
+                position: absolute;
+                top: 0;
+		left: 0;
+		color: white;
+                width: 100%;
+
+                
+           }
+        
+           #attack img{
+           	display: inline-block;
+                vertical-align: middle;
+           }
+       
+           #heal img{
+           	display: inline-block;
+                vertical-align: middle;
+                
+           }
+
+           #xp-container{
+                position: relative;
+           	width: 300px;
+                height: 20px;
+		background-color: grey;
+		margin-top: 1px;
+                margin-bottom: 1px;
+		border: 2px solid black;
+		transition: all 0.5s ease;
+
+               
+           }
+
+           #xp-points{
+           	width: 100%;
+                height: 100%;
+		background: linear-gradient(to bottom, yellow, orange);
+		background-size: 300px, 100%;
+		transition: all 0.5s ease;
+
+           }
+
+	   #XP{
+               position: absolute;
+	       color:black;
+               left: 0;
+               top: 0;
+	   }
+           
+           #upgrades-gui{
+ 	   	display: none;
+		background-color: grey;
+           }
+
+           #voltage-container{
+                position: relative;
+           	width: 200px;
+                height: 20px;
+                background-color: grey;
+		margin-top: 1px;
+		border: 2px solid black;
+		transition: all 0.5s ease;
+
+           }
+
+           #voltage-bar{
+           	width: 100%;
+                height: 100%;
+                background: linear-gradient(to top, blue, cyan);
+  		background-size: 200px, 100%;
+		transition: all 1s ease;
+
+           }
+ 
+	   #voltage-text{
+           	color: white;
+                position: absolute;
+                left: 0;
+                top: 0;
+           }
+
+	   #box{
+		position: absolute;
+		background-color: white;
+		width: 5px;
+		height: 5px;
+		top: 500px;
+		left: 500px;
+		transition: all 0.5 ease;
+	
+}

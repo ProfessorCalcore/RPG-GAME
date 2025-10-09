@@ -7,8 +7,10 @@
     <body>
 <!--------------HP LABELS------------------------------------------------------------------------------------------------------->
         <label id="heal-cost" style="margin-right: 10px; background-color: lightgrey">|Heal Cost: 25 V| </label>
-	<label id="heal-power" style="margin-right: 10px; background-color: lightgrey">Heal Power: 20 HP|</label>
-        <label id="max-damage" style="margin-right: 10px; background-color: lightgrey">|Max Damage Taken: 10 HP| </label>
+	<label id="heal-power" style="margin-right: 10px; background-color: lightgrey">|Heal Power: 10 HP|</label>
+	<label id="player-damage" style="margin-right: 10px; background-color: lightgrey">|Player Damage: 1| </label>
+
+        <label id="max-damage" style="margin-right: 10px; background-color: lightgrey">|Enemy DPS: 1| </label>
 <!------------------------------------------------------------------------------------------------------------------------------>
 
 
@@ -16,6 +18,13 @@
         <div id="health-container">
             <div id="health-bar"></div>
             <span id="hp">HP:100/100</span>
+        </div>
+<!------------------------------------------------>
+
+<!--------------ENEMY GUI------------------------>
+        <div id="enemy-health-container">
+            <div id="enemy-health-bar"></div>
+            <span id="enemy-hp">Enemy HP: 10/10</span>
         </div>
 <!------------------------------------------------>
 
@@ -64,19 +73,27 @@
 	<div id="upgrades-gui">
 
 	    <label style="display: block;">Health Upgrades</label>
-            <button id="max-health-upgrade">Max Health + 10 HP [Costs 1 Perk]</button>
-            <button id="heal-upgrade" style="display: block;">Heal + 5 additional hp [Costs 1 Perks]</button>
-            <button id="regenerate-hp" style="display: block;">Regenerate HP [Costs 5 Perks]</button>
+            <button id="max-health-upgrade"><b>MAX HEALTH + 10 HP</b> [Costs 1 Perk]</button>
+            <button id="heal-upgrade" style="display: block;"><b>HEAL + 5 HP</b>[Costs 1 Perk]</button>
+            <button id="regenerate-hp" style="display: block;"><b>REGENERATE HP</b> [Costs 5 Perks]</button>
+	    <button id="refill-health" style="display:block;"><b>RESTORE HP</b>[Costs 3 Perks]</button>
+
+	    <label style="display: block;">Damage Upgrades</label>
+	    <button id="upgrade-damage" style="display:block;"><b>Attack Damage +1 </b>[Costs 1 Perk]</button>
+
+
+
+	
 	    
 	    <label style="display: block;">Armour Upgrades</label>
-            <button id="armour-upgrade" style="display: block;">Upgrade Armour - 2 damage [Costs 1 Perk]</button>
+            <button id="armour-upgrade" style="display: block;"><b>UPGRADE ARMOUR - 1 ENEMY DPS</b>[Costs 3 Perks]</button>
 
 	    <label style="display: block;">XP Upgrades</label>
-            <button id="auto-xp" style="display: block;">AutoMine XP [Costs 2 Perks]</button>
+            <button id="auto-xp" style="display: block;"><b>AUTOMINE XP</b>[Costs 2 Perks]</button>
 
 
 	    <label style="display: block;">Voltage Upgrades</label>
-            <button id="voltage-upgrade" style="display: block;">Increase Voltage Regeneration [Costs 3 Perks]</button>
+            <button id="voltage-upgrade" style="display: block;"><b>VOLTAGE REGENERATION</b> [Costs 3 Perks]</button>
 
         </div>
 <!-------------------------------------------------------------------------------------------------------->
@@ -86,3 +103,4 @@
         <script src = "main.js"></script>
     </body>
 </html>
+

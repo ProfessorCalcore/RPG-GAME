@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+    <head>    
+        <link rel = "stylesheet" href = "style.css">
+    </head>
+
+    <body>
+<!--------------HP LABELS------------------------------------------------------------------------------------------------------->
+        <label id="heal-cost" style="margin-right: 10px; background-color: lightgrey">|Heal Cost: 25 V| </label>
+	<label id="heal-power" style="margin-right: 10px; background-color: lightgrey">Heal Power: 20 HP|</label>
+        <label id="max-damage" style="margin-right: 10px; background-color: lightgrey">|Max Damage Taken: 10 HP| </label>
+<!------------------------------------------------------------------------------------------------------------------------------>
+
+
+<!--------------HEALTH GUI------------------------>
+        <div id="health-container">
+            <div id="health-bar"></div>
+            <span id="hp">HP:100/100</span>
+        </div>
+<!------------------------------------------------>
+
+
+<!--------------XP LABELS----------------------------------------------------------------------------------->
+	<label id="level" style="margin-right: 10px; background-color: lightgrey">|Level: 1|</label>
+        <label id="perk" style="margin-right: 10px; background-color: lightgrey">|Perks: 0|</label>
+        <label id="required-xp" style="margin-right: 10px; background-color: lightgrey">|Required XP: 100|</label>
+<!---------------------------------------------------------------------------------------------------------->
+
+
+
+<!----------------XP GUI---------------------->
+       <div id="xp-container">
+           <div id="xp-points"></div>
+           <span id="XP">XP: 0/100</span>
+       </div>
+<!-------------------------------------------->
+
+<!----------------VOLTAGE LABELS----------------->
+<!----------------------------------------------->
+
+<!----------------VOLTAGE GUI------------------>
+       <div id="voltage-container">
+           <div id="voltage-bar"></div>
+           <span id="voltage-text">Voltage: 100/100</span>
+       </div>
+<!-------------------------------------------->
+
+       
+
+<!---------------------ACTION BUTTONS----------------------->
+	<button id="attack">Attack
+            <img src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/pixil-frame-0.png" alt="My Image">
+        </button>
+
+	<button id="heal">Heal
+            <img src ="C:/Users/calve/Downloads/pixil-frame-0 (5).png">
+        </button>
+
+        <button id="upgrades">Upgrades</button>
+<!---------------------------------------------------------->
+
+
+<!-------------UPGRADE MENU-------------------------------------------------------------------------------->
+	<div id="upgrades-gui">
+
+	    <label style="display: block;">Health Upgrades</label>
+            <button id="max-health-upgrade">Max Health + 10 HP [Costs 1 Perk]</button>
+            <button id="heal-upgrade" style="display: block;">Heal + 10 additional hp [Costs 2 Perks]</button>
+            <button id="regenerate-hp" style="display: block;">Regenerate HP [Costs 5 Perks]</button>
+	    
+	    <label style="display: block;">Armour Upgrades</label>
+            <button id="armour-upgrade" style="display: block;">Upgrade Armour - 1 damage [Costs 1 Perk]</button>
+
+	    <label style="display: block;">XP Upgrades</label>
+            <button id="auto-xp" style="display: block;">AutoMine XP [Costs 2 Perks]</button>
+
+
+	    <label style="display: block;">Voltage Upgrades</label>
+            <button id="voltage-upgrade" style="display: block;">Increase Voltage Regeneration [Costs 3 Perks]</button>
+
+        </div>
+<!-------------------------------------------------------------------------------------------------------->
+
+	<div id="box" style="width: 5px; height:5px"></div>
+        
+        <script src = "main.js"></script>
+    </body>
+</html>

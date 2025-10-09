@@ -1,1 +1,1 @@
-Click the link ## https://professorcalcore.github.io/RPG-GAME/
+# https://professorcalcore.github.io/RPG-GAME/

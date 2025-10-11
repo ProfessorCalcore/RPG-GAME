@@ -85,6 +85,10 @@ const healUpgrade = document.querySelector("#heal-upgrade");
 const refillHealthUpgrade = document.querySelector("#refill-health");
 const voltageUpgrade = document.querySelector("#voltage-upgrade");
 const zombieAttack = document.querySelector("#zombie-attack");
+const recruitKnight = document.querySelector("#recruit-knight");
+const perksRequiredLabel = document.querySelector("#perks-required");
+const knightsMagnitude = document.querySelector("#knights-magnitude");
+const knightsDisplay = document.querySelector("#knights-display");
 
 
 // ========================================================
@@ -117,6 +121,8 @@ const displayLabel = document.querySelector("#display-label");
 
 const armyTable = document.querySelector("#army-table");
 
+const healSfx = document.querySelector("#heal-sfx");
+
 // ========================================================
 // 🔢 MAGNITUDE ELEMENTS (MOTIVATION BOOSTERS!)
 // ========================================================
@@ -134,7 +140,7 @@ const upgradeDamageMagnitude = document.querySelector("#upgrade-damage-magnitude
 
 
 const armyUpgrades = document.querySelector("#army-upgrades");
-
+const armyDps = document.querySelector("#army-damage");
 
 // ========================================================
 // 🔢 ENEMY LIST ARRAY
@@ -435,7 +441,7 @@ attack.addEventListener("click", function() {
 
         displayLabel.style.opacity = 1;
 	displayLabel.style.background = "linear-gradient(to bottom, yellow, orange)";
-	displayLabel.textContent = "Gained: " + randomXP + " XP";
+	displayLabel.textContent = "+ " + randomXP + " XP";
 
 
        setTimeout(function() {
@@ -460,6 +466,7 @@ attack.addEventListener("click", function() {
 	displayLabel.style.opacity = 1;
 	displayLabel.textContent = "Level Up!";
 	displayLabel.style.background = "linear-gradient(to bottom, yellow, orange)";
+
 
 
 	setTimeout(function() {
@@ -496,6 +503,9 @@ attack.addEventListener("click", function() {
 
 	
     }
+
+
+
     
 
      
@@ -516,6 +526,19 @@ healButton.addEventListener("click", function() {
     if(heal + currentHealth <= maxHealth && voltage >= 25) {
         currentHealth += heal;
 
+	healSfx.currentTime = 0;
+	healSfx.play();
+
+	displayLabel.textContent = "+ " + heal + " HP";
+	displayLabel.style.color = "white";
+	displayLabel.style.background = "linear-gradient(to left, red, red, red, black)";
+	displayLabel.style.opacity = 1;
+
+	setTimeout(function() {
+ 	    displayLabel.style.opacity = 0;
+
+        },2000);
+
         voltage -= 25;
         voltagePercentage = (voltage/maxVoltage) * 100;
         voltageBar.style.width = voltagePercentage + "%";
@@ -533,6 +556,23 @@ healButton.addEventListener("click", function() {
 
     else if(heal + currentHealth >= maxHealth && voltage >= 25) {
         currentHealth = maxHealth
+
+
+	healSfx.currentTime = 0;
+	healSfx.play();
+
+	displayLabel.textContent = "+ " + heal + " HP";
+	displayLabel.style.color = "white";
+	displayLabel.style.background = "linear-gradient(to left, red, red, red, black)";
+	displayLabel.style.opacity = 1;
+
+	setTimeout(function() {
+ 	    displayLabel.style.opacity = 0;
+
+        },2000);
+
+
+
 	
         voltage -= 25;
         voltagePercentage = (voltage/maxVoltage) * 100;
@@ -785,27 +825,64 @@ refillHealthUpgrade.addEventListener("click", function() {
 });
 
 const deathJokes = [
-    // Level 1 death – super brutal
-    "Wow, you didnt even get out of those nappies of yours. Pff.",
-
-    // Random deaths
-    "Well... at least you did something with your life... kinda.",
-    "Come on?? Really? Fine, here's a restart... sigh. Was hoping you'd do it this time but nahh.",
-    "NOOO! NOOO! You had him! I... I DONT MESS THIS ONE UP!",
-    "Oops! That was almost impressive. Almost.",
-    "Seriously? You fell for that? Pathetic.",
-    "Congrats! You discovered a new way to fail!",
-    "You call that playing? My grandma could do better. And she's a cactus.",
-    "Wow, epic fail! Did you even see that coming?",
-    "Well, that escalated poorly.",
-    "You're like a human tutorial on how NOT to play.",
-    "Ah, the sweet smell of defeat... it's all you.",
-    "Legend? More like lagend.",
-    "You tried. Sort of. Maybe.",
-    "I've seen NPCs with better reflexes than you.",
-    "Recalculating your life choices... done. Try again."
+  "You died before you even got started. Truly committed to failure.",
+  "Still in starter gear and already a disaster. Nice.",
+  "You died so fast the tutorial didn't even load.",
+  "Stepped outside and instantly regretted it. Classic rookie move.",
+  "That was a perfect example of what not to do. Thanks for showing us.",
+  "You had one job: survive. You failed spectacularly.",
+  "Almost made it past the first trap. Almost.",
+  "You fell for that? Even the rats are shaking their heads.",
+  "Congrats! You earned a free dirt nap.",
+  "My toaster could've dodged that. And it's not even plugged in.",
+  "Epic fail. Here's some sarcastic applause.",
+  "Went downhill faster than a wheelbarrow full of regrets.",
+  "You're basically a walking warning sign.",
+  "Defeat suits you. Like a lead jumpsuit two sizes too small.",
+  "Legend? More like loading screen.",
+  "You tried. Kind of. Not really.",
+  "Even the scavengers are laughing. They eat trash for fun.",
+  "Analyzing... Error: Tactical thinking not found.",
+  "That was so bad, even the glitches are embarrassed.",
+  "If failure were cash, you'd be rich.",
+  "You died so fast, your logbook just says 'Oops'.",
+  "NOOO! You had it! Chosen one fail!",
+  "So close... then tripped over your ego.",
+  "Hope lasted a second. Then you buried it.",
+  "Made it here... just to lose to a rusty pipe.",
+  "This was your moment. Then destiny's dumpster caught you."
 ];
-                                                                                                  
+
+const reincarnationIntros = [
+  "Back again! You're now a slightly confused houseplant. Try not to wilt.",
+  "Welcome back! You're a pigeon with trust issues.",
+  "Rebooting your soul... now you're a sock behind the dryer.",
+  "You're a traffic cone now. People ignore you, but you're still in the way.",
+  "Next life: vending machine that eats coins.",
+  "Reborn as a snail with anxiety. Good luck out there.",
+  "Respawned as a haunted toaster. Burn it all.",
+  "You're a cloud that only rains at weddings.",
+  "Now a confused squirrel in a roundabout. May the odds be in your favor.",
+  "You're a novelty mug nobody wants to drink from.",
+  "Welcome back! You're a broken umbrella in a windstorm.",
+  "Motivational poster in a dentist's office. Inspiring... sort of.",
+  "You're a sock puppet with unresolved trauma.",
+  "Now a tumbleweed in a ghost town. Symbolic.",
+  "Reborn as a forgotten password. Mysterious and useless.",
+  "You're a rubber duck in lava. Float with dignity.",
+  "Confused GPS voice. Turn left into disappointment.",
+  "A fridge magnet shaped like a banana. No one knows why.",
+  "Paperclip that keeps asking if you need help.",
+  "Wind chime in a hurricane. Musical chaos awaits.",
+  "Half-eaten sandwich in a lunchbox apocalypse. Yum.",
+  "Broken pencil in a test. Symbolic failure.",
+  "Novelty doorbell that only plays sad trombone.",
+  "Sock with no pair and too much ambition.",
+  "Confused emoji. Sums it up."
+];
+
+
+                                                                                              
 
 
 function enemyAttack() {
@@ -815,14 +892,22 @@ function enemyAttack() {
         if(currentHealth <= 0) {
 	    zombieAttack.play();
 	    document.body.style.backgroundColor = "black";
+	    document.body.style.zIndex = 100;
+	    
+
+
 
 	    currentHealth = 0;
 	    clearInterval(enemyInterval);
-            alert("You Have Died!");
-	    alert(deathJokes[currentLevel - 1]);
-		
+	 
+	    setTimeout(function() {
+                alert("You Have Died!");
+	        alert(deathJokes[currentLevel - 1]);
+	        alert(reincarnationIntros[currentLevel-1]);
 
-            location.reload();
+                location.reload();
+            }, 5000);
+
         }
  
         else{
@@ -949,6 +1034,132 @@ devConsole.addEventListener("keydown", function(event) {
     
 
 });
+
+let knightsPerksRequired = 5;
+let knightInterval;
+let armyDamage = -1;
+
+
+
+// KNIGHT FUNCTION
+function knightAttack() {
+    armyDamage += 1;
+    clearInterval(knightInterval);
+    knightInterval = setInterval(function() {
+	enemyCurrentHealth -= armyDamage;
+	updateEnemyHealthValues();
+
+    if(currentXP >= requiredXP) {
+	levelUpSfx.play();
+
+	displayLabel.style.opacity = 1;
+	displayLabel.textContent = "Level Up!";
+	displayLabel.style.background = "linear-gradient(to bottom, yellow, orange)";
+
+
+
+	setTimeout(function() {
+	    displayLabel.style.opacity = 0;
+	    
+      
+        },3000)
+
+	
+	
+
+	enemyMaxHealth += (currentLevel * 10 );
+	enemyDamage += currentLevel;
+	maxHealth += 1;
+	updateHealthValues();
+	maxDamageLabel.textContent = "|Enemy DPS: " + enemyDamage + "|";
+	
+	enemyAttack();
+	enemyCurrentHealth = enemyMaxHealth;
+	updateEnemyHealthValues();
+
+
+        currentXP = 0;
+        currentLevel += 1;
+        maxDamage += 3;
+	perks += currentLevel ;
+	perk.textContent = "|Perks: " + perks + "|";
+        level.textContent = "|Level: " + currentLevel + "|";
+
+	updateXPValues();
+
+	requiredXP += 150;
+	requiredXPLabel.textContent = "|Required XP: " + requiredXP + "|";
+
+	
+    }
+
+    if(enemyCurrentHealth - playerDamage > 0) {
+        enemyCurrentHealth -= playerDamage;
+	updateEnemyHealthValues();
+    
+    }
+
+    else{
+
+    	swordSlash.currentTime = 0;
+    	swordSlash.play();
+		
+        enemyCurrentHealth = enemyMaxHealth;
+	currentHealth += healthFactor;
+	updateEnemyHealthValues();
+	
+	xpFactor = 50 + (currentLevel * 5)
+        randomXP = Math.floor(Math.random() * xpFactor + 1)
+	currentXP += randomXP; 
+	updateXPValues();
+
+        displayLabel.style.opacity = 1;
+	displayLabel.style.background = "linear-gradient(to bottom, yellow, orange)";
+	displayLabel.textContent = "+ " + randomXP + " XP";
+
+
+       setTimeout(function() {
+	   displayLabel.style.opacity = 0;
+        
+       }, 3000);
+    }
+
+    if(currentHealth >= maxHealth) currentHealth = maxHealth;
+ 
+    
+
+    }, 1000);
+
+
+}
+
+
+// RECRUIT KNIGHT
+
+let knightQuantity = 0;
+
+recruitKnight.addEventListener("click", function() {
+    if(perks >= knightsPerksRequired ) {
+        perks -= knightsPerksRequired;
+        knightsPerksRequired += 5 * currentLevel;
+	knightQuantity += 1;
+	let armyTextDamage = armyDamage + 2;
+	armyDps.textContent = "|Army DPS: " + armyTextDamage + "|";
+	knightsDisplay.textContent = "Army Size: " + "⚔️" + " x" + knightQuantity;
+
+	updatePerks();
+	knightAttack();
+
+	perksRequiredLabel.textContent = knightsPerksRequired;
+	knightsMagnitude.textContent = knightQuantity + " Knights"; 
+        
+	
+	
+    }
+
+});
+
+
 
 
 

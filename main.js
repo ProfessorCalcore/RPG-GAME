@@ -536,8 +536,10 @@ healButton.addEventListener("click", function() {
 
 	setTimeout(function() {
  	    displayLabel.style.opacity = 0;
+	    
 
         },2000);
+	
 
         voltage -= 25;
         voltagePercentage = (voltage/maxVoltage) * 100;
@@ -1158,9 +1160,6 @@ recruitKnight.addEventListener("click", function() {
     }
 
 });
-
-
-
 
 
 

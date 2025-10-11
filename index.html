@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
-    <head>    
+    <head>   
+	<meta charset= "UTF-8">
         <link rel = "stylesheet" href = "style.css">
     </head>
 
@@ -14,8 +15,10 @@
         <label id="heal-cost" style="margin-right: 10px; background-color: lightgrey">|Heal Cost: 25 V| </label>
 	<label id="heal-power" style="margin-right: 10px; background-color: lightgrey">|Heal Power: 10 HP|</label>
 	<label id="player-damage" style="margin-right: 10px; background-color: lightgrey">|Player Damage: 1| </label>
+	<label id="army-damage" style="margin-right: 10px; background-color: lightgrey">|Army DPS: 1| </label>
 
         <label id="max-damage" style="margin-right: 10px; background-color: lightgrey">|Enemy DPS: 1| </label>
+	<label id="knights-display" style="display: block;font-family:arial;">Army Size:⚔️ x0</label>
 <!------------------------------------------------------------------------------------------------------------------------------>
 
 
@@ -75,8 +78,8 @@
 	<button id="freeze">Freeze</button>
 
 
-        <button id="upgrades" style="border-radius:100%; border:none; outline:none; background: transparent;display:block; position:absolute; left:300px; top:70px;">
-	    <img src="C:/Users/calve/Downloads/pixil-frame-0 (4).png" style="width:64px;">
+        <button id="upgrades" style="border-radius:100%; border:none; outline:none; background: transparent;display:block; position:absolute; left:19%; top:12%;">
+	    <img src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/pixil-frame-0%20(4).png" style="width:64px;">
        </button>
 <!---------------------------------------------------------->
 
@@ -227,10 +230,10 @@
         </tr>
 
 	<tr>
-	    <td button id="recruit-knight">Knights</td>
+	    <td><button id="recruit-knight">Knights</button></td>
 	    <td>Adds 1 knight to your army dealing +1 damage per second</td>
-	    <td>5</td>
-	    <td>0x</td>
+	    <td id="perks-required">5</td>
+	    <td id="knights-magnitude">0x</td>
         </tr>
 
 
@@ -254,27 +257,15 @@
 	<div id="box" style="width: 5px; height:5px"></div>
 	
 	<input id="dev-console" placeholder="Enter Command...">
-	<audio id="zombie-attack" src="C:/Users/calve/Downloads/zombie-attack-6419.mp3" preload="auto"></audio>
-	
-	<audio id="sword-slash" src="C:/Users/calve/Downloads/violent-sword-slice-393848.mp3" preload="auto"></audio>
 
-
-
-
-
-
-
-
-
-
-
-
-	<audio id="level-up-sfx" src="C:/Users/calve/Downloads/army-rank-up-2-84543.mp3" preload="auto"></audio>
+	<audio id="zombie-attack" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/zombie-attack-6419.mp3" preload="auto"></audio>
+	<audio id="sword-slash" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/violent-sword-slice-393848.mp3" preload="auto"></audio>
+	<audio id="level-up-sfx" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/army-rank-up-2-84543.mp3" preload="auto"></audio>
+	<audio id="heal-sfx" src="C:/Users/calve/Downloads/magic-spell-6005.mp3" preload="auto"></audio>
 	
 
         
         <script src = "main.js"></script>
     </body>
 </html>
-
 

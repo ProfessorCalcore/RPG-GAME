@@ -1,7 +1,25 @@
 	   body{
                background-color: white;
            }   
+		
+	   #upgrades:hover{
+ 	   	transform: scale(1.3);
+               
+           }
 
+	   #display-label{
+	   	position:absolute;
+ 		left: 50%;
+		top:5%;
+		opacity: 0;
+		transition: opacity 5s ease;
+		font-weight:bold;
+		font-family:arial;	
+		font-size:30px;
+           }
+	
+
+	
 
 
 	   #health-container{
@@ -12,6 +30,7 @@
 		margin-top: 1px;
                 margin-bottom: 1px;
 		border: 2px solid black;
+		border-radius: 10px;
             }
 
             #health-bar{
@@ -21,6 +40,10 @@
    		width: 100%;
     		height: 100%;
 		transition: all 0.5s ease;
+		border-radius: 10px;
+
+
+
 	    }
 
 	   #hp{
@@ -41,6 +64,9 @@
 		margin-top: 1px;
                 margin-bottom: 1px;
 		border: 2px solid black;
+		border-radius: 10px;
+
+
            }
 
            #enemy-health-bar{
@@ -50,6 +76,8 @@
    		width: 100%;
     		height: 100%;
 		transition: all 0.5s ease;
+		border-radius: 10px;
+
            }
 
            #enemy-hp{
@@ -91,6 +119,7 @@
                 margin-bottom: 1px;
 		border: 2px solid black;
 		transition: all 0.5s ease;
+		border-radius: 10px;
 
                
            }
@@ -101,6 +130,8 @@
 		background: linear-gradient(to bottom, yellow, orange);
 		background-size: 300px, 100%;
 		transition: all 0.5s ease;
+		border-radius: 10px;
+		
 
            }
 
@@ -113,7 +144,6 @@
            
            #upgrades-gui{
  	   	display: none;
-		background-color: grey;
            }
 
            #voltage-container{
@@ -124,6 +154,7 @@
 		margin-top: 1px;
 		border: 2px solid black;
 		transition: all 0.5s ease;
+		border-radius: 10px;
 
            }
 
@@ -133,6 +164,7 @@
                 background: linear-gradient(to top, blue, cyan);
   		background-size: 200px, 100%;
 		transition: all 1s ease;
+		border-radius: 10px;
 
            }
  
@@ -152,4 +184,14 @@
 		left: 500px;
 		transition: all 0.5 ease;
 	
-}
+	  }
+
+	  #dev-console{
+		position:absolute;
+	  	width:200px;
+		height:20px;
+		right:0px;
+		bottom:10px;
+		
+          }
+

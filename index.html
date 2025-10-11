@@ -5,6 +5,11 @@
     </head>
 
     <body>
+
+
+	<label id="display-label">HEY</label>
+
+
 <!--------------HP LABELS------------------------------------------------------------------------------------------------------->
         <label id="heal-cost" style="margin-right: 10px; background-color: lightgrey">|Heal Cost: 25 V| </label>
 	<label id="heal-power" style="margin-right: 10px; background-color: lightgrey">|Heal Power: 10 HP|</label>
@@ -15,7 +20,7 @@
 
 
 <!--------------HEALTH GUI------------------------>
-        <div id="health-container">
+        <div id="health-container" style="width: 100px;">
             <div id="health-bar"></div>
             <span id="hp">HP:100/100</span>
         </div>
@@ -24,7 +29,7 @@
 <!--------------ENEMY GUI------------------------>
         <div id="enemy-health-container">
             <div id="enemy-health-bar"></div>
-            <span id="enemy-hp">Enemy HP: 10/10</span>
+            <span id="enemy-hp">RAT HP: 10/10</span>
         </div>
 <!------------------------------------------------>
 
@@ -65,42 +70,211 @@
             <img src ="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/pixil-frame-0 (5).png">
         </button>
 
-        <button id="upgrades">Upgrades</button>
+	<button id="charge">Recharge</button>
+
+	<button id="freeze">Freeze</button>
+
+
+        <button id="upgrades" style="border-radius:100%; border:none; outline:none; background: transparent;display:block; position:absolute; left:300px; top:70px;">
+	    <img src="C:/Users/calve/Downloads/pixil-frame-0 (4).png" style="width:64px;">
+       </button>
 <!---------------------------------------------------------->
 
 
 <!-------------UPGRADE MENU-------------------------------------------------------------------------------->
-	<div id="upgrades-gui">
-
-	    <label style="display: block;">Health Upgrades</label>
-            <button id="max-health-upgrade"><b>MAX HEALTH + 10 HP</b> [Costs 1 Perk]</button>
-            <button id="heal-upgrade" style="display: block;"><b>HEAL + 5 HP</b>[Costs 1 Perk]</button>
-            <button id="regenerate-hp" style="display: block;"><b>REGENERATE HP</b> [Costs 5 Perks]</button>
-	    <button id="refill-health" style="display:block;"><b>RESTORE HP</b>[Costs 3 Perks]</button>
-
-	    <label style="display: block;">Damage Upgrades</label>
-	    <button id="upgrade-damage" style="display:block;"><b>Attack Damage +1 </b>[Costs 1 Perk]</button>
+            <div id="upgrades-gui" style="display: none;">
+                <button id="health-upgrades" style="display: block;">Health Upgrades
+                </button>
+<!--------------------------------------------------------------------------------------------------------->
 
 
+<!----------------HEALTH UPGRADES-------------------------------------------------------------------------->
+<table id="health-table" border=1 style="border-collapse: collapse; display: none">
+    <caption>Health Skills</caption>
+        <tr>
+            <th>Skill</th>
+            <th>Description</th>
+            <th>Perk Cost</th>
+	    <th>Magnitude</th>
 
-	
-	    
-	    <label style="display: block;">Armour Upgrades</label>
-            <button id="armour-upgrade" style="display: block;"><b>UPGRADE ARMOUR - 1 ENEMY DPS</b>[Costs 3 Perks]</button>
+        </tr>
 
-	    <label style="display: block;">XP Upgrades</label>
-            <button id="auto-xp" style="display: block;"><b>AUTOMINE XP</b>[Costs 2 Perks]</button>
+        <tr>
+          <td><button id="refill-health">Second Chance</button></td>
+          <td>Refills your health bar to 100%</td>
+          <td>3</td>
+	  <td id="refill-health-magnitude">0x</td>
+        </tr>
+
+         <tr>
+          <td><button id="max-health-upgrade">Endurance</button></td>
+          <td>Increases max health by 10 pts</td>
+          <td>1</td>
+	  <td id="max-health-magnitude">0x</td>
+        </tr>
+
+         <tr>
+          <td><button id="heal-upgrade">Bandages</button></td>
+          <td>Improves heal skill by +5 additional HP</td>
+          <td>1</td>
+	  <td id="heal-upgrade-magnitude">0x</td>
+        </tr>  
+
+         <tr>
+          <td><button id="regenerate-hp">Regeneration</button></td>
+          <td>HP automatically heals over time</td>
+          <td>5</td>
+   	  <td id="regenerate-hp-magnitude">0x</td>
+        </tr>   
+
+         <tr>
+          <td><button id="steal-hp">Vampirism</button></td>
+          <td>Absorbs +1 HP every time you defeat an enemy</td>
+          <td>1</td>
+          <td id="steal-hp-magnitude">0x</td>
+        </tr>   
+</table>
+<!--------------------------------------------------------------------------------------------------------->	
 
 
-	    <label style="display: block;">Voltage Upgrades</label>
-            <button id="voltage-upgrade" style="display: block;"><b>VOLTAGE REGENERATION</b> [Costs 3 Perks]</button>
 
-        </div>
+<!------------------------XP UPGRADES----------------------------------------------------------------------------->
+                <button id="xp-upgrades" style="display: block;">XP Upgrades</button>
+<table id="xp-table" border=1 style="border-collapse: collapse; display: none">
+    <caption>XP Skills</caption>
+        <tr>
+            <th>Skill</th>
+            <th>Description</th>
+            <th>Perk Cost</th>
+	    <th>Magnitude</th>
+
+        </tr>
+        
+        <tr>
+            <td><button id="auto-xp">XP Mining</button></td>
+            <td>Gathers 1 XP per sec</td>
+            <td id="xp-perks-required">2</td>
+	    <td id="auto-xp-magnitude">0x</td>
+        </tr>
+</table>
+<!--------------------------------------------------------------------------------------------------------->
+
+
+
+<!--------------------VOLTAGE UPGRADES--------------------------------------------------------------------->
+                <button id ="voltage-upgrades" style="display: block;">Voltage Upgrades</button>
+
+<table id="voltage-table" border=1 style="display: none; border-collapse: collapse">
+    <caption>Voltage Skills</caption>
+        
+        <tr>
+            <th>Skill</th>
+            <th>Description</th>
+            <th>Perk Cost</th>
+	    <th>Magnitude</th>
+
+        </tr>
+
+        <tr>
+	    <td><button id="voltage-upgrade">Regenerate Voltage</button></td>
+	    <td>Regenerates +1 Volts Per Seconds</td>
+            <td>2</td>
+	    <td id="voltage-upgrade-magnitude">0x</td>
+        </tr>
+
+
+</table>
+<!--------------------------------------------------------------------------------------------------------->
+
+
+
+<!---------------------------DAMAGE UPGRADES---------------------------------------------------------------------->
+                <button id = "damage-upgrades" style="display: block;">Damage Upgrades</button>
+
+<table id="damage-table" border=1 style="border-collapse: collapse; display: none">
+    <caption>Damage Skills</caption>
+    
+        <tr>
+            <th>Skill</th>
+            <th>Description</th>
+            <th>Perk Cost</th>
+	    <th>Magnitude</th>
+        </tr>
+ 
+        <tr>
+            <td><button id="upgrade-damage">Sharpened</button></td>
+            <td>You deal +1 more damage</td>
+            <td>1</td>
+	    <td id="upgrade-damage-magnitude">0x</td>
+        </tr>
+
+</table>
+         
+
 <!-------------------------------------------------------------------------------------------------------->
 
+<!--------------------------------------ARMY-UPGRADES---------------------------------------------------->
+<button id="army-upgrades" style="display:block">Army Upgrades</button>
+
+<table id="army-table" border=1 style="display:none; border-collapse: collapse;">
+    <caption>Army Skills</caption>
+    
+         <tr>
+            <th>Skill</th>
+            <th>Description</th>
+            <th>Perk Cost</th>
+	    <th>Magnitude</th>
+        </tr>
+
+	<tr>
+	    <td button id="recruit-knight">Knights</td>
+	    <td>Adds 1 knight to your army dealing +1 damage per second</td>
+	    <td>5</td>
+	    <td>0x</td>
+        </tr>
+
+
+
+</table>
+
+    </div>
+<!-------------------------------------------------------------------------------------------------------->
+
+
+
+
+
+
+
+
+
+
+
+<!-----------------------EXTRAS--------------------------------------------------------------------------->
 	<div id="box" style="width: 5px; height:5px"></div>
+	
+	<input id="dev-console" placeholder="Enter Command...">
+	<audio id="zombie-attack" src="C:/Users/calve/Downloads/zombie-attack-6419.mp3" preload="auto"></audio>
+	
+	<audio id="sword-slash" src="C:/Users/calve/Downloads/violent-sword-slice-393848.mp3" preload="auto"></audio>
+
+
+
+
+
+
+
+
+
+
+
+
+	<audio id="level-up-sfx" src="C:/Users/calve/Downloads/army-rank-up-2-84543.mp3" preload="auto"></audio>
+	
+
         
         <script src = "main.js"></script>
     </body>
 </html>
+
 

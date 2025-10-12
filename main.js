@@ -1,95 +1,107 @@
 // ========================================================
-// 🎮 GAME VARIABLES
+// 🎮 GAME STATE VARIABLES
 // ========================================================
-let xpInterval;
-let hpInterval;
-let voltageInterval;
-let enemyInterval;
-let xpIntervalFactor = 0;
-
-let enemyDamage = 1;
-
-let voltageSpeed = 1000;
-let voltageLevel = 1;
-
-let purchasedXP = false;
-let purchasedHP = false;
-
-let xpFactor;
-let randomXP;
-
-let healthFactor = 0;
-
+// -- Player Stats
 let currentHealth = 100;
 let maxHealth = 100;
 let currentXP = 0;
 let currentLevel = 1;
 let perks = 0; // 💎 GOD-TIER PERKS
-
 let requiredXP = 100;
-let voltage = 100;
-let maxVoltage = 100;
-
-let heal = 10;
+let playerDamage = 1;
 let minDamage = 1;
 let maxDamage = 10;
+let heal = 10;
 
-let XPPercentage;
-let HPPercentage;
+let goldValue = 0;
+let knightQuantity = 0;
 
-let EnemyHPPercentage;
+
+
+// -- Enemy Stats
+let enemyDamage = 0.25
 let enemyCurrentHealth = 10;
 let enemyMaxHealth = 10;
 
-let playerDamage = 1;
+// -- Voltage System Variables
+let voltage = 100;
+let maxVoltage = 100;
+let voltageSpeed = 1000;
+let voltageLevel = 1;
 
+// -- Intervals & Factors
+let xpInterval;
+let hpInterval;
+let voltageInterval;
+let enemyInterval;
+let xpIntervalFactor = 0;
+let xpFactor;
+let randomXP;
+let healthFactor = 0;
+
+// -- Purchased Upgrades
+let purchasedXP = false;
+let purchasedHP = false;
+
+// -- Percentages
+let XPPercentage;
+let HPPercentage;
+let EnemyHPPercentage;
 
 // ========================================================
 // 🧍 PLAYER / ENEMY UI ELEMENTS
 // ========================================================
+// -- Player UI
 const hp = document.querySelector("#hp");
 const healthBar = document.querySelector("#health-bar");
 const healthContainer = document.querySelector("#health-container");
 const playerDamageLabel = document.querySelector("#player-damage");
 
+// -- Enemy UI
 const enemyHP = document.querySelector("#enemy-hp");
 const enemyHealthBar = document.querySelector("#enemy-health-bar");
 const enemyHealthContainer = document.querySelector("#enemy-health-container");
 
+// -- XP / Level UI
 const XPPoints = document.querySelector("#xp-points");
 const XPLabel = document.querySelector("#XP");
 const level = document.querySelector("#level");
 const perk = document.querySelector("#perk");
 const requiredXPLabel = document.querySelector("#required-xp");
 
-
 // ========================================================
-// 🔘 BUTTONS / ACTIONS
+// 🔘 BUTTONS
 // ========================================================
+// -- Player Actions
 const attack = document.querySelector("#attack");
 const healButton = document.querySelector("#heal");
+
+// -- Automation
 const autoXP = document.querySelector("#auto-xp");
 const autoHP = document.querySelector("#regenerate-hp");
-
 
 // ========================================================
 // 🛠 UPGRADES
 // ========================================================
+// -- General Upgrades
 const upgrades = document.querySelector("#upgrades");
 const upgradesGUI = document.querySelector("#upgrades-gui");
-
 const upgradeDamage = document.querySelector("#upgrade-damage");
-
 const maxHealthUpgrade = document.querySelector("#max-health-upgrade");
 const healUpgrade = document.querySelector("#heal-upgrade");
 const refillHealthUpgrade = document.querySelector("#refill-health");
 const voltageUpgrade = document.querySelector("#voltage-upgrade");
-const zombieAttack = document.querySelector("#zombie-attack");
+const requiredRefillPerks = document.querySelector("#required-refill-perks");
+const gold = document.querySelector("#gold");
+
+// -- Army / Knights
 const recruitKnight = document.querySelector("#recruit-knight");
 const perksRequiredLabel = document.querySelector("#perks-required");
 const knightsMagnitude = document.querySelector("#knights-magnitude");
 const knightsDisplay = document.querySelector("#knights-display");
-
+const armyTable = document.querySelector("#army-table");
+const armyUpgrades = document.querySelector("#army-upgrades");
+const armyDps = document.querySelector("#army-damage");
 
 // ========================================================
 // ⚡ VOLTAGE SYSTEM
@@ -97,50 +109,52 @@ const knightsDisplay = document.querySelector("#knights-display");
 const voltageBar = document.querySelector("#voltage-bar");
 const voltageText = document.querySelector("#voltage-text");
 
-
 // ========================================================
 // 🧩 MISC ELEMENTS
 // ========================================================
+// -- Health / Power
 const healCost = document.querySelector("#heal-cost");
 const healPower = document.querySelector("#heal-power");
-// const regenHP = document.querySelector("#heal-power"); // ❌ duplicate
 const maxDamageLabel = document.querySelector("#max-damage");
+
+// -- Misc
 const mrBox = document.querySelector("#box");
-
 const stealHP = document.querySelector("#steal-hp");
-
 const charge = document.querySelector("#charge");
 const freeze = document.querySelector("#freeze");
-
 const devConsole = document.querySelector("#dev-console");
-const swordSlash = document.querySelector("#sword-slash");
-swordSlash.volume = 0.2;
-
-const levelUpSfx = document.querySelector("#level-up-sfx");
-const displayLabel = document.querySelector("#display-label");
-
-const armyTable = document.querySelector("#army-table");
-
-const healSfx = document.querySelector("#heal-sfx");
 
 // ========================================================
-// 🔢 MAGNITUDE ELEMENTS (MOTIVATION BOOSTERS!)
+// 🔊 SOUND EFFECTS
+// ========================================================
+const swordSlash = document.querySelector("#sword-slash");
+swordSlash.volume = 0.2;
+const healSfx = document.querySelector("#heal-sfx");
+const levelUpSfx = document.querySelector("#level-up-sfx");
+const displayLabel = document.querySelector("#display-label");
+const zombieAttack = document.querySelector("#zombie-attack");
+
+const deadRobot = document.querySelector("#dead-robot");
+const deadWalking = document.querySelector("#dead-walking");
+const wolfHowling = document.querySelector("#wolf-howling");
+const dramaticEnding = document.querySelector("#dramatic-ending");
+const creepyWoman = document.querySelector("#creepy-woman");
+const beheading = document.querySelector("#beheading");
+
+const purchaseSkill = document.querySelector("#purchase-skill");
+
+// ========================================================
+// 🔢 MAGNITUDE ELEMENTS (MOTIVATION BOOSTERS)
 // ========================================================
 const refillHealthMagnitude = document.querySelector("#refill-health-magnitude");
 const maxHealthMagnitude = document.querySelector("#max-health-magnitude");
 const healUpgradeMagnitude = document.querySelector("#heal-upgrade-magnitude");
 const regenerateHpMagnitude = document.querySelector("#regenerate-hp-magnitude");
 const stealHpMagnitude = document.querySelector("#steal-hp-magnitude");
-
 const autoXpMagnitude = document.querySelector("#auto-xp-magnitude");
-
 const voltageUpgradeMagnitude = document.querySelector("#voltage-upgrade-magnitude");
-
 const upgradeDamageMagnitude = document.querySelector("#upgrade-damage-magnitude");
 
-
-const armyUpgrades = document.querySelector("#army-upgrades");
-const armyDps = document.querySelector("#army-damage");
 
 // ========================================================
 // 🔢 ENEMY LIST ARRAY
@@ -437,6 +451,8 @@ attack.addEventListener("click", function() {
 	xpFactor = 50 + (currentLevel * 5)
         randomXP = Math.floor(Math.random() * xpFactor + 1)
 	currentXP += randomXP; 
+	goldValue += Math.floor((randomXP/2) - 5 + 13 + 3.1416);
+	gold.textContent = "Gold: " + goldValue;
 	updateXPValues();
 
         displayLabel.style.opacity = 1;
@@ -462,6 +478,8 @@ attack.addEventListener("click", function() {
 //CHECKS IF A NEW LEVEL HAS BEEN REACHED
     if(currentXP >= requiredXP) {
 	levelUpSfx.play();
+	if(currentHealth/maxHealth <=0.5) currentHealth = Math.floor((maxHealth*0.75));
+	
 
 	displayLabel.style.opacity = 1;
 	displayLabel.textContent = "Level Up!";
@@ -479,7 +497,7 @@ attack.addEventListener("click", function() {
 	
 
 	enemyMaxHealth += (currentLevel * 10 );
-	enemyDamage += currentLevel;
+	enemyDamage += (currentLevel/2);
 	maxHealth += 1;
 	updateHealthValues();
 	maxDamageLabel.textContent = "|Enemy DPS: " + enemyDamage + "|";
@@ -500,6 +518,22 @@ attack.addEventListener("click", function() {
 
 	requiredXP += 150;
 	requiredXPLabel.textContent = "|Required XP: " + requiredXP + "|";
+
+        previousEnemyDamage = enemyDamage
+
+        enemyDamage = 0;
+	
+	enemyHealthBar.style.background = "linear-gradient(to right, #a0e9ff, #70d6ff, #ccefff, #ffffff)";
+
+        setTimeout(function() {
+            enemyDamage = previousEnemyDamage;
+	    enemyHealthBar.style.background = "linear-gradient(to left, green, black)";
+
+	  
+        
+        
+        }, 10000)
+
 
 	
     }
@@ -619,6 +653,9 @@ maxHealthUpgrade.addEventListener("click", function() {
     maxHealth += 10;
     totalHealth += 10;
 
+    purchaseSkill.currentTime = 0;
+    purchaseSkill.play();
+
     let hpWidth = parseInt(healthContainer.style.width);
     hpWidth += 1;
     healthContainer.style.width = hpWidth + "px";
@@ -645,6 +682,9 @@ healUpgrade.addEventListener("click", function() {
         perks -= 1;
     heal += 5;
     totalHeal += 5;
+
+    purchaseSkill.currentTime = 0;
+    purchaseSkill.play();
 
 
     healPower.textContent = "|Heal Power: " + heal + " HP " + "|";
@@ -695,7 +735,11 @@ const xpPerksRequiredText = document.querySelector("#xp-perks-required");
 //AUTO XP UPGRADE//
 autoXP.addEventListener("click", function() {
     if(perks >= xpPerksRequired) {
-        perks -= xpPerksRequired;	
+        perks -= xpPerksRequired;
+
+    	purchaseSkill.currentTime = 0;
+    	purchaseSkill.play();
+	
 	xpPerksRequired += 1;
     autoMineXP();
     xpIntervalFactor += 1;
@@ -745,6 +789,10 @@ autoHP.addEventListener("click", function() {
     if(perks >= 5 && !purchasedHP) {
         purchasedXP = true;
         perks -= 5;
+
+    	purchaseSkill.currentTime = 0;
+    	purchaseSkill.play();
+
     autoMineHP();
     autoHP.textContent = "OUT OF STOCK";
 
@@ -788,6 +836,10 @@ let fromLeft = 500;
 // VOLTAGE BOOST UPGRADE
 voltageUpgrade.addEventListener("click", function() {
     if(perks >= 2){
+
+    	purchaseSkill.currentTime = 0;
+    	purchaseSkill.play();	
+	
         voltageLevel += 1;
         perks -= 3;
         runVoltageLoop();
@@ -805,12 +857,18 @@ voltageUpgrade.addEventListener("click", function() {
 let usedRefill = 0;
 let healthRestored;
 let totalHealthRestored = 0;
+let requiredRefillHealth = 3;
 
 //REFILL HEALTH UPGRADE
 refillHealthUpgrade.addEventListener("click", function() {
 
-    if(perks >= 3 && currentHealth < maxHealth) {
-        perks -= 3;
+    if(perks >= requiredRefillHealth && currentHealth < maxHealth) {
+        perks -= requiredRefillHealth;
+	requiredRefillHealth *=2;
+	requiredRefillPerks.textContent = requiredRefillHealth;
+
+    	purchaseSkill.currentTime = 0;
+    	purchaseSkill.play();
 	
 	healthRestored = maxHealth - currentHealth;
 	totalHealthRestored += healthRestored;
@@ -883,7 +941,12 @@ const reincarnationIntros = [
   "Confused emoji. Sums it up."
 ];
 
+// ========================================================
+// 🔊 ENDING / DEATH SOUNDS ARRAY
+// ========================================================
+let endingSounds = [zombieAttack, deadRobot, deadWalking, wolfHowling, dramaticEnding, creepyWoman, beheading];
 
+let randomSfx;
                                                                                               
 
 
@@ -892,7 +955,9 @@ function enemyAttack() {
 
     enemyInterval = setInterval(function() {
         if(currentHealth <= 0) {
-	    zombieAttack.play();
+	    randomSfx = Math.floor(Math.random() * endingSounds.length);
+	    currentSound = endingSounds[randomSfx];
+	    currentSound.play();
 	    document.body.style.backgroundColor = "black";
 	    document.body.style.zIndex = 100;
 	    
@@ -928,6 +993,10 @@ enemyAttack();
 //ATTACK UPGRADE
 upgradeDamage.addEventListener("click", function() {
     if(perks >= 1) {
+
+    	purchaseSkill.currentTime = 0;
+    	purchaseSkill.play();
+
         perks -= 1;
         playerDamage += 1;
 	updatePerks();
@@ -944,6 +1013,10 @@ upgradeDamage.addEventListener("click", function() {
 stealHP.addEventListener("click", function() {
     if(perks >= 1) {
         perks-= 1;
+
+    	purchaseSkill.currentTime = 0;
+    	purchaseSkill.play();
+
         perk.textContent = "Perks: " + perks;
         healthFactor += 1;
 	stealHpMagnitude.textContent = "Absorbs: " + healthFactor + " HP";
@@ -1138,11 +1211,14 @@ function knightAttack() {
 
 // RECRUIT KNIGHT
 
-let knightQuantity = 0;
 
 recruitKnight.addEventListener("click", function() {
     if(perks >= knightsPerksRequired ) {
         perks -= knightsPerksRequired;
+
+    	purchaseSkill.currentTime = 0;
+    	purchaseSkill.play();
+
         knightsPerksRequired += 5 * currentLevel;
 	knightQuantity += 1;
 	let armyTextDamage = armyDamage + 2;

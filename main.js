@@ -6,20 +6,57 @@ let currentHealth = 100;
 let maxHealth = 100;
 let currentXP = 0;
 let currentLevel = 1;
-let perks = 0; // 💎 GOD-TIER PERKS
+let perks = 0; 
 let requiredXP = 100;
 let playerDamage = 1;
 let minDamage = 1;
 let maxDamage = 10;
 let heal = 10;
+let active = 1;
+let concentrationFactor = 1; 
+
+const electricitySfx = document.querySelector("#electricity-sfx");
+
+const maxVoltageUpgrade = document.querySelector("#max-voltage-upgrade");
+const maxVoltageCost = document.querySelector("#max-voltage-cost");
+const maxVoltageMagnitude = document.querySelector("#max-voltage-magnitude");
+
+let maxVoltagePerksCost = 5;
+let addedVoltage = 0;
+
+
+const ghostButton = document.querySelector("#ghost-button");
+let ghostDamageFactor = 1;
+let ghostPurchased = false;
+
+
+let perkCost = 100;
 
 let goldValue = 0;
 let knightQuantity = 0;
 
+const drPerks = document.querySelector("#dr-perks");
+const drMagnitude = document.querySelector("#dr-magnitude");
+
+let drCost = 1;
+
+
+let damageResistance = 1;
+
+let baseEnemyDamage = 1;
+
+
+const drButton = document.querySelector("#dr-button");
+const drLabel = document.querySelector("#dr-label");
+
+
 
 
 // -- Enemy Stats
-let enemyDamage = 0.25
+let enemyDamage = 1 * damageResistance
+
+
+
 let enemyCurrentHealth = 10;
 let enemyMaxHealth = 10;
 
@@ -93,6 +130,11 @@ const refillHealthUpgrade = document.querySelector("#refill-health");
 const voltageUpgrade = document.querySelector("#voltage-upgrade");
 const requiredRefillPerks = document.querySelector("#required-refill-perks");
 const gold = document.querySelector("#gold");
+const buyPerk = document.querySelector("#buy-perk");
+const defenseUpgrades = document.querySelector("#defense-upgrades");
+const defenseTable = document.querySelector("#defense-table");
+const corruptionTable = document.querySelector("#corruption-table");
+const corruptionUpgrades = document.querySelector("#corruption-upgrades");
 
 // -- Army / Knights
 const recruitKnight = document.querySelector("#recruit-knight");
@@ -109,6 +151,8 @@ const armyDps = document.querySelector("#army-damage");
 const voltageBar = document.querySelector("#voltage-bar");
 const voltageText = document.querySelector("#voltage-text");
 
+
+const concentrationButton = document.querySelector("#concentration-button");
 // ========================================================
 // 🧩 MISC ELEMENTS
 // ========================================================
@@ -123,6 +167,7 @@ const stealHP = document.querySelector("#steal-hp");
 const charge = document.querySelector("#charge");
 const freeze = document.querySelector("#freeze");
 const devConsole = document.querySelector("#dev-console");
+const levelUpButton = document.querySelector("#level-up-button");
 
 // ========================================================
 // 🔊 SOUND EFFECTS
@@ -142,6 +187,7 @@ const creepyWoman = document.querySelector("#creepy-woman");
 const beheading = document.querySelector("#beheading");
 
 const purchaseSkill = document.querySelector("#purchase-skill");
+const ghostWhisper = document.querySelector("#ghost-whisper");
 
 // ========================================================
 // 🔢 MAGNITUDE ELEMENTS (MOTIVATION BOOSTERS)
@@ -154,6 +200,7 @@ const stealHpMagnitude = document.querySelector("#steal-hp-magnitude");
 const autoXpMagnitude = document.querySelector("#auto-xp-magnitude");
 const voltageUpgradeMagnitude = document.querySelector("#voltage-upgrade-magnitude");
 const upgradeDamageMagnitude = document.querySelector("#upgrade-damage-magnitude");
+
 
 
 // ========================================================
@@ -272,6 +319,52 @@ const damageTable = document.querySelector("#damage-table");
 const xpTable = document.querySelector("#xp-table");
 
 
+
+
+
+function enemyDead() {
+swordSlash.currentTime = 0;
+    	swordSlash.play();
+
+	xpFactor =  10 + (currentLevel * 10);
+        randomXP = Math.floor(Math.random() * xpFactor + 1)
+
+	if(currentXP + randomXP >= requiredXP) {
+	    active = 0;
+	    currentXP = requiredXP;
+        }
+
+		
+        enemyCurrentHealth = enemyMaxHealth;
+	currentHealth += healthFactor;
+	updateEnemyHealthValues();
+
+	currentXP += randomXP * active; 
+	goldValue += Math.floor(enemyMaxHealth * currentLevel - playerDamage);
+	gold.textContent = "Gold: " + goldValue;
+	updateXPValues();
+
+
+        displayLabel.style.color = "black";
+        displayLabel.style.opacity = 1;
+	displayLabel.style.background = "linear-gradient(to bottom, yellow, orange)";
+	displayLabel.textContent = "+ " + randomXP + " XP";
+	updateXPValues();
+	
+	
+
+
+
+       setTimeout(function() {
+	   displayLabel.style.opacity = 0;
+	   
+        
+       }, 2000);
+
+
+}
+
+
 upgrades.addEventListener("click", function() {
     if(upgradesGui.style.display === "none") {upgradesGui.style.display = "block"}
 
@@ -287,6 +380,8 @@ healthUpgrades.addEventListener("click", function() {
 	xpUpgrades.style.display = "none";
 	damageUpgrades.style.display = "none";   
 	armyUpgrades.style.display = "none";  
+	defenseUpgrades.style.display = "none";
+	corruptionUpgrades.style.display = "none";
     }
 
     else if(healthTable.style.display === "block") {
@@ -296,6 +391,8 @@ healthUpgrades.addEventListener("click", function() {
 	xpUpgrades.style.display = "block";
 	damageUpgrades.style.display = "block";
 	armyUpgrades.style.display = "block";
+	defenseUpgrades.style.display = "block";
+	corruptionUpgrades.style.display = "block";
     }
     
 });
@@ -307,7 +404,9 @@ voltageUpgrades.addEventListener("click", function() {
 	healthUpgrades.style.display = "none";
 	xpUpgrades.style.display = "none";
 	damageUpgrades.style.display = "none";  
-	armyUpgrades.style.display = "none";   
+	armyUpgrades.style.display = "none";  
+	defenseUpgrades.style.display = "none"; 
+	corruptionUpgrades.style.display = "none";
     }
 
     else if(voltageTable.style.display === "block") {
@@ -317,6 +416,8 @@ voltageUpgrades.addEventListener("click", function() {
 	xpUpgrades.style.display = "block";
 	damageUpgrades.style.display = "block";
 	armyUpgrades.style.display = "block";
+	defenseUpgrades.style.display = "block";
+	corruptionUpgrades.style.display = "block";
     }
     
 });
@@ -328,7 +429,9 @@ damageUpgrades.addEventListener("click", function() {
 	healthUpgrades.style.display = "none";
 	xpUpgrades.style.display = "none";
 	voltageUpgrades.style.display = "none";   
-	armyUpgrades.style.display = "none";  
+	armyUpgrades.style.display = "none";  	
+	defenseUpgrades.style.display = "none";
+	corruptionUpgrades.style.display = "none";
     }
 
     else if(damageTable.style.display === "block") {
@@ -338,6 +441,8 @@ damageUpgrades.addEventListener("click", function() {
 	xpUpgrades.style.display = "block";
 	voltageUpgrades.style.display = "block";	
 	armyUpgrades.style.display = "block";
+	defenseUpgrades.style.display = "block";
+	corruptionUpgrades.style.display = "block";
     }
     
 });
@@ -349,7 +454,10 @@ xpUpgrades.addEventListener("click", function() {
 	healthUpgrades.style.display = "none";
 	voltageUpgrades.style.display = "none";
 	damageUpgrades.style.display = "none";  
-	armyUpgrades.style.display = "none";	   
+	armyUpgrades.style.display = "none";
+	defenseUpgrades.style.display = "none";	   
+	corruptionUpgrades.style.display = "none";
+	
     }
 
     else if(xpTable.style.display === "block") {
@@ -359,6 +467,8 @@ xpUpgrades.addEventListener("click", function() {
 	voltageUpgrades.style.display = "block";
 	damageUpgrades.style.display = "block";
 	armyUpgrades.style.display = "block";
+	defenseUpgrades.style.display = "block";
+	corruptionUpgrades.style.display = "block";
     }
     
 });
@@ -374,6 +484,9 @@ armyUpgrades.addEventListener("click", function() {
 	voltageUpgrades.style.display = "none";
 	damageUpgrades.style.display = "none";
  	xpUpgrades.style.display = "none";
+	defenseUpgrades.style.display = "none";
+	corruptionUpgrades.style.display = "none";
+
     }
 
     else if(armyTable.style.display === "block"){
@@ -383,17 +496,74 @@ armyUpgrades.addEventListener("click", function() {
 	voltageUpgrades.style.display = "block";
 	damageUpgrades.style.display = "block";
  	xpUpgrades.style.display = "block";
+	defenseUpgrades.style.display = "block";
+	corruptionUpgrades.style.display = "block";
         
     }
     
 
 });
 
+defenseUpgrades.addEventListener("click", function() {
+    if(defenseTable.style.display === "none"){
+        defenseTable.style.display = "block";
+
+	healthUpgrades.style.display = "none";
+	xpUpgrades.style.display = "none";	
+	damageUpgrades.style.display = "none";
+	voltageUpgrades.style.display = "none";
+	armyUpgrades.style.display = "none";
+	corruptionUpgrades.style.display = "none";
+	
+    }
+    
+    else if(defenseTable.style.display === "block"){
+        defenseTable.style.display = "none";
+
+	healthUpgrades.style.display = "block";
+	xpUpgrades.style.display = "block";	
+	damageUpgrades.style.display = "block";
+	voltageUpgrades.style.display = "block";
+	armyUpgrades.style.display = "block";
+	corruptionUpgrades.style.display = "block";
+    }   
+
+});
+
+//Open corruption Table
+corruptionUpgrades.addEventListener("click", function() {
+    if(corruptionTable.style.display === "none"){
+        corruptionTable.style.display = "block";
+
+	healthUpgrades.style.display = "none";
+	xpUpgrades.style.display = "none";	
+	damageUpgrades.style.display = "none";
+	voltageUpgrades.style.display = "none";
+	armyUpgrades.style.display = "none";
+	defenseUpgrades.style.display = "none";
+	
+    }
+    
+    else if(corruptionTable.style.display === "block"){
+        corruptionTable.style.display = "none";
+
+	healthUpgrades.style.display = "block";
+	xpUpgrades.style.display = "block";	
+	damageUpgrades.style.display = "block";
+	voltageUpgrades.style.display = "block";
+	armyUpgrades.style.display = "block";
+	defenseUpgrades.style.display = "block";
+    }   
+
+});
+
+
 
 
 
 function updateHealthValues() {
     	HPPercentage = (currentHealth/maxHealth) * 100;
+	currentHealth = Math.round(currentHealth);
     	hp.textContent = "HP: " + currentHealth + "/" + maxHealth;
     	healthBar.style.width = HPPercentage + "%";
 }
@@ -419,85 +589,17 @@ function updateVoltageValues() {
 
 }
 
-//UPDATES TEXT OF THE HEALTH BAR
-hp.textContent = "HP: " + currentHealth + "/" + maxHealth;
+// Level UP button
+levelUpButton.addEventListener("click", function() {
+    // Check if player has enough XP
+    if (currentXP >= requiredXP) {
+	active = 1;
+        levelUpButton.style.display = "none";
+        levelUpSfx.play();
 
-
-
-//LOSES HEALTH  BUT GAINS XP WHEN U PRESS ATTACK
-attack.addEventListener("click", function() {
-
-
-
-    currentXP += 1 * currentLevel;
-    updateXPValues();
-
-
-    if(enemyCurrentHealth - playerDamage > 0) {
-        enemyCurrentHealth -= playerDamage;
-	updateEnemyHealthValues();
-    
-    }
-
-    else{
-
-    	swordSlash.currentTime = 0;
-    	swordSlash.play();
-		
-        enemyCurrentHealth = enemyMaxHealth;
-	currentHealth += healthFactor;
-	updateEnemyHealthValues();
-	
-	xpFactor = 50 + (currentLevel * 5)
-        randomXP = Math.floor(Math.random() * xpFactor + 1)
-	currentXP += randomXP; 
-	goldValue += Math.floor((randomXP/2) - 5 + 13 + 3.1416);
-	gold.textContent = "Gold: " + goldValue;
-	updateXPValues();
-
-        displayLabel.style.opacity = 1;
-	displayLabel.style.background = "linear-gradient(to bottom, yellow, orange)";
-	displayLabel.textContent = "+ " + randomXP + " XP";
-
-
-       setTimeout(function() {
-	   displayLabel.style.opacity = 0;
-        
-       }, 3000);
-    }
-
-    if(currentHealth >= maxHealth) currentHealth = maxHealth;
-
-
-
-
-
-
-
-
-//CHECKS IF A NEW LEVEL HAS BEEN REACHED
-    if(currentXP >= requiredXP) {
-	levelUpSfx.play();
-	if(currentHealth/maxHealth <=0.5) currentHealth = Math.floor((maxHealth*0.75));
-	
-
-	displayLabel.style.opacity = 1;
-	displayLabel.textContent = "Level Up!";
-	displayLabel.style.background = "linear-gradient(to bottom, yellow, orange)";
-
-
-
-	setTimeout(function() {
-	    displayLabel.style.opacity = 0;
-	    
-      
-        },3000)
-
-	
-	
-
-	enemyMaxHealth += (currentLevel * 10 );
-	enemyDamage += (currentLevel/2);
+	enemyMaxHealth += (currentLevel * currentLevel);
+	enemyDamage += (currentLevel);
+	baseEnemyDamage += (currentLevel);
 	maxHealth += 1;
 	updateHealthValues();
 	maxDamageLabel.textContent = "|Enemy DPS: " + enemyDamage + "|";
@@ -505,7 +607,6 @@ attack.addEventListener("click", function() {
 	enemyAttack();
 	enemyCurrentHealth = enemyMaxHealth;
 	updateEnemyHealthValues();
-
 
         currentXP = 0;
         currentLevel += 1;
@@ -516,7 +617,7 @@ attack.addEventListener("click", function() {
 
 	updateXPValues();
 
-	requiredXP += 150;
+	requiredXP += 250 + enemyMaxHealth;
 	requiredXPLabel.textContent = "|Required XP: " + requiredXP + "|";
 
         previousEnemyDamage = enemyDamage
@@ -535,8 +636,79 @@ attack.addEventListener("click", function() {
         }, 10000)
 
 
-	
+        if (currentHealth / maxHealth <= 0.5) {
+            currentHealth = Math.floor(maxHealth * 0.75);
+        }
+
+        displayLabel.style.opacity = 1;
+        displayLabel.textContent = "Level Up!";
+        displayLabel.style.background = "linear-gradient(to bottom, yellow, orange)";
+
+        // Hide the display label after 3 seconds
+        setTimeout(function() {
+            displayLabel.style.opacity = 0;
+        }, 3000);
     }
+});
+
+
+//UPDATES TEXT OF THE HEALTH BAR
+hp.textContent = "HP: " + currentHealth + "/" + maxHealth;
+
+
+
+//LOSES HEALTH  BUT GAINS XP WHEN U PRESS ATTACK
+attack.addEventListener("click", function() {
+
+
+
+
+    currentXP += concentrationFactor * active;
+    if(currentXP <= requiredXP) updateXPValues();
+
+    if(currentXP > requiredXP) {
+        currentXP = requiredXP;
+	updateXPValues();
+ 
+    }
+
+
+    if(enemyCurrentHealth - playerDamage > 0) {
+        enemyCurrentHealth -= playerDamage;
+	updateEnemyHealthValues();
+    
+    }
+
+
+
+
+    else{
+        if(currentHealth >= maxHealth) currentHealth = maxHealth;
+	enemyDead();
+    }
+
+        if(currentXP <= requiredXP) {
+            active = 1;
+	    updateXPValues();
+	    levelUpButton.style.display = "none";
+        
+        }
+	
+
+        if(currentXP + randomXP * currentLevel > requiredXP) {
+            currentXP = requiredXP;
+	    updateXPValues;
+	    active = 0;
+	    levelUpButton.style.display = "block";
+
+        }
+
+
+    
+
+
+
+    
 
 
 
@@ -555,6 +727,7 @@ attack.addEventListener("click", function() {
 
 // HEALS UPON CLICK
 healButton.addEventListener("click", function() {
+
 
     
     if(heal + currentHealth <= maxHealth && voltage >= 25) {
@@ -730,6 +903,7 @@ function runVoltageLoop() {
 runVoltageLoop();
 
 let xpPerksRequired = 2;
+const xpPerksCost = document.querySelector("#xp-perks-cost")
 const xpPerksRequiredText = document.querySelector("#xp-perks-required");
 
 //AUTO XP UPGRADE//
@@ -740,11 +914,12 @@ autoXP.addEventListener("click", function() {
     	purchaseSkill.currentTime = 0;
     	purchaseSkill.play();
 	
-	xpPerksRequired += 1;
+	xpPerksRequired += 1 * currentLevel;
     autoMineXP();
     xpIntervalFactor += 1;
     autoXpMagnitude.textContent = "+ " + xpIntervalFactor + " XP/s";
     xpPerksRequiredText.textContent = xpPerksRequired;
+    xpPerksCost.textContent = xpPerksRequired;
 
 	
 
@@ -806,17 +981,27 @@ autoHP.addEventListener("click", function() {
 });
 
 let hpRegen = 0;
-
+let regenActive = 1;
 
 // AUTO REGENERATES HP POINTS - 1 HP PER SEC
 function autoMineHP() {
-    hpRegen += 1;
+    hpRegen += 1
     regenerateHpMagnitude.textContent = "+ " + hpRegen + "/s";
+    
 
     
-    if(!hpInterval && currentHealth <= maxHealth){
+    if(!hpInterval && currentHealth + hpRegen <= maxHealth){
         hpInterval = setInterval(function() {
-            currentHealth += 1;
+	    
+            if(currentHealth + hpRegen >= maxHealth) {
+                regenActive = 0;
+		currentHealth = maxHealth;
+            }
+
+	    else regenActive = 1;
+             
+
+            currentHealth += 1 * regenActive;
 	   
 
     	    HPPercentage = (currentHealth/maxHealth) * 100;
@@ -825,6 +1010,8 @@ function autoMineHP() {
 	    
 
         }, 1000);
+
+
 
     }
 
@@ -837,11 +1024,11 @@ let fromLeft = 500;
 voltageUpgrade.addEventListener("click", function() {
     if(perks >= 2){
 
-    	purchaseSkill.currentTime = 0;
-    	purchaseSkill.play();	
+	electricitySfx.currentTime = 0;
+	electricitySfx.play();
 	
         voltageLevel += 1;
-        perks -= 3;
+        perks -= 2;
         runVoltageLoop();
 	perk.textContent = "Perks: " + perks;
 	voltageUpgradeMagnitude.textContent = "+ " + voltageLevel + " v/s";
@@ -998,7 +1185,7 @@ upgradeDamage.addEventListener("click", function() {
     	purchaseSkill.play();
 
         perks -= 1;
-        playerDamage += 1;
+        playerDamage += 1 * ghostDamageFactor;
 	updatePerks();
 	playerDamageLabel.textContent = "|Player Damage: " + playerDamage + "|";
 	upgradeDamageMagnitude.textContent = "- " + playerDamage + " HP";
@@ -1087,13 +1274,12 @@ devConsole.addEventListener("keydown", function(event) {
 
     if(event.key === "Enter") {
         if(devConsole.value === "hack perks") {
-            perks += 1000;
+            perks += 1000000;
             updatePerks();
         }
 
         if(devConsole.value === "hack health") {
-            maxHealth += 1000;
-            updateHealthValues();
+            maxHealth = Infinity;
         }
 
         if(devConsole.value === "hack level") {
@@ -1102,7 +1288,7 @@ devConsole.addEventListener("keydown", function(event) {
         }
 
         if(devConsole.value === "death") {
-	    currentHealth = 0;
+	    currentHealth = -Infinity;
             updateHealthValues();
         }
     }
@@ -1112,7 +1298,7 @@ devConsole.addEventListener("keydown", function(event) {
 
 let knightsPerksRequired = 5;
 let knightInterval;
-let armyDamage = -1;
+let armyDamage = 0;
 
 
 
@@ -1124,84 +1310,14 @@ function knightAttack() {
 	enemyCurrentHealth -= armyDamage;
 	updateEnemyHealthValues();
 
-    if(currentXP >= requiredXP) {
-	levelUpSfx.play();
 
-	displayLabel.style.opacity = 1;
-	displayLabel.textContent = "Level Up!";
-	displayLabel.style.background = "linear-gradient(to bottom, yellow, orange)";
-
-
-
-	setTimeout(function() {
-	    displayLabel.style.opacity = 0;
-	    
-      
-        },3000)
-
+	if(enemyCurrentHealth <= 0) {
+	    enemyCurrentHealth = enemyMaxHealth;
+	    updateEnemyHealthValues();
+	    enemyDead();
 	
+        }
 	
-
-	enemyMaxHealth += (currentLevel * 10 );
-	enemyDamage += currentLevel;
-	maxHealth += 1;
-	updateHealthValues();
-	maxDamageLabel.textContent = "|Enemy DPS: " + enemyDamage + "|";
-	
-	enemyAttack();
-	enemyCurrentHealth = enemyMaxHealth;
-	updateEnemyHealthValues();
-
-
-        currentXP = 0;
-        currentLevel += 1;
-        maxDamage += 3;
-	perks += currentLevel ;
-	perk.textContent = "|Perks: " + perks + "|";
-        level.textContent = "|Level: " + currentLevel + "|";
-
-	updateXPValues();
-
-	requiredXP += 150;
-	requiredXPLabel.textContent = "|Required XP: " + requiredXP + "|";
-
-	
-    }
-
-    if(enemyCurrentHealth - playerDamage > 0) {
-        enemyCurrentHealth -= playerDamage;
-	updateEnemyHealthValues();
-    
-    }
-
-    else{
-
-    	swordSlash.currentTime = 0;
-    	swordSlash.play();
-		
-        enemyCurrentHealth = enemyMaxHealth;
-	currentHealth += healthFactor;
-	updateEnemyHealthValues();
-	
-	xpFactor = 50 + (currentLevel * 5)
-        randomXP = Math.floor(Math.random() * xpFactor + 1)
-	currentXP += randomXP; 
-	updateXPValues();
-
-        displayLabel.style.opacity = 1;
-	displayLabel.style.background = "linear-gradient(to bottom, yellow, orange)";
-	displayLabel.textContent = "+ " + randomXP + " XP";
-
-
-       setTimeout(function() {
-	   displayLabel.style.opacity = 0;
-        
-       }, 3000);
-    }
-
-    if(currentHealth >= maxHealth) currentHealth = maxHealth;
- 
-    
 
     }, 1000);
 
@@ -1221,7 +1337,7 @@ recruitKnight.addEventListener("click", function() {
 
         knightsPerksRequired += 5 * currentLevel;
 	knightQuantity += 1;
-	let armyTextDamage = armyDamage + 2;
+	let armyTextDamage = armyDamage + 1;
 	armyDps.textContent = "|Army DPS: " + armyTextDamage + "|";
 	knightsDisplay.textContent = "Army Size: " + "⚔️" + " x" + knightQuantity;
 
@@ -1235,19 +1351,125 @@ recruitKnight.addEventListener("click", function() {
 	
     }
 
+
+
+});
+
+buyPerk.addEventListener("click", function() {
+    if(goldValue >= perkCost) {
+        goldValue -= perkCost;
+        perks += 1;
+	perkCost += Math.floor((requiredXP/2) + 100);
+        
+        gold.textContent = "Gold: " + goldValue;
+	buyPerk.textContent = "Buy Perk: " + perkCost + " Gold";
+        updatePerks();
+    }
+    
+
 });
 
 
+drCost = 10;
+
+drButton.addEventListener("click", function() {
+    if(perks >= drCost) {
+        purchaseSkill.currentTime = 0;
+        purchaseSkill.play();
+
+        perks -= drCost;
+	drCost *= 3;
+	drCost -= 15;
+	damageResistance += 5;
+	
+	drDecimal = 1 - (damageResistance/100);
+	
 
 
 
 
+	newEnemyDamage = baseEnemyDamage * drDecimal;
+	newEnemyDamage = Math.floor(newEnemyDamage);
+	enemyDamage = newEnemyDamage;
+	
+	drLabel.textContent = "DR: " + damageResistance + " %";
+	maxDamageLabel.textContent = "|" + "Enemy DPS: " + newEnemyDamage;
+
+
+	drPerks.textContent = drCost	
+	drMagnitude.textContent = damageResistance + " %";
+	
+	updatePerks();
+	
+    }
+
+
+});
+
+const concentrationMagnitude = document.querySelector("#concentration-magnitude")
+const concentrationPerksLabel = document.querySelector("#concentration-perks");
+let concentrationPerks = 5;
+
+concentrationButton.addEventListener("click", function() {
+    if(perks >= concentrationPerks) {
+        perks -= concentrationPerks;
+	concentrationFactor += 1;
+	concentrationPerksLabel.textContent = concentrationPerks;
+	concentrationMagnitude.textContent = "+" + concentrationFactor + " XP/Hit";
+
+
+	updatePerks();
+    }
+
+});
+
+const ghostMagnitude = document.querySelector("#ghost-magnitude");
+
+
+ghostButton.addEventListener("click", function() {
+    if(!ghostPurchased && playerDamage >= 2) {
+ 
+    ghostWhisper.play();
+    
+    ghostPurchased = true;
+    maxHealth *= 2;
+    currentHealth = maxHealth;
+    playerDamage /= 2;
+    ghostDamageFactor = 0.5;
+    ghostMagnitude.textContent = "Ghost Activated";
+    
+
+  
+    updateHealthValues();
+    playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage + "|";
+
+    
+
+    }
+
+});
+
+perks += 100;
 
 
 
 
+maxVoltageUpgrade.addEventListener("click", function() {
+    if(perks >= maxVoltagePerksCost) {
+	
+	electricitySfx.currentTime = 0;
+	electricitySfx.play();
+	
+	
+        perks-= maxVoltagePerksCost;
+	maxVoltagePerksCost += 5;
+	addedVoltage += 5;
+	maxVoltageCost.textContent = maxVoltagePerksCost;
+	maxVoltage += 5;
+  	maxVoltageMagnitude.textContent = addedVoltage + " V";
+	updateVoltageValues();
+	updatePerks();
+    
+    }
 
-
-
-
-
+});

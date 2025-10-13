@@ -1473,3 +1473,5 @@ maxVoltageUpgrade.addEventListener("click", function() {
 
 });
 
+
+perks = 0;

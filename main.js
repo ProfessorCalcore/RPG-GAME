@@ -1449,7 +1449,6 @@ ghostButton.addEventListener("click", function() {
 
 });
 
-perks += 100;
 
 
 
@@ -1473,3 +1472,4 @@ maxVoltageUpgrade.addEventListener("click", function() {
     }
 
 });
+

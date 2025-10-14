@@ -1,72 +1,63 @@
 // ========================================================
 // 🎮 GAME STATE VARIABLES
 // ========================================================
-// -- Player Stats
+
+// ------------------- PLAYER STATS ----------------------
 let currentHealth = 100;
 let maxHealth = 100;
 let currentXP = 0;
 let currentLevel = 1;
 let perks = 0; 
-let requiredXP = 100;
 let playerDamage = 1;
 let minDamage = 1;
 let maxDamage = 10;
 let heal = 10;
-let active = 1;
+let active = 1; 
 let concentrationFactor = 1; 
+let goldFactor = 1;
+let requiredXP = 500;
 
-const electricitySfx = document.querySelector("#electricity-sfx");
+//END STATS
+let timesAttacked = 0;
+let enemiesKilled = 0;
+let perksEarnt = 0;
+let goldEarnt = 0;
+let xpEarnt = 0;
 
-const maxVoltageUpgrade = document.querySelector("#max-voltage-upgrade");
-const maxVoltageCost = document.querySelector("#max-voltage-cost");
-const maxVoltageMagnitude = document.querySelector("#max-voltage-magnitude");
-
-let maxVoltagePerksCost = 5;
-let addedVoltage = 0;
-
-
-const ghostButton = document.querySelector("#ghost-button");
-let ghostDamageFactor = 1;
-let ghostPurchased = false;
-
-
-let perkCost = 100;
-
+// Army / Recruit Stats
 let goldValue = 0;
 let knightQuantity = 0;
 
-const drPerks = document.querySelector("#dr-perks");
-const drMagnitude = document.querySelector("#dr-magnitude");
-
-let drCost = 1;
-
-
+// Damage Resistance
 let damageResistance = 1;
 
+// Ghost / Special Effects
+let ghostDamageFactor = 1;
+let ghostPurchased = false;
+
+// Dark Rituals / DR Perks
+let drCost = 1;
+
+// Perk Costs
+let perkCost = 100;
+
+// ------------------- ENEMY STATS ----------------------
 let baseEnemyDamage = 1;
-
-
-const drButton = document.querySelector("#dr-button");
-const drLabel = document.querySelector("#dr-label");
-
-
-
-
-// -- Enemy Stats
-let enemyDamage = 1 * damageResistance
-
-
-
+let enemyDamage = 1 * damageResistance;
 let enemyCurrentHealth = 10;
 let enemyMaxHealth = 10;
 
-// -- Voltage System Variables
+// ------------------- VOLTAGE SYSTEM -------------------
 let voltage = 100;
 let maxVoltage = 100;
 let voltageSpeed = 1000;
 let voltageLevel = 1;
 
-// -- Intervals & Factors
+// Max Voltage Upgrade
+let maxVoltagePerksCost = 5;
+let addedVoltage = 0;
+
+// ------------------- INTERVALS & FACTORS -------------
 let xpInterval;
 let hpInterval;
 let voltageInterval;
@@ -76,11 +67,11 @@ let xpFactor;
 let randomXP;
 let healthFactor = 0;
 
-// -- Purchased Upgrades
+// ------------------- PURCHASED UPGRADES --------------
 let purchasedXP = false;
 let purchasedHP = false;
 
-// -- Percentages
+// ------------------- PERCENTAGES ----------------------
 let XPPercentage;
 let HPPercentage;
 let EnemyHPPercentage;
@@ -88,18 +79,19 @@ let EnemyHPPercentage;
 // ========================================================
 // 🧍 PLAYER / ENEMY UI ELEMENTS
 // ========================================================
-// -- Player UI
+
+// Player UI
 const hp = document.querySelector("#hp");
 const healthBar = document.querySelector("#health-bar");
 const healthContainer = document.querySelector("#health-container");
 const playerDamageLabel = document.querySelector("#player-damage");
 
-// -- Enemy UI
+// Enemy UI
 const enemyHP = document.querySelector("#enemy-hp");
 const enemyHealthBar = document.querySelector("#enemy-health-bar");
 const enemyHealthContainer = document.querySelector("#enemy-health-container");
 
-// -- XP / Level UI
+// XP / Level UI
 const XPPoints = document.querySelector("#xp-points");
 const XPLabel = document.querySelector("#XP");
 const level = document.querySelector("#level");
@@ -107,20 +99,20 @@ const perk = document.querySelector("#perk");
 const requiredXPLabel = document.querySelector("#required-xp");
 
 // ========================================================
-// 🔘 BUTTONS
+// 🔘 PLAYER ACTION BUTTONS
 // ========================================================
-// -- Player Actions
 const attack = document.querySelector("#attack");
 const healButton = document.querySelector("#heal");
 
-// -- Automation
+// Automation Buttons
 const autoXP = document.querySelector("#auto-xp");
 const autoHP = document.querySelector("#regenerate-hp");
 
 // ========================================================
-// 🛠 UPGRADES
+// 🛠 UPGRADES / SHOP
 // ========================================================
-// -- General Upgrades
+
+// General Upgrades
 const upgrades = document.querySelector("#upgrades");
 const upgradesGUI = document.querySelector("#upgrades-gui");
 const upgradeDamage = document.querySelector("#upgrade-damage");
@@ -131,12 +123,16 @@ const voltageUpgrade = document.querySelector("#voltage-upgrade");
 const requiredRefillPerks = document.querySelector("#required-refill-perks");
 const gold = document.querySelector("#gold");
 const buyPerk = document.querySelector("#buy-perk");
+
+// Defense Upgrades
 const defenseUpgrades = document.querySelector("#defense-upgrades");
 const defenseTable = document.querySelector("#defense-table");
-const corruptionTable = document.querySelector("#corruption-table");
-const corruptionUpgrades = document.querySelector("#corruption-upgrades");
 
-// -- Army / Knights
+// Corruption Upgrades
+const corruptionUpgrades = document.querySelector("#corruption-upgrades");
+const corruptionTable = document.querySelector("#corruption-table");
+
+// Army / Knights
 const recruitKnight = document.querySelector("#recruit-knight");
 const perksRequiredLabel = document.querySelector("#perks-required");
 const knightsMagnitude = document.querySelector("#knights-magnitude");
@@ -145,23 +141,34 @@ const armyTable = document.querySelector("#army-table");
 const armyUpgrades = document.querySelector("#army-upgrades");
 const armyDps = document.querySelector("#army-damage");
 
+// Max Voltage Upgrade UI
+const maxVoltageUpgrade = document.querySelector("#max-voltage-upgrade");
+const maxVoltageCost = document.querySelector("#max-voltage-cost");
+const maxVoltageMagnitude = document.querySelector("#max-voltage-magnitude");
+
+// DR / Damage Resistance UI
+const drPerks = document.querySelector("#dr-perks");
+const drMagnitude = document.querySelector("#dr-magnitude");
+const drButton = document.querySelector("#dr-button");
+const drLabel = document.querySelector("#dr-label");
+
+// Ghost Button
+const ghostButton = document.querySelector("#ghost-button");
+
 // ========================================================
-// ⚡ VOLTAGE SYSTEM
+// ⚡ VOLTAGE SYSTEM UI
 // ========================================================
 const voltageBar = document.querySelector("#voltage-bar");
 const voltageText = document.querySelector("#voltage-text");
-
-
 const concentrationButton = document.querySelector("#concentration-button");
+
 // ========================================================
-// 🧩 MISC ELEMENTS
+// 🧩 MISC / OTHER ELEMENTS
 // ========================================================
-// -- Health / Power
 const healCost = document.querySelector("#heal-cost");
 const healPower = document.querySelector("#heal-power");
 const maxDamageLabel = document.querySelector("#max-damage");
 
-// -- Misc
 const mrBox = document.querySelector("#box");
 const stealHP = document.querySelector("#steal-hp");
 const charge = document.querySelector("#charge");
@@ -174,6 +181,7 @@ const levelUpButton = document.querySelector("#level-up-button");
 // ========================================================
 const swordSlash = document.querySelector("#sword-slash");
 swordSlash.volume = 0.2;
+
 const healSfx = document.querySelector("#heal-sfx");
 const levelUpSfx = document.querySelector("#level-up-sfx");
 const displayLabel = document.querySelector("#display-label");
@@ -188,6 +196,11 @@ const beheading = document.querySelector("#beheading");
 
 const purchaseSkill = document.querySelector("#purchase-skill");
 const ghostWhisper = document.querySelector("#ghost-whisper");
+const knifeSfx = document.querySelector("#knife-sfx");
+const revolverSfx = document.querySelector("#revolver-sfx");
+const heartBeep = document.querySelector("#heart-beep");
+const electricitySfx = document.querySelector("#electricity-sfx");
+const criticalSfx = document.querySelector("#critical-sfx");
 
 // ========================================================
 // 🔢 MAGNITUDE ELEMENTS (MOTIVATION BOOSTERS)
@@ -200,7 +213,6 @@ const stealHpMagnitude = document.querySelector("#steal-hp-magnitude");
 const autoXpMagnitude = document.querySelector("#auto-xp-magnitude");
 const voltageUpgradeMagnitude = document.querySelector("#voltage-upgrade-magnitude");
 const upgradeDamageMagnitude = document.querySelector("#upgrade-damage-magnitude");
-
 
 
 // ========================================================
@@ -320,11 +332,43 @@ const xpTable = document.querySelector("#xp-table");
 
 
 
+const criticalHitUpgrade = document.querySelector("#critical-hit-upgrade");
+let criticalChanceRequiredPerks = 5;
+let criticalChanceFactor = 1;
+let criticalHit = 2;
 
+criticalHitUpgrade.addEventListener("click", function() {
+    if(perks >= criticalChanceRequiredPerks) {
+	purchaseSkill.currentTime = 0;
+	purchaseSkill.play();
+        perks -= criticalChanceRequiredPerks;
+	criticalChanceRequiredPerks += 15;
+	updatePerks();
+	
+	criticalChanceFactor += 1;
+    }
+});
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//LEVEL 1 STORY
+    alert("You awaken in darkness, ripped from your time and thrown into the year 1460—a world lost to shadows and fear. The air is thick with decay, and every corner seems to watch you.");
+    alert("A faint scratching echoes through the abandoned mansion...");
+    alert("A swarm of " + enemyList[currentLevel - 1].toLowerCase() + "s" + " come from beneath the floorboards. Grab the kitchen knife! Quick! Fight… or perish.");
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+// ========================================================
+// ☠️ Enemy Dies ☠️
+// ========================================================
 
 function enemyDead() {
 swordSlash.currentTime = 0;
     	swordSlash.play();
+	enemiesKilled += 1;
 
 	xpFactor =  10 + (currentLevel * 10);
         randomXP = Math.floor(Math.random() * xpFactor + 1)
@@ -333,17 +377,24 @@ swordSlash.currentTime = 0;
 	    active = 0;
 	    currentXP = requiredXP;
         }
-
-		
+	
         enemyCurrentHealth = enemyMaxHealth;
 	currentHealth += healthFactor;
 	updateEnemyHealthValues();
 
 	currentXP += randomXP * active; 
-	goldValue += Math.floor(enemyMaxHealth * currentLevel - playerDamage);
-	gold.textContent = "Gold: " + goldValue;
-	updateXPValues();
+	xpEarnt += randomXP * active;
 
+
+
+	//🪙GOLD ADDED HERE!🪙
+	goldValue += Math.floor(enemyMaxHealth * goldFactor);
+	goldEarnt += Math.floor(enemyMaxHealth * goldFactor);
+
+	gold.textContent = "Gold: " + goldValue;
+
+
+	updateXPValues();
 
         displayLabel.style.color = "black";
         displayLabel.style.opacity = 1;
@@ -351,20 +402,22 @@ swordSlash.currentTime = 0;
 	displayLabel.textContent = "+ " + randomXP + " XP";
 	updateXPValues();
 	
-	
-
-
-
        setTimeout(function() {
 	   displayLabel.style.opacity = 0;
-	   
-        
+	     
        }, 2000);
-
-
 }
 
+// ========================================================
+// END
+// ========================================================
 
+
+// ========================================================
+// 🛠️SHOW UPGRADE TABLES🛠️
+// ========================================================
+
+//🛠️UPGRADES BUTTON🛠️ - OPENS SKILL CLASSES
 upgrades.addEventListener("click", function() {
     if(upgradesGui.style.display === "none") {upgradesGui.style.display = "block"}
 
@@ -372,6 +425,7 @@ upgrades.addEventListener("click", function() {
 
 });
 
+//💖HEALTH TABLE💖
 healthUpgrades.addEventListener("click", function() {
     if(healthTable.style.display === "none") {
         healthTable.style.display = "block";
@@ -397,6 +451,7 @@ healthUpgrades.addEventListener("click", function() {
     
 });
 
+//⚡VOLTAGE TABLE⚡
 voltageUpgrades.addEventListener("click", function() {
     if(voltageTable.style.display === "none") {
         voltageTable.style.display = "block";
@@ -422,6 +477,7 @@ voltageUpgrades.addEventListener("click", function() {
     
 });
 
+//💥DAMAGE TABLE💥
 damageUpgrades.addEventListener("click", function() {
     if(damageTable.style.display === "none") {
         damageTable.style.display = "block";
@@ -447,6 +503,8 @@ damageUpgrades.addEventListener("click", function() {
     
 });
 
+
+//💫XP TABLE💫
 xpUpgrades.addEventListener("click", function() {
     if(xpTable.style.display === "none") {
         xpTable.style.display = "block";
@@ -473,8 +531,7 @@ xpUpgrades.addEventListener("click", function() {
     
 });
 
-//Army Upgrades open table
-
+//🪖ARMY TABLE🪖
 armyUpgrades.addEventListener("click", function() {
     if(armyTable.style.display === "none") {
         armyTable.style.display = "block";
@@ -504,6 +561,7 @@ armyUpgrades.addEventListener("click", function() {
 
 });
 
+//🛡️DEFENSE TABLE🛡️
 defenseUpgrades.addEventListener("click", function() {
     if(defenseTable.style.display === "none"){
         defenseTable.style.display = "block";
@@ -530,7 +588,7 @@ defenseUpgrades.addEventListener("click", function() {
 
 });
 
-//Open corruption Table
+//🕷️CORRUPTION TABLE🕷️
 corruptionUpgrades.addEventListener("click", function() {
     if(corruptionTable.style.display === "none"){
         corruptionTable.style.display = "block";
@@ -557,9 +615,15 @@ corruptionUpgrades.addEventListener("click", function() {
 
 });
 
+// ========================================================
+// END
+// ========================================================
 
 
 
+// ========================================================
+// ⚡UPDATE RESOURCES/STATUS⚡
+// ========================================================
 
 function updateHealthValues() {
     	HPPercentage = (currentHealth/maxHealth) * 100;
@@ -570,7 +634,7 @@ function updateHealthValues() {
 
 function updateEnemyHealthValues() {
     	enemyHPPercentage = (enemyCurrentHealth/enemyMaxHealth) * 100;
-	enemyHP.textContent = enemyList[currentLevel-1] + " HP: " + enemyCurrentHealth + "/" + enemyMaxHealth;
+	enemyHP.textContent = enemyList[currentLevel-1] + " HP: " + Math.floor(enemyCurrentHealth) + "/" + enemyMaxHealth;
     	enemyHealthBar.style.width = enemyHPPercentage + "%";
 }
 
@@ -589,10 +653,362 @@ function updateVoltageValues() {
 
 }
 
+//LEVEL 2 STORY
+function level2Story() {
+    alert("After surviving the swarm of " + enemyList[currentLevel - 1].toLowerCase() + "s" + ", your confidence grows… but so does the danger around you.");
+    alert("You have a few moments to prepare before moving forward. How will you increase your chances of surviving what's ahead?");
+ 
+   let decision2 = prompt(`
+[1] Sharpern your dull knife
+[2] Check the wall safe for contents
+[3] Turn on the fire
+[4] Read the newspaper
+`);
+    
+    if(decision2 === "1"){
+        alert("You sharpern your knife making the blade slightly more powerful gaining +1 damage");
+	playerDamage += 1;
+	playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage;
+
+	alert("A wave of " + enemyList[currentLevel].toLowerCase() + "s" + " bursts through the window, drawn by the scent of your last fight. Grip your sharpened knife—it's about to get wild!");
+
+
+
+    }
+
+    else if(decision2 === "2") {
+        alert("You tried to hack the safe but you had no luck guessing the password. Good try though!")
+	alert("You tired yourself out! -10 Max Voltage!")
+	maxVoltage -= 10;
+	updateVoltageValues();
+
+	alert("A swarm of " + enemyList[currentLevel].toLowerCase() + "s " + "glide through the living room door and surround you! Forget the safe, forget everything! Grab your knife and fight, they’re after your blood!");
+
+    }
+
+    else if(decision2 === "3") {
+        alert("You use a match to light the fireplace creating a cosy atmosphere in this gloomy mansion");
+	alert("The fire makes enemies more frightened! -5 enemy HP")
+	enemyMaxHealth -= 5;
+	alert("A swarm of " + enemyList[currentLevel].toLowerCase() + "s " + "approach you from the distance and looks like they don't like the look of the fire. They avoid it. Use it in your favour!")
+    }
+
+    else if(decision2 === "4") {
+        alert("You sit down on the sofa reading the newspaper 'Zombie Headlines' you learnt a new defensive combat tactic increasing your damage resistance by 2 %!");
+	damageResistance += 2;
+	drLabel.textContent = "DR: " + damageResistance + "%";
+
+	alert("After you got distracted practising the dodge technique a swarm of " + enemyList[currentLevel].toLowerCase() + "s " + "storm through the open window biting at ur neck!") 
+
+	alert("-15 HP! Blood dripping on the floor. Time for payback!");
+	currentHealth -= 15;
+	updateHealthValues();
+
+	drDecimal = 1 - (damageResistance/100);
+
+	newEnemyDamage = baseEnemyDamage * drDecimal;
+	newEnemyDamage = Math.floor(newEnemyDamage);
+	enemyDamage = newEnemyDamage;
+	
+	drLabel.textContent = "DR: " + damageResistance + " %";
+	maxDamageLabel.textContent = "|" + "Enemy DPS: " + newEnemyDamage;
+
+
+	
+    }
+
+}
+
+function level3Story() {
+	alert("You reach the courtyard… a maze of webs and shadows. Giant " + enemyList[currentLevel].toLowerCase() + "s " + "block every exit, forcing you to face them before escape.");
+	alert("Despite the panic, a lucky coin falls from the eerie sky. You have the chance to double your gold or lose it all. What will you do?")
+	let decisions3 = prompt(`
+[1] Flip the coin
+[2] Leave it for the next idiot
+[3] Keep the coin
+[4] Destroy the coin
+`)
+	if(decisions3 === "1") {
+	    alert("You decide to flip the coin in the hope of doubling the weight of coins in your pocket!")
+	    let hot = prompt("[H]Heads or [T]tails");
+	    let coinFlip = Math.floor(Math.random() * 2);
+
+	    if(coinFlip === 0) {
+	        alert("Heads");
+
+		if(hot === "H") {
+		    alert("You won! Doubling your cash now!");
+ 		    alert("Duplicating " + goldValue + " gold. Please stand by");
+		    goldValue *= 2;
+		    gold.textContent = "Gold: " + goldValue;
+		    alert("Duplication Success!");
+
+                }
+
+		else if(hot === "T") {
+		    alert("Muhahaha! You lose! Taking your money!");
+		    alert("Zombies take your gold away");
+		    goldValue = 0;
+		    gold.textContent = "Gold: " + goldValue;
+		    alert("Bankrupt Success!");
+                }
+            }
+
+	    else if(coinFlip === 1) {
+		alert("Tails");
+
+		if(hot === "H") {
+		    alert("Muhahaha! You lose! Taking your money!");
+		    alert("Zombies take your gold away");
+		    goldValue = 0;
+		    gold.textContent = "Gold: " + goldValue;
+		    alert("Bankrupt Success!");
+                }
+
+		else if(hot === "T") {
+		    alert("Damn! You won! Doubling your cash now!");
+		    alert("Duplicating " + goldValue + " gold. Please stand by")
+		    goldValue *= 2;
+		    gold.textContent = "Gold: " + goldValue;
+
+		    alert("Duplication Success!");
+		    
+                }
+            }
+
+        }
+
+	else if (decisions3 === "2") {
+            alert("You decide not to gamble your gold. Sad times you could have been rich.")
+
+	    alert("Caution! " + enemyList[currentLevel].toLowerCase() + "s" + " surround the maze that you are in. They are 4 times the size of you but don't worry...not like their skin is made of iron anyway. Destroy them!")
+        }
+
+	else if(decisions3 === "3") {
+	    alert("You slide the coin down your pocket! It's only a coin but you never know. May bring you good luck!");
+	    alert("+ 1 Gold");	
+	    goldValue += 1;
+	    gold.textContent = "Gold: " + goldValue;
+
+	    alert("After putting a coin in your pocket, the spiders smell you out and block all exits. The only way out is to kill the Queen and her brothers. Grab that knife and stab them where it hurts!")
+        }
+
+	else if (decisions3 === "4") {
+            alert("You destroy the coin using your knife! Preventing others from gaining fortune or losing it!")
+	    alert("A blessing descends from the heavens! All gold looted from enemies is now 10% greater!");
+	    goldFactor += 0.1;
+
+	    alert("Caution! " + enemyList[currentLevel].toLowerCase() + "s" + " Giant Spiders now surround you. Their fangs are poisonous but their skin is pathetic. Find their weakness and destroy them before you become their new breeding ground. Yuck!")
+        }
+}
+
+
+
+function level4Story() {
+	alert("You kill the last " + enemyList[currentLevel-1].toLowerCase() + " causing the others to flee in distress");
+	alert("Now which way is out?")
+	let decision4 = prompt("Direction: left/right/stay");
+	if(decision4 === "left"){
+	    alert("You found the exit! A Snake ambushes you outside the maze. Fight!")
+        }
+
+	else if(decision4 === "right") {
+	    alert("You got lost further in the maze causing you to get hungry and tired. -20 HP and -10 V");
+	    currentHealth -= 20;
+	    voltage -= 10;
+	    alert("A " + enemyList[currentLevel].toLowerCase() + " finds your lost soul, ignore how weak you are right now and grab that pathetic knife of yours to kill the " + enemyList[currentLevel].toLowerCase() + " before it kills you!");
+        
+        }
+
+	else if(decision4 === "stay") {
+	    alert("You catch your breath and recharge. +50 Voltage flows through your veins!");
+	    voltage += 50;
+	    updateVoltageValues();
+	        
+	    alert("As you are taking a sip from your bottle you notice a black slivering shadow approach you from behind.")
+	    alert("You dodge out the way and grab your knife out. Looks like the " + enemyList[currentLevel].toLowerCase() + " of the labyrinth has arrived")
+        }
+
+	
+	
+}
+
+function level5Story() {
+	alert("You finish the " + enemyList[currentLevel - 1].toLowerCase() +  " with a precise, throbbing stab to its great yellow eye!");
+	alert("Looking around, the area is clear. You decide to find the nearest settlement to uncover what's going on.");
+	alert("Before you embark on the long journey, a mysterious opportunity appears—you may make a single wish! Choose wisely…");
+
+	let decisions5 = prompt(`
+[1] Double Health
+[2] Double Damage
+[3] Double Max Voltage
+`);
+
+	if (decisions5 === "1") {
+	    alert("Your skin hardens and transforms into impenetrable rock!");
+	    maxHealth *= 2;
+	    updateHealthValues();
+	    alert("Max Health doubled!");
+
+	    alert("Suddenly, a dark-grey " + enemyList[currentLevel].toLowerCase() + " ambushes you in the forest. The shadows are thick, so you set a tree ablaze to illuminate the area. Let's see if your rock-like hide can save you…");
+
+	} else if (decisions5 === "2") {
+	    alert("Your weapon fuses with the venom of death itself!");
+	    playerDamage *= 2;
+	    playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage + "|";
+	    alert("You now deal twice as much damage!");
+
+	    alert("A bright-green " + enemyList[currentLevel].toLowerCase() + " ambushes you in the forest. It's almost pitch-dark, so you light a torch and place it on a tree. Let's see if your venomous weapon strikes true…");
+
+	} else if (decisions5 === "3") {
+	    alert("A surge of energy courses through your body, electrifying every vein!");
+	    maxVoltage *= 2;
+	    alert("Voltage capacity doubled!");
+
+	    alert("A giant " + enemyList[currentLevel].toLowerCase() + "s" + " ambushes you in the forest. The darkness is nearly complete, but your super-charged battery powers your flashlight. Time to see if raw energy can illuminate your victory…");
+	}
+}
+
+function level6Story() {
+	alert("With the " + enemyList[currentLevel-1].toLowerCase() + " slain, you press onwards. From the distance you notice faint flickering lights...could it be a settlement?");
+	alert("You approach the lights, but suddenly a friendly zombie lumbers out of the forest clutching a rusty revolver.")
+	alert("He tilts his head and gives you the most adorable puppy eyes… 'russian roulette' he mutters..\nWhat do you do?");
+
+	decision6 = prompt(`
+[1] Play
+[2] Play but ask him to go first
+[3] Rob his gun
+[4] Offer a blood sacrifice to avoid playing the game
+`)
+
+let chamber = Math.floor(Math.random() * 6 + 1);
+
+	if(decision6 === "1") {
+	    if(chamber === 1) {
+		alert("You point the revolver at your head and fire...");
+	        revolverSfx.play();
+	        revolverSfx.play();
+	        revolverSfx.play();
+
+
+		currentHealth = 0;
+	    }
+	
+	    else{
+		alert("You point the revolver at ur head and fire...");
+	        alert("Nothing Happens");
+		alert("The zombie smiles and offers you 1000 gold for playing!")
+		alert("+ 1000 gold");	
+		goldValue += 1000;
+		gold.textContent = "Gold: " + goldValue;
+	    }
+        }
+	else if(decision6 === "2") {
+	    if(chamber === 1) {
+		alert("Zombie points the revolver at his head and fires...");
+	        revolverSfx.play();
+	        revolverSfx.play();
+	        revolverSfx.play();
+		setTimeout(function() {
+		
+		alert("The Zombie lies Dead");
+		alert("Zombie Companion unlocked! The Zombie has joined your army! Dealing -3 HP/Sec");
+		alert("+1 Zombie");
+		knightQuantity += 1;
+		armyTextDamage = armyDamage + 1;
+		armyDps.textContent = "|Army DPS: " + armyTextDamage + "|";
+		knightsDisplay.textContent = "Army Size: " + "⚔️" + " x" + knightQuantity;
+
+		updatePerks();
+		knightAttack();
+		knightAttack();
+		knightAttack();
+
+
+		}, 2000);
+	    }
+
+	    else{
+		alert("Zombie points the revolver at his head and fires...");
+	        alert("Nothing happens");
+		alert("Your turn...");
+		
+		let chamber2 = Math.floor(Math.random() * 6 + 1);
+	        if(chamber2 === 1) {
+		    alert("You point the revolver at your head and fire...");
+	            revolverSfx.play();
+	            revolverSfx.play();
+	            revolverSfx.play();
+		    currentHealth = 0;
+		}
+
+		else{
+		    alert("You point the revolver at your head and fire...");
+		    alert("Nothing Happens...you both survive...this time");
+		    alert("You have unlocked adrenaline instincts! Your max health has been increased by 75 HP!");
+		    maxHealth += 75;
+		    updateHealthValues();
+		}
+	    
+	
+	    }
+	}
+	
+	else if(decision6 === "3") {
+	    alert("You attempt to grab his gun however the zombie has super fast reflexes");
+	    alert("SOEIDDXI WUAAAAR XDIEEEAAAAAA")
+	    revolverSfx.play();
+	    setTimeout(function() {	
+	        alert("You are dead");
+		alert("Next time think twice before deciding to take a loaded gun from a random cannibal");
+		location.reload();
+
+	    }, 4000);
+	    
+	}
+
+	else if(decision6 === "4") {
+	    alert("You draw blood from your wrist and feed it to the zombie..he drops the revolver and heads back into the forest..");
+	    alert("You suffer an infection! Your Max Health has been decreased by 30 pts!");
+	    maxHealth -= 30;
+	    currentHealth -= 30;
+	    updateHealthValues();
+	}
+
+
+
+
+
+
+
+
+}
+
+
+currentLevel = 1;
+
+timelines = [level2Story, level3Story, level4Story, level5Story, level6Story, 
+
+level2Story, level3Story, level4Story, level5Story, level6Story,
+level2Story, level3Story, level4Story, level5Story, level6Story,
+level2Story, level3Story, level4Story, level5Story, level6Story,
+level2Story, level3Story, level4Story, level5Story, level6Story,
+level2Story, level3Story, level4Story, level5Story, level6Story,
+level2Story, level3Story, level4Story, level5Story, level6Story,
+level2Story, level3Story, level4Story, level5Story, level6Story,
+level2Story, level3Story, level4Story, level5Story, level6Story,
+level2Story, level3Story, level4Story, level5Story, level6Story,
+level2Story, level3Story, level4Story, level5Story, level6Story,
+ ]
+
 // Level UP button
 levelUpButton.addEventListener("click", function() {
     // Check if player has enough XP
     if (currentXP >= requiredXP) {
+
+
+	timelines[currentLevel-1]();
+	
 	active = 1;
         levelUpButton.style.display = "none";
         levelUpSfx.play();
@@ -600,7 +1016,7 @@ levelUpButton.addEventListener("click", function() {
 	enemyMaxHealth += (currentLevel * currentLevel);
 	enemyDamage += (currentLevel);
 	baseEnemyDamage += (currentLevel);
-	maxHealth += 1;
+	maxHealth += 5;
 	updateHealthValues();
 	maxDamageLabel.textContent = "|Enemy DPS: " + enemyDamage + "|";
 	
@@ -612,12 +1028,13 @@ levelUpButton.addEventListener("click", function() {
         currentLevel += 1;
         maxDamage += 3;
 	perks += currentLevel ;
+	perksEarnt += currentLevel;
 	perk.textContent = "|Perks: " + perks + "|";
         level.textContent = "|Level: " + currentLevel + "|";
 
 	updateXPValues();
 
-	requiredXP += 250 + enemyMaxHealth;
+	requiredXP += enemyMaxHealth + maxHealth * 2;
 	requiredXPLabel.textContent = "|Required XP: " + requiredXP + "|";
 
         previousEnemyDamage = enemyDamage
@@ -634,11 +1051,6 @@ levelUpButton.addEventListener("click", function() {
         
         
         }, 10000)
-
-
-        if (currentHealth / maxHealth <= 0.5) {
-            currentHealth = Math.floor(maxHealth * 0.75);
-        }
 
         displayLabel.style.opacity = 1;
         displayLabel.textContent = "Level Up!";
@@ -657,13 +1069,39 @@ hp.textContent = "HP: " + currentHealth + "/" + maxHealth;
 
 
 
+criticalSfx.volume = 0.3;
+
+
 //LOSES HEALTH  BUT GAINS XP WHEN U PRESS ATTACK
 attack.addEventListener("click", function() {
 
+    timesAttacked += 1;
 
+	criticalWheel = Math.floor(Math.random() * 100 + 1);
+
+	if(criticalWheel <= criticalChanceFactor) {
+	    criticalSfx.currentTime = 0;
+	    criticalSfx.play();
+	    criticalHit = 2;
+
+	    displayLabel.textContent = "Critical Hit!";
+	    displayLabel.style.background = "linear-gradient(to right, orange, silver, white)";
+	    displayLabel.style.opacity = 1;
+	
+	    setTimeout(function() {
+	        displayLabel.style.opacity = 0;
+
+	    },2000);
+    	}
+
+	else{
+    	    criticalHit = 1;
+	}
 
 
     currentXP += concentrationFactor * active;
+    xpEarnt += concentrationFactor * active;
+
     if(currentXP <= requiredXP) updateXPValues();
 
     if(currentXP > requiredXP) {
@@ -673,8 +1111,8 @@ attack.addEventListener("click", function() {
     }
 
 
-    if(enemyCurrentHealth - playerDamage > 0) {
-        enemyCurrentHealth -= playerDamage;
+    if(enemyCurrentHealth - playerDamage * criticalHit > 0) {
+        enemyCurrentHealth -= playerDamage * criticalHit;
 	updateEnemyHealthValues();
     
     }
@@ -1071,68 +1509,12 @@ refillHealthUpgrade.addEventListener("click", function() {
 
 });
 
-const deathJokes = [
-  "You died before you even got started. Truly committed to failure.",
-  "Still in starter gear and already a disaster. Nice.",
-  "You died so fast the tutorial didn't even load.",
-  "Stepped outside and instantly regretted it. Classic rookie move.",
-  "That was a perfect example of what not to do. Thanks for showing us.",
-  "You had one job: survive. You failed spectacularly.",
-  "Almost made it past the first trap. Almost.",
-  "You fell for that? Even the rats are shaking their heads.",
-  "Congrats! You earned a free dirt nap.",
-  "My toaster could've dodged that. And it's not even plugged in.",
-  "Epic fail. Here's some sarcastic applause.",
-  "Went downhill faster than a wheelbarrow full of regrets.",
-  "You're basically a walking warning sign.",
-  "Defeat suits you. Like a lead jumpsuit two sizes too small.",
-  "Legend? More like loading screen.",
-  "You tried. Kind of. Not really.",
-  "Even the scavengers are laughing. They eat trash for fun.",
-  "Analyzing... Error: Tactical thinking not found.",
-  "That was so bad, even the glitches are embarrassed.",
-  "If failure were cash, you'd be rich.",
-  "You died so fast, your logbook just says 'Oops'.",
-  "NOOO! You had it! Chosen one fail!",
-  "So close... then tripped over your ego.",
-  "Hope lasted a second. Then you buried it.",
-  "Made it here... just to lose to a rusty pipe.",
-  "This was your moment. Then destiny's dumpster caught you."
-];
 
-const reincarnationIntros = [
-  "Back again! You're now a slightly confused houseplant. Try not to wilt.",
-  "Welcome back! You're a pigeon with trust issues.",
-  "Rebooting your soul... now you're a sock behind the dryer.",
-  "You're a traffic cone now. People ignore you, but you're still in the way.",
-  "Next life: vending machine that eats coins.",
-  "Reborn as a snail with anxiety. Good luck out there.",
-  "Respawned as a haunted toaster. Burn it all.",
-  "You're a cloud that only rains at weddings.",
-  "Now a confused squirrel in a roundabout. May the odds be in your favor.",
-  "You're a novelty mug nobody wants to drink from.",
-  "Welcome back! You're a broken umbrella in a windstorm.",
-  "Motivational poster in a dentist's office. Inspiring... sort of.",
-  "You're a sock puppet with unresolved trauma.",
-  "Now a tumbleweed in a ghost town. Symbolic.",
-  "Reborn as a forgotten password. Mysterious and useless.",
-  "You're a rubber duck in lava. Float with dignity.",
-  "Confused GPS voice. Turn left into disappointment.",
-  "A fridge magnet shaped like a banana. No one knows why.",
-  "Paperclip that keeps asking if you need help.",
-  "Wind chime in a hurricane. Musical chaos awaits.",
-  "Half-eaten sandwich in a lunchbox apocalypse. Yum.",
-  "Broken pencil in a test. Symbolic failure.",
-  "Novelty doorbell that only plays sad trombone.",
-  "Sock with no pair and too much ambition.",
-  "Confused emoji. Sums it up."
-];
 
 // ========================================================
 // 🔊 ENDING / DEATH SOUNDS ARRAY
 // ========================================================
-let endingSounds = [zombieAttack, deadRobot, deadWalking, wolfHowling, dramaticEnding, creepyWoman, beheading];
-
+let endingSounds = [zombieAttack, deadRobot, deadWalking, wolfHowling, dramaticEnding, creepyWoman, beheading, heartBeep];
 let randomSfx;
                                                                                               
 
@@ -1147,17 +1529,23 @@ function enemyAttack() {
 	    currentSound.play();
 	    document.body.style.backgroundColor = "black";
 	    document.body.style.zIndex = 100;
-	    
-
-
-
+	
 	    currentHealth = 0;
 	    clearInterval(enemyInterval);
 	 
 	    setTimeout(function() {
                 alert("You Have Died!");
-	        alert(deathJokes[currentLevel - 1]);
-	        alert(reincarnationIntros[currentLevel-1]);
+alert(`
+Game Stats:
+
+Level Reached: ${currentLevel.toLocaleString()}
+Enemies Slaughtered: ${enemiesKilled.toLocaleString()}
+Blows Delivered: ${timesAttacked.toLocaleString()}
+XP Earned: ${xpEarnt.toLocaleString()} XP
+Perks Earned: ${perksEarnt.toLocaleString()}
+Gold Earned: ${goldEarnt.toLocaleString()}
+
+`);
 
                 location.reload();
             }, 5000);
@@ -1330,6 +1718,8 @@ function knightAttack() {
 
 recruitKnight.addEventListener("click", function() {
     if(perks >= knightsPerksRequired ) {
+	alert("You recruit a knight to join your army dealing -1 HP/SEC to your enemies!");
+	
         perks -= knightsPerksRequired;
 
     	purchaseSkill.currentTime = 0;
@@ -1337,12 +1727,14 @@ recruitKnight.addEventListener("click", function() {
 
         knightsPerksRequired += 5 * currentLevel;
 	knightQuantity += 1;
-	let armyTextDamage = armyDamage + 1;
+	armyTextDamage = armyDamage + 1;
 	armyDps.textContent = "|Army DPS: " + armyTextDamage + "|";
 	knightsDisplay.textContent = "Army Size: " + "⚔️" + " x" + knightQuantity;
 
 	updatePerks();
 	knightAttack();
+	knightAttack();
+
 
 	perksRequiredLabel.textContent = knightsPerksRequired;
 	knightsMagnitude.textContent = knightQuantity + " Knights"; 
@@ -1427,9 +1819,10 @@ const ghostMagnitude = document.querySelector("#ghost-magnitude");
 
 
 ghostButton.addEventListener("click", function() {
-    if(!ghostPurchased && playerDamage >= 2) {
+    if(!ghostPurchased && playerDamage >= 4) {
  
     ghostWhisper.play();
+    alert("💀 You become a ghost, your body gone forever. Your strikes are weaker, but blades and attacks barely touch you.");
     
     ghostPurchased = true;
     maxHealth *= 2;
@@ -1474,4 +1867,8 @@ maxVoltageUpgrade.addEventListener("click", function() {
 });
 
 
+
+
+
 perks = 0;
+

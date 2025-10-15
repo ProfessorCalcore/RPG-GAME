@@ -3,7 +3,7 @@
 // ========================================================
 
 // ------------------- PLAYER STATS ----------------------
-let currentHealth = 100;
+let currentHealth = 200;
 let maxHealth = 100;
 let currentXP = 0;
 let currentLevel = 1;
@@ -2059,4 +2059,5 @@ moveCloud1();
 
 
 perks = 0;
+
 

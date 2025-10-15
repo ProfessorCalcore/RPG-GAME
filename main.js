@@ -15,7 +15,7 @@ let heal = 10;
 let active = 1; 
 let concentrationFactor = 1; 
 let goldFactor = 1;
-let requiredXP = 500;
+let requiredXP = 200;
 
 //END STATS
 let timesAttacked = 0;
@@ -175,6 +175,7 @@ const charge = document.querySelector("#charge");
 const freeze = document.querySelector("#freeze");
 const devConsole = document.querySelector("#dev-console");
 const levelUpButton = document.querySelector("#level-up-button");
+const displayEnemy = document.querySelector("#display-enemy");
 
 // ========================================================
 // 🔊 SOUND EFFECTS
@@ -313,6 +314,17 @@ const enemyList = [
 ];
 
 
+const enemyEmojis = [
+  "🐀", "🦇", "🕷️", "🐍", "🦎", "🐱", "🐶", "🐈‍⬛", "🐆", "🦡",
+  "🦂", "🦀", "🐦", "👹", "👺", "👺", "👹", "👹", "🗿", "🤖",
+  "🐈‍⬛", "🔥🦇", "❄️🐺", "☠️🦂", "🐀🗡️", "🦇🗡️", "🐺❄️", "🐍🩸", "🦅🔥", "🐉",
+  "🐉", "👻", "🧛", "☠️", "🐘", "🔥💀", "😈", "🐉🌌", "❄️🐋", "🔥🦑",
+  "🗿💪", "🗿", "🐺🌑", "🐋", "👻", "🌌", "✨", "🏔️", "⚫", "🐱🔥",
+  "❄️🐍", "🔥🦁", "🌩️🐆", "🦀🗻", "🦅🐈‍⬛", "🦅", "🐉🪨", "👹🔥", "👻❄️", "🐉🔥",
+  "👻🌌", "🐋🗿", "⚫🦑", "🐺🌌", "🌌👻", "🐉🗿", "⚫", "🐉", "⚫", "🐉",
+  "⚫", "🐉", "⚫"
+];
+
 
 
 
@@ -333,6 +345,9 @@ const xpTable = document.querySelector("#xp-table");
 
 
 const criticalHitUpgrade = document.querySelector("#critical-hit-upgrade");
+const criticalHitMagnitude = document.querySelector("#critical-hit-magnitude");
+const criticalHitPerksCost = document.querySelector("#critical-hit-perks-cost");
+
 let criticalChanceRequiredPerks = 5;
 let criticalChanceFactor = 1;
 let criticalHit = 2;
@@ -342,14 +357,44 @@ criticalHitUpgrade.addEventListener("click", function() {
 	purchaseSkill.currentTime = 0;
 	purchaseSkill.play();
         perks -= criticalChanceRequiredPerks;
+
 	criticalChanceRequiredPerks += 15;
 	updatePerks();
 	
 	criticalChanceFactor += 1;
+	
+	criticalHitPerksCost.textContent = criticalChanceRequiredPerks;
+	criticalHitMagnitude.textContent = criticalChanceFactor + " %";
     }
 });
 
 
+const criticalDamageUpgrade = document.querySelector("#critical-damage-upgrade");
+const criticalDamageMagnitude = document.querySelector("#critical-damage-magnitude");
+const criticalDamagePerksCost = document.querySelector("#critical-damage-perks-cost");
+
+let criticalDamageRequiredPerks = 5;
+let criticalDamageFactor = 2;
+
+criticalDamageUpgrade.addEventListener("click", function() {
+    if(perks >= criticalDamageRequiredPerks) {
+
+	purchaseSkill.currentTime = 0;
+	purchaseSkill.play();
+
+        perks -= criticalDamageRequiredPerks;
+	criticalDamageRequiredPerks += 15;
+	updatePerks();
+
+	criticalDamageFactor += 0.25;
+
+	criticalDamagePerksCost.textContent = criticalDamageRequiredPerks;
+	criticalDamageMagnitude.textContent = "x" + criticalDamageFactor;
+    
+        }
+
+
+});
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -369,6 +414,16 @@ function enemyDead() {
 swordSlash.currentTime = 0;
     	swordSlash.play();
 	enemiesKilled += 1;
+
+
+	displayEnemy.style.filter = "invert(100%)";
+
+
+	setTimeout(function() {
+	    displayEnemy.style.filter = "invert(0%)";
+
+	
+	}, 1000);
 
 	xpFactor =  10 + (currentLevel * 10);
         randomXP = Math.floor(Math.random() * xpFactor + 1)
@@ -809,7 +864,7 @@ function level4Story() {
 	alert("Now which way is out?")
 	let decision4 = prompt("Direction: left/right/stay");
 	if(decision4 === "left"){
-	    alert("You found the exit! A Snake ambushes you outside the maze. Fight!")
+	    alert("You found the exit! A " + enemyList[currentLevel].toLowerCase() + " ambushes you outside the maze. Keep an eye on your health and destroy that thing!")
         }
 
 	else if(decision4 === "right") {
@@ -1001,12 +1056,17 @@ level2Story, level3Story, level4Story, level5Story, level6Story,
 level2Story, level3Story, level4Story, level5Story, level6Story,
  ]
 
+currentLevel = 1;
+
 // Level UP button
 levelUpButton.addEventListener("click", function() {
     // Check if player has enough XP
     if (currentXP >= requiredXP) {
+	
+	displayEnemy.textContent = enemyEmojis[currentLevel];
 
 
+	
 	timelines[currentLevel-1]();
 	
 	active = 1;
@@ -1034,7 +1094,7 @@ levelUpButton.addEventListener("click", function() {
 
 	updateXPValues();
 
-	requiredXP += enemyMaxHealth + maxHealth * 2;
+	requiredXP += 250;
 	requiredXPLabel.textContent = "|Required XP: " + requiredXP + "|";
 
         previousEnemyDamage = enemyDamage
@@ -1073,7 +1133,7 @@ criticalSfx.volume = 0.3;
 
 
 //LOSES HEALTH  BUT GAINS XP WHEN U PRESS ATTACK
-attack.addEventListener("click", function() {
+displayEnemy.addEventListener("click", function() {
 
     timesAttacked += 1;
 
@@ -1082,7 +1142,7 @@ attack.addEventListener("click", function() {
 	if(criticalWheel <= criticalChanceFactor) {
 	    criticalSfx.currentTime = 0;
 	    criticalSfx.play();
-	    criticalHit = 2;
+	    criticalHit = criticalDamageFactor;
 
 	    displayLabel.textContent = "Critical Hit!";
 	    displayLabel.style.background = "linear-gradient(to right, orange, silver, white)";
@@ -1162,6 +1222,100 @@ attack.addEventListener("click", function() {
 
 
 });
+
+attack.addEventListener("click", function() {
+
+    timesAttacked += 1;
+
+	criticalWheel = Math.floor(Math.random() * 100 + 1);
+
+	if(criticalWheel <= criticalChanceFactor) {
+	    criticalSfx.currentTime = 0;
+	    criticalSfx.play();
+	    criticalHit = criticalDamageFactor;
+
+	    displayLabel.textContent = "Critical Hit!";
+	    displayLabel.style.background = "linear-gradient(to right, orange, silver, white)";
+	    displayLabel.style.opacity = 1;
+	
+	    setTimeout(function() {
+	        displayLabel.style.opacity = 0;
+
+	    },2000);
+    	}
+
+	else{
+    	    criticalHit = 1;
+	}
+
+
+    currentXP += concentrationFactor * active;
+    xpEarnt += concentrationFactor * active;
+
+    if(currentXP <= requiredXP) updateXPValues();
+
+    if(currentXP > requiredXP) {
+        currentXP = requiredXP;
+	updateXPValues();
+ 
+    }
+
+
+    if(enemyCurrentHealth - playerDamage * criticalHit > 0) {
+        enemyCurrentHealth -= playerDamage * criticalHit;
+	updateEnemyHealthValues();
+    
+    }
+
+
+
+
+    else{
+        if(currentHealth >= maxHealth) currentHealth = maxHealth;
+	enemyDead();
+    }
+
+        if(currentXP <= requiredXP) {
+            active = 1;
+	    updateXPValues();
+	    levelUpButton.style.display = "none";
+        
+        }
+	
+
+        if(currentXP + randomXP * currentLevel > requiredXP) {
+            currentXP = requiredXP;
+	    updateXPValues;
+	    active = 0;
+	    levelUpButton.style.display = "block";
+
+        }
+
+
+    
+
+
+
+    
+
+
+
+    
+
+     
+
+
+
+
+
+
+
+
+});
+
+
+
+
 
 // HEALS UPON CLICK
 healButton.addEventListener("click", function() {
@@ -1593,7 +1747,7 @@ stealHP.addEventListener("click", function() {
     	purchaseSkill.play();
 
         perk.textContent = "Perks: " + perks;
-        healthFactor += 1;
+        healthFactor += 2;
 	stealHpMagnitude.textContent = "Absorbs: " + healthFactor + " HP";
     }
 
@@ -1865,6 +2019,40 @@ maxVoltageUpgrade.addEventListener("click", function() {
     }
 
 });
+
+const cloud1 = document.querySelector("#cloud1");
+const cloud1Style = window.getComputedStyle(cloud1);
+
+let left = parseInt(cloud1Style.left);
+let windowWidth = window.innerWidth;
+
+
+
+
+function moveCloud1() {
+    setInterval(function() {
+	left += 2;
+
+	if(left >= windowWidth) {
+	    cloud1.style.transition = "none";
+	    left = -120;
+	    cloud1.style.left = left + "px";
+	
+
+	    cloud1.offsetWidth;	
+	    cloud1.style.transition = "all 2s ease";
+
+	}
+
+	else{
+	    cloud1.style.left = left + "px";
+
+	}
+
+    },1000);
+}
+
+moveCloud1();
 
 
 

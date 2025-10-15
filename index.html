@@ -9,19 +9,35 @@
 
 
 	<label id="display-label">HEY</label>
+	<label id="cloud1">☁️</label>
+	<label id="moon">🌙</label>
+	<label id="canvas">
+	<img id="canvas" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/pixil-frame-0 (13).png">
+        </label>
+	<label id="house">🏡</label>
+	<label id="grave">⚰️</label>
+	<label id="player-icon">🤺</label>
+	<label id="tree">🪵</label>
+
+
+
+
+
+
+	<button id="display-enemy">🐀</button>
 
 
 <!--------------HP LABELS------------------------------------------------------------------------------------------------------->
-        <label id="heal-cost" style="margin-right: 10px; background-color: lightgrey">|Heal Cost: 25 V| </label>
-	<label id="heal-power" style="margin-right: 10px; background-color: lightgrey">|Heal Power: 10 HP|</label>
-	<label id="player-damage" style="margin-right: 10px; background-color: lightgrey">|Player Damage: 1| </label>
-	<label id="army-damage" style="margin-right: 10px; background-color: lightgrey">|Army DPS: 0| </label>
+        <label id="heal-cost" style="margin-right: 10px; background-color: #333; color: white;">|Heal Cost: 25 V| </label>
+	<label id="heal-power" style="margin-right: 10px; background-color: #333; color: white;">|Heal Power: 10 HP|</label>
+	<label id="player-damage" style="margin-right: 10px; background-color: #333; color: white;">|Player Damage: 1| </label>
+	<label id="army-damage" style="margin-right: 10px; background-color: #333; color: white;">|Army DPS: 0| </label>
 
-        <label id="max-damage" style="margin-right: 10px; background-color: lightgrey">|Enemy DPS: 1| </label>
-	<label id="knights-display" style="display: block;font-family:arial;">Army Size:⚔️ x0</label>
-	<label id="gold" style="margin-right:10px; background-color: lightgrey">Gold: 0</label>
+        <label id="max-damage" style="margin-right: 10px; background-color: #333; color: white;">|Enemy DPS: 1| </label>
+	<label id="knights-display" style="display: block;font-family:arial; background-color: transparent; color: white;">Army Size:⚔️ x0</label>
+	<label id="gold" style="margin-right:10px; background-color: #333; color: white;">Gold: 0</label>
 
-	<label id="dr-label" style="margin-right: 10px; background-color: lightgrey">DR: 1% </label>
+	<label id="dr-label" style="margin-right: 10px; background-color: #333; color: white;">DR: 1% </label>
 
 
 <!------------------------------------------------------------------------------------------------------------------------------>
@@ -43,9 +59,11 @@
 
 
 <!--------------XP LABELS----------------------------------------------------------------------------------->
-	<label id="level" style="margin-right: 10px; background-color: lightgrey">|Level: 1|</label>
-        <label id="perk" style="margin-right: 10px; background-color: lightgrey">|Perks: 0|</label>
-        <label id="required-xp" style="margin-right: 10px; background-color: lightgrey">|Required XP: 500|</label>
+	<label id="level" style="margin-right: 10px; background-color: #333; color: white;">|Level: 1|</label>
+        <label id="perk" style="margin-right: 10px; background-color: #333; color: white;">|Perks: 0|</label>
+        <label id="required-xp" style="margin-right: 10px; background-color: #333; color: white;">|Required XP: 500|</label>
+	<button id="buy-perk" style="background-color: #333; color: white;">Buy Perk: 100 Gold</button>
+
 <!---------------------------------------------------------------------------------------------------------->
 
 
@@ -70,28 +88,23 @@
        
 
 <!---------------------ACTION BUTTONS----------------------->
-	<button id="attack">Attack
-            <img src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/sword-icon.png" alt="My Image">
+	<button id="attack" style="background-color: #333; color: white; font-size: 30px; border-radius: 100%">🗡️
         </button>
 
-	<button id="heal">Heal
-            <img src ="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/heart-icon.png">
+	<button id="heal" style="background-color: #333; color: lime; font-size: 30px; border-radius: 50%">❤️‍🩹
         </button>
 
-	<button id="charge">Recharge</button>
+	<button id="charge" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%">⚡</button>
 
-	<button id="freeze">Freeze</button>
+	<button id="freeze" style="background-color: #333; color: cyan; font-size: 30px; border-radius: 50% ">❄️</button>
 
 
-        <button id="upgrades" style="border-radius:100%; border:none; outline:none; background: transparent;display:block; position:absolute; left:19%; top:12%;">
-	    <img src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/upgrades-icon.png" style="width:64px;">
+        <button id="upgrades" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%">🛠️
        </button>
 
-	<button id="buy-perk">Buy Perk: 100 Gold</button>
-
-	<button id="level-up-button" style="display: none">Level Up!</button>
+	<button id="level-up-button" style="display: none; background-color: #333; color: white;">Level Up!</button>
 <!---------------------------------------------------------->
-        <input id="dev-console" style="display:block;" placeholder="Enter Command...">
+        <input id="dev-console" style="display:block; background-color: #333; color: white;" placeholder="Enter Command...">
 
 
 
@@ -101,9 +114,9 @@
 
 
 <!--------------------------------------ARMY-UPGRADES---------------------------------------------------->
-<button id="army-upgrades" style="display:block">Army Upgrades</button>
+<button id="army-upgrades" style="display:block; background-color: black; color: white;">🪖Army Upgrades🪖</button>
 
-<table id="army-table" border=1 style="display:none; border-collapse: collapse;">
+<table id="army-table" border=1 style="display:none; border-collapse: collapse; background-color: black; color: white;">
     <caption>Army Skills</caption>
     
          <tr>
@@ -114,7 +127,7 @@
         </tr>
 
     <tr>
-        <td><button id="recruit-knight">Knights</button></td>
+        <td><button id="recruit-knight" style="background-color: black; color: white; ">🤺Knights🤺</button></td>
         <td>Adds 1 knight to your army dealing +1 damage per second</td>
         <td id="perks-required">5</td>
         <td id="knights-magnitude">0x</td>
@@ -123,8 +136,8 @@
 <!-------------------------------------------------------------------------------------------------------->
 
 <!--------------------------------CORRUPTION UPGRADES----------------------------------------------------->
-<button id="corruption-upgrades">Corruption Upgrades</button>
-<table id="corruption-table" border=1 style="display:none; border-collapse: collapse;">
+<button id="corruption-upgrades" style="background-color: black; color: white;">🔮Corruption Upgrades🔮</button>
+<table id="corruption-table" border=1 style="display:none; border-collapse: collapse; background-color: black; color: white;">
     <caption>Corruption Upgrades</caption>
 
         <tr>
@@ -136,7 +149,7 @@
 
 
 	<tr>
-	    <td><button id="ghost-button">Ghost</button></td>
+	    <td><button id="ghost-button" style="background-color: black; color: white;">👻Ghost👻</button></td>
 	    <td>Permenantly Doubles your Health but you deal half as much damage from now on</td>
 	    <td id="ghost-requirements-cost">Sharpened Upgrade X3</td>
 	    <td id="ghost-magnitude">0x</td>
@@ -149,9 +162,9 @@
 
 
 <!---------------------------DAMAGE UPGRADES---------------------------------------------------------------------->
-<button id="damage-upgrades" style="display: block;">Damage Upgrades</button>
+<button id="damage-upgrades" style="display: block; background-color: black; color: white;">💥Damage Upgrades💥</button>
 
-<table id="damage-table" border=1 style="border-collapse: collapse; display: none">
+<table id="damage-table" border=1 style="border-collapse: collapse; display: none; background-color: black; color: white;">
     <caption>Damage Skills</caption>
     
         <tr>
@@ -162,33 +175,33 @@
         </tr>
  
         <tr>
-            <td><button id="upgrade-damage">Sharpened</button></td>
+            <td><button id="upgrade-damage" style="background-color: black; color: white;">🗡️Sharpened🗡️</button></td>
             <td>You deal +1 more damage</td>
             <td>1</td>
             <td id="upgrade-damage-magnitude">0x</td>
         </tr>
 
 	<tr>
-	    <td><button id="critical-hit-upgrade">Critical Hits</button></td>
-	    <td>Critical Hit chance increased by +1%</td>
-	    <td id="critical-hits-perks-cost">5</td>
-	    <td id="critical-hits-magnitude">0x</td>	
+	    <td><button id="critical-hit-upgrade" style="background-color: black; color: white;">🎯Precision Training🎯</button></td>
+	    <td>Critical Hit Chance increased by +1%</td>
+	    <td id="critical-hit-perks-cost">5</td>
+	    <td id="critical-hit-magnitude">1 %</td>	
 	</tr>
 
 	<tr>
-	    <td><button id="critical-damage-upgrade">Critical Hits</button></td>
+	    <td><button id="critical-damage-upgrade" style="background-color: black; color: white;">💥Armor-Piercing💥</button></td>
 	    <td>Critical Hit Damage increased by +25%</td>
-	    <td id="critical-hits-perks-cost">15</td>
-	    <td id="critical-hits-magnitude">0x</td>	
+	    <td id="critical-damage-perks-cost">5</td>
+	    <td id="critical-damage-magnitude">x2.0</td>	
 	</tr>
 </table>
 <!-------------------------------------------------------------------------------------------------------->
 
 
 <!------------------------------DEFENCE UPGRADES------------------------------------------------------------>
-<button id="defense-upgrades" style="display: block;">Defence Upgrades</button>
+<button id="defense-upgrades" style="display: block; background-color: black; color: white;">🛡️Defence Upgrades🛡️</button>
     
-<table id="defense-table" border=1 style="display:none; border-collapse:collapse;">
+<table id="defense-table" border=1 style="display:none; border-collapse:collapse; background-color: black; color: white;">
     <caption>Defense Upgrades</caption>
         <tr>
             <th>Skill</th>
@@ -198,20 +211,36 @@
         </tr>
 
         <tr>
-        <td><button id="dr-button">Damage Resistance</button></td>
-        <td>Increases Damage Resistance by 5%</td>
-        <td id="dr-perks">10</td>
-        <td id="dr-magnitude">0x</td>
+            <td><button id="dr-button" style="background-color: black; color: white;">🗡️❌Damage Resistance🗡️❌</button></td>
+            <td>Increases Damage Resistance by 5%</td>
+            <td id="dr-perks">10</td>
+            <td id="dr-magnitude">0x</td>
         </tr>
+
+         <tr>
+             <td><button id="heal-upgrade" style="background-color: black; color: white;">❤️‍🩹Bandages❤️‍🩹</button></td>
+              <td>Improves heal skill by +5 additional HP</td>
+              <td>1</td>
+              <td id="heal-upgrade-magnitude">0x</td>
+        </tr>  
+
+	<tr>
+	    <td><button id="guardian-angel-upgrade" style="background-color: black; color: white;">🕊️Guardian Angel🕊️</button></td>
+	    <td>Chance to avoid all damage from an attack</td>
+	    <td id="guardian-perk-cost">10</td>
+	    <td id="guardian-magnitude">0 %</td>
+	</tr>
+
+
 </table>
 <!-------------------------------------------------------------------------------------------------------->
 
 
 <!----------------HEALTH UPGRADES-------------------------------------------------------------------------->
-<button id="health-upgrades" style="display: block;">Health Upgrades</button>
+<button id="health-upgrades" style="display: block; background-color: black; color: white;">💖Health Upgrades💖</button>
 
 
-<table id="health-table" border=1 style="border-collapse: collapse; display: none">
+<table id="health-table" border=1 style="border-collapse: collapse; display: none; background-color: black; color: white;">
     <caption>Health Skills</caption>
         <tr>
             <th>Skill</th>
@@ -221,36 +250,30 @@
         </tr>
 
         <tr>
-          <td><button id="refill-health">Second Chance</button></td>
+          <td><button id="refill-health" style="background-color: black; color: white;">💉Second Chance💉</button></td>
           <td>Refills your health bar to 100%</td>
           <td id="required-refill-perks">3</td>
           <td id="refill-health-magnitude">0x</td>
         </tr>
 
          <tr>
-          <td><button id="max-health-upgrade">Endurance</button></td>
+          <td><button id="max-health-upgrade" style="background-color: black; color: white;">❤️‍🔥Endurance❤️‍🔥</button></td>
           <td>Increases max health by 10 pts</td>
           <td>1</td>
           <td id="max-health-magnitude">0x</td>
         </tr>
 
-         <tr>
-          <td><button id="heal-upgrade">Bandages</button></td>
-          <td>Improves heal skill by +5 additional HP</td>
-          <td>1</td>
-          <td id="heal-upgrade-magnitude">0x</td>
-        </tr>  
 
          <tr>
-          <td><button id="regenerate-hp">Regeneration</button></td>
+          <td><button id="regenerate-hp" style="background-color: black; color: white;">💚Regeneration💚</button></td>
           <td>HP automatically heals over time</td>
           <td>5</td>
           <td id="regenerate-hp-magnitude">0x</td>
         </tr>   
 
          <tr>
-          <td><button id="steal-hp">Vampirism</button></td>
-          <td>Absorbs +1 HP every time you defeat an enemy</td>
+          <td><button id="steal-hp" style="background-color: black; color: white;">🩸Vampirism🩸</button></td>
+          <td>Absorbs +2 HP every time you defeat an enemy</td>
           <td>1</td>
           <td id="steal-hp-magnitude">0x</td>
         </tr>   
@@ -259,9 +282,9 @@
 
 
 <!--------------------VOLTAGE UPGRADES--------------------------------------------------------------------->
-<button id ="voltage-upgrades" style="display: block;">Voltage Upgrades</button>
+<button id ="voltage-upgrades" style="display: block; background-color: black; color: white;">⚡Voltage Upgrades⚡</button>
 
-<table id="voltage-table" border=1 style="display: none; border-collapse: collapse">
+<table id="voltage-table" border=1 style="display: none; border-collapse: collapse; background-color: black; color: white;">
     <caption>Voltage Skills</caption>
         
         <tr>
@@ -272,14 +295,14 @@
         </tr>
 
         <tr>
-            <td><button id="voltage-upgrade">Fluxify</button></td>
+            <td><button id="voltage-upgrade" style="background-color: black; color: white;">⚡Fluxify⚡</button></td>
             <td>Regenerates +1 Volts Per Seconds</td>
             <td>2</td>
             <td id="voltage-upgrade-magnitude">0x</td>
         </tr>
 
 	<tr>
-	    <td><button id="max-voltage-upgrade">Charging Capacity</button></td>
+	    <td><button id="max-voltage-upgrade" style="background-color: black; color: white;">🔋Charging Capacity🔋</button></td>
 	    <td>Increases your max voltage by +5 Pts</td>
 	    <td id="max-voltage-cost">5</td>
 	    <td id="max-voltage-magnitude">0x</td>
@@ -290,8 +313,8 @@
 
 
 <!------------------------XP UPGRADES----------------------------------------------------------------------------->
-<button id="xp-upgrades" style="display: block;">XP Upgrades</button>
-<table id="xp-table" border=1 style="border-collapse: collapse; display: none">
+<button id="xp-upgrades" style="display: block; background-color: black; color: white;">✨XP Upgrades✨</button>
+<table id="xp-table" border=1 style="border-collapse: collapse; display: none; background-color: black; color: white;">
     <caption>XP Skills</caption>
         <tr>
             <th>Skill</th>
@@ -301,14 +324,14 @@
         </tr>
         
         <tr>
-            <td><button id="auto-xp">XP Mining</button></td>
+            <td><button id="auto-xp" style="background-color: black; color: white;">⛏️XP Mining⛏️</button></td>
             <td>Gathers 1 XP per sec</td>
             <td id="xp-perks-required">2</td>
             <td id="auto-xp-magnitude">0x</td>
         </tr>
 
 	<tr>
-	    <td><button id="concentration-button">Concentration</button></td>
+	    <td><button id="concentration-button" style="background-color: black; color: white;">🧠Concentration🧠</button></td>
 	    <td>Increases the amount of XP you earn per hit</td>
 	    <td id="concentration-perks">5</td>
 	    <td id="concentration-magnitude">0x</td>
@@ -359,7 +382,6 @@
 
 	<audio id="revolver-sfx" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/sound-effects-single-gun-shot-247124.mp3" preload="auto"></audio>
 
-	<audio id="heart-beep" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/heart-monitor-beep-96554.mp3" preload="auto"></audio>
 
 	<audio id="critical-sfx" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/glass-shatter-impact-93797.mp3" preload="auto"></audio>
 
@@ -371,3 +393,4 @@
         <script src = "main.js"></script>
     </body>
 </html>
+

@@ -4,7 +4,7 @@
 
 // ------------------- PLAYER STATS ----------------------
 let currentHealth = 100;
-let maxHealth = 200;
+let maxHealth = 100;
 let currentXP = 0;
 let currentLevel = 1;
 let perks = 0; 
@@ -16,6 +16,9 @@ let active = 1;
 let concentrationFactor = 1; 
 let goldFactor = 1;
 let requiredXP = 200;
+
+maxHealth *= 2;
+
 
 //END STATS
 let timesAttacked = 0;
@@ -2059,6 +2062,7 @@ moveCloud1();
 
 
 perks = 0;
+
 
 
 

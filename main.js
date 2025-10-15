@@ -712,6 +712,8 @@ function updateVoltageValues() {
 
 }
 
+
+updateHealthValues();
 //LEVEL 2 STORY
 function level2Story() {
     alert("After surviving the swarm of " + enemyList[currentLevel - 1].toLowerCase() + "s" + ", your confidence grows… but so does the danger around you.");
@@ -2063,6 +2065,7 @@ moveCloud1();
 
 
 perks = 0;
+
 
 
 

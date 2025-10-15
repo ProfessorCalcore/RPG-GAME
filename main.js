@@ -17,7 +17,8 @@ let concentrationFactor = 1;
 let goldFactor = 1;
 let requiredXP = 200;
 
-maxHealth *= 2;
+maxHealth *= 5;
+currentHealth *= 5;
 
 
 //END STATS
@@ -2062,6 +2063,7 @@ moveCloud1();
 
 
 perks = 0;
+
 
 
 

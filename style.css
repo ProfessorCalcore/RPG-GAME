@@ -75,11 +75,9 @@
 	        background-size: 400px 100%;
    		width: 100%;
     		height: 100%;
-		transition: all 0.5s ease;
+		transition: all 1s ease;
 		border-radius: 10px;
-
-
-
+    		background:linear-gradient(to top, lime);
 	    }
 
 	   #hp{
@@ -107,7 +105,7 @@
 
            #enemy-health-bar{
     		position: relative;
-		background: linear-gradient(to left, green, black);
+		background:linear-gradient(to top, darkred, orange);
 	        background-size: 400px 100%;
    		width: 100%;
     		height: 100%;
@@ -383,8 +381,183 @@
 	      font-weight: bold;
 	  }
 
+	  #level-up-button:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px yellow;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #pause{
+	  	font-size: 40px !important;
+		position: absolute;
+	 	left: 28%;
+		top:70%;
+		background-color: #333;
+		outline: none;
+		border-radius: 100%;
+		
+          }
 
 
+
+	  #pause:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px yellow;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #refresh{
+	  	font-size: 40px !important;
+		position: absolute;
+	 	left: 92%;
+		top:75%;
+		background-color: #333;
+		outline: none;
+		border-radius: 100%;
+		
+          }
+
+
+
+	  #refresh:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px cyan;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #recruit-knight:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px green;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #ghost-button:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px purple;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #upgrade-damage:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px crimson;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+	
+	  #critical-hit-upgrade:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px crimson;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+	
+	  #critical-damage-upgrade:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px crimson;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #dr-button:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px blue;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #heal-upgrade:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px blue;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #guardian-angel-upgrade:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px blue;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #refill-health:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px crimson;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #max-health-upgrade:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px crimson;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #regenerate-hp:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px crimson;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #steal-hp:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px crimson;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #voltage-upgrade:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px orange;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #max-voltage-upgrade:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px orange;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #auto-xp:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px yellow;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #concentration-button:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px yellow;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
 
 
 

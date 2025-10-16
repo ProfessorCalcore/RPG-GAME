@@ -3,12 +3,12 @@
 // ========================================================
 
 // ------------------- PLAYER STATS ----------------------
-let currentHealth = 500;
-let maxHealth = 500;
+let currentHealth = 250;
+let maxHealth = 250;
 let currentXP = 0;
 let currentLevel = 1;
 let perks = 0; 
-let playerDamage = 1;
+let playerDamage = 2;
 let minDamage = 1;
 let maxDamage = 10;
 let heal = 10;
@@ -16,9 +16,6 @@ let active = 1;
 let concentrationFactor = 1; 
 let goldFactor = 1;
 let requiredXP = 200;
-
-
-
 
 //END STATS
 let timesAttacked = 0;
@@ -47,8 +44,8 @@ let perkCost = 100;
 // ------------------- ENEMY STATS ----------------------
 let baseEnemyDamage = 1;
 let enemyDamage = 1 * damageResistance;
-let enemyCurrentHealth = 10;
-let enemyMaxHealth = 10;
+let enemyCurrentHealth = 20;
+let enemyMaxHealth = 20;
 
 // ------------------- VOLTAGE SYSTEM -------------------
 let voltage = 100;
@@ -78,6 +75,12 @@ let purchasedHP = false;
 let XPPercentage;
 let HPPercentage;
 let EnemyHPPercentage;
+
+
+//GUARDIAN ANGEL UPGRADE
+let guardianRequiredPerks = 5;
+let guardianChance = 0;
+let guardianFactor = 1;
 
 // ========================================================
 // 🧍 PLAYER / ENEMY UI ELEMENTS
@@ -180,6 +183,12 @@ const devConsole = document.querySelector("#dev-console");
 const levelUpButton = document.querySelector("#level-up-button");
 const displayEnemy = document.querySelector("#display-enemy");
 
+const guardianAngelUpgrade = document.querySelector("#guardian-angel-upgrade");
+const guardianAngelMagnitude = document.querySelector("#guardian-angel-magnitude");
+const guardianAngelPerksCost = document.querySelector("#guardian-angel-perks-cost");
+
+const soldier = document.querySelector("#soldier");
+
 // ========================================================
 // 🔊 SOUND EFFECTS
 // ========================================================
@@ -217,6 +226,7 @@ const stealHpMagnitude = document.querySelector("#steal-hp-magnitude");
 const autoXpMagnitude = document.querySelector("#auto-xp-magnitude");
 const voltageUpgradeMagnitude = document.querySelector("#voltage-upgrade-magnitude");
 const upgradeDamageMagnitude = document.querySelector("#upgrade-damage-magnitude");
+
 
 
 // ========================================================
@@ -316,6 +326,113 @@ const enemyList = [
   "SINGULARITY"
 ];
 
+const soldierName = [
+  "Peasant 🧍",
+  "Drone 🤖",
+  "Wolf 🐺",
+  "Horse 🐴",
+  "Alien 👽",
+  "Goblin 🥷",
+  "Skeleton 💀",
+  "Zombie 🧟",
+  "Bandit 🗡️",
+  "Archer 🏹",
+  "Swordsman ⚔️",
+  "Wizard 🪄",
+  "Apprentice Mage 🧙‍♂️",
+  "Commander 🛡️",
+  "Prince 🤴",
+  "Princess 👸",
+  "Queen 👑",
+  "King 🤴👑",
+  "Demon 😈",
+  "Berserker 🪓",
+  "Sniper 🎯",
+  "Dragon 🐉",
+  "Basilist 🐍",
+  "Tank 🛡️",
+  "Submarine 🛳️",
+  "Jet-fighter ✈️",
+  "Witch 🧙‍♀️",
+  "Battleship 🚢",
+  "Vampire 🧛‍♂️",
+  "Necromancer 🪦",
+  "Warlock 🔮",
+  "Phoenix 🔥🦅",
+  "Titan 🏋️‍♂️",
+  "Mech 🤖🦾",
+  "Leviathan 🐋",
+  "Archangel 😇",
+  "Dreadnought 🛡️🚀",
+  "Void Knight 🌌🗡️",
+  "Time Mage ⏳🪄",
+  "Elder Dragon 🐲",
+  "Omega Beast 🐉💀",
+  "Galactic Overlord 👾",
+  "Shadow Assassin 🗡️🌑",
+  "Ice Golem ❄️🪨",
+  "Fire Elemental 🔥",
+  "Water Elemental 🌊",
+  "Earth Elemental 🌍",
+  "Lightning Elemental ⚡",
+  "Spirit Guardian 👻",
+  "Dark Knight 🖤🗡️",
+  "Light Paladin ⚔️✨",
+  "War Priest ⛪🪄",
+  "Druid 🌿🦅",
+  "Beastmaster 🐅",
+  "Minotaur 🐂",
+  "Giant 🏔️",
+  "Ogre 👹",
+  "Harpy 🦅",
+  "Mermaid 🧜‍♀️",
+  "Centaur 🐎🧍",
+  "Griffin 🦅🦁",
+  "Hydra 🐍🐍",
+  "Chimera 🐐🐉",
+  "Elemental Lord 🌪️",
+  "Lich 🪦🧙‍♂️",
+  "Soul Reaper ⚰️🗡️",
+  "Dragon Rider 🐉🧑‍🚀",
+  "Titanic Golem 🪨💪",
+  "Cyber Knight 🤖🗡️",
+  "Space Marine 🚀🪖",
+  "Alien Overlord 👽👑",
+  "Dark Sorcerer 🖤🔮",
+  "Celestial Mage 🌟🪄",
+  "Storm Giant ⛈️🏔️",
+  "Frost Dragon ❄️🐉",
+  "Inferno Demon 🔥😈",
+  "Shadow Lord 🌑👑",
+  "Void Elemental 🌌⚡",
+  "Cosmic Leviathan 🌌🐋",
+  "Galaxy Titan 🌌🏋️‍♂️",
+  "Quantum Knight ⏳🗡️",
+  "Chronomancer ⏳🪄",
+  "Eclipse Dragon 🌒🐉",
+  "Meteor Golem ☄️🪨",
+  "Nebula Witch 🌌🧙‍♀️",
+  "Void Phoenix 🌌🔥🦅",
+  "Omega Lich 🐉🪦",
+  "Stellar Dreadnought 🌟🚀",
+  "Galactic Titan 👾🏋️‍♂️",
+  "Ultimate Overlord 👑💀",
+  "Infinity Beast ♾️🐉",
+  "Celestial Archangel 🌟😇",
+  "Dark Galaxy Emperor 🌑👑",
+  "Void Omega 🌀🐉",
+  "Time Reaper ⏳⚰️",
+  "Cosmic Dragon 🪐🐲",
+  "Eternal Leviathan ♾️🐋",
+  "Quantum Overlord ⏳👾",
+  "Omni Titan ♾️🏋️‍♂️",
+  "Godslayer 🗡️⚡",
+  "Universe Warden 🌌🛡️",
+  "Multiverse Monarch ♾️👑",
+  "Omniverse Entity 🌌♾️"
+];
+
+
 
 const enemyEmojis = [
   "🐀", "🦇", "🕷️", "🐍", "🦎", "🐱", "🐶", "🐈‍⬛", "🐆", "🦡",
@@ -399,18 +516,208 @@ criticalDamageUpgrade.addEventListener("click", function() {
 
 });
 
+let playerName = "";
 
-///////////////////////////////////////////////////////////////////////////////
-//LEVEL 1 STORY
-    alert("You awaken in darkness, ripped from your time and thrown into the year 1460—a world lost to shadows and fear. The air is thick with decay, and every corner seems to watch you.");
-    alert("A faint scratching echoes through the abandoned mansion...");
-    alert("A swarm of " + enemyList[currentLevel - 1].toLowerCase() + "s" + " come from beneath the floorboards. Grab the kitchen knife! Quick! Fight… or perish.");
+
+///////////////////////////////////////////////////////////////////////////////							          //INTRODUCTION//
+//INTRO
+
+introDecision = prompt(`
+Welcome to the Game! Would you like to skip the intro?
+[1] Yes - Skip this stupid intro!
+[2] No - I wanna make my player name!
+[3] Let Fate Decide!
+[4] You call this a game? Pff..
+`)
+
+function level1Story() {
+    alert("After going to bed in your cosy warm house. you wake up in an abandoned mansion in the dark ages...before you can do anything you hear the annoying squeak of rats tearing through the floorboard....theres a knife in the bedside table! Take it and slaughter those parasites!");
+    level1decision = prompt
+(`[1] Awww but they are adorable!
+[2] Ahhhhhh! I'm terrified of rats!
+[3] Can't I just run away?
+[4] Can't wait to make them bleed!`);
+
+    if(level1decision === "1") {
+	alert("Aww how cute. The rats blushed like strawberrys as you complimented their cute noses. Thanks for making them feel special wecials!");
+	alert("All enemies now have +10 max health!");
+	enemyCurrentHealth += 10;
+	enemyMaxHealth += 10;
+	updateEnemyHealthValues();
+    }
+
+    else if(level1decision === "2") {
+        alert("Don't be shy now. Mr rat wants to have a hug. Here's a helmet to make you feel safer!");
+	alert("Health Increased by +10!");
+	currentHealth += 10;
+	maxHealth += 10;
+	updateHealthValues();
+    }
+
+    else if(level1decision === "3") {
+        alert("You attempt to run away like a coward...but you get bit in the leg reducing your max health by 10!");
+	currentHealth -= 10;
+	maxHealth -= 10;
+	updateHealthValues();
+    }
+
+    else if(level1decision === "4") {
+        alert("Now thats what we call a brave fighter...come on.. i wanna see those rats squished like pancakes!");
+	alert("Max Voltage + 5");
+	maxVoltage += 5;
+	updateVoltageValues();
+    }
+}
+
+function startIntro() {
+    alert("A portal opens. The devil smirks. One step into the unknown, and the age of humans fades. The dark ages rise again… and you are alone.");
+    alert("You have no idea who you are...who are you...tell us..");
+    playerName = prompt("Enter your forgotten name...");
+    alert("Welcome " + playerName + "!");
+    let playerClass = prompt
+(`Choose a class to determine your fate:
+1] Assassin 🗡️
+Quick and deadly, but fragile. One wrong move could spell disaster!
+HP: 100
+Voltage: 125
+Damage: 7
+
+[2] Mage 🔮
+Masters of the arcane, but frail in close combat. Spells are your lifeline.
+HP: 75
+Voltage: 300
+Damage: 1
+
+[3] Viking 🪓
+Armoured juggernauts with decent damage, but magic isn’t their strong suit.
+HP: 500
+Voltage: 40
+Damage: 5
+
+[4] Knight 🛡️
+The balanced warrior. Reliable in every situation, the default starting class.
+HP: 250
+Voltage: 100
+Damage: 2`)
+
+    if(playerClass === "1") {
+        alert("Assassin Selected!");
+
+	currentHealth = 100;
+	maxHealth = 100;
+	voltage = 125;
+	maxVoltage = 125;
+	playerDamage = 7;
+	
+	updateHealthValues();
+	updateVoltageValues();
+	playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage;
+
+alert(`🗡️Assassin Stats🗡️ 
+Health: 100
+Voltage: 125
+Damage: 7 `);
+	level1Story();
+
+    }
+
+    else if(playerClass === "2") {
+        alert("Mage Selected"); 
+	
+	currentHealth = 75;
+	maxHealth = 75;
+	voltage = 300;
+	maxVoltage = 300;
+	playerDamage = 1;
+	voltageSpeed /= 2;
+	
+	updateHealthValues();
+	updateVoltageValues();
+	playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage;
+
+alert(`🔮Mage Stats🔮 
+Health: 75
+Voltage: 300
+Voltage Regeneration: 2 V/Sec
+Damage: 1 `);
+	level1Story();
+    }
+
+    else if(playerClass === "3") {
+	alert("Viking Selected");
+
+	currentHealth = 500;
+	maxHealth = 500;
+	voltageoltage = 40;
+	maxVoltage = 40;
+	playerDamage = 5;
+	
+	updateHealthValues();
+	updateVoltageValues();
+	playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage;
+
+alert(`🪓Viking Stats🪓 
+Health: 500
+Voltage: 40
+Damage: 5 `);
+	level1Story();
+    }
+
+
+    else if(playerClass === "4") {
+        alert("Knight Selected!");	
+	
+alert(`⚔️Knight Stats⚔️ 
+Health: 250
+Voltage: 100
+Damage: 2 `)
+	level1Story();
+
+    }
+
+
+
+}
+
+if(introDecision === "1") {
+}
+
+else if(introDecision === "2") {
+    startIntro();
+}
+
+else if(introDecision === "3") {
+    let diceRoll = Math.floor(Math.random() * 2);
+    alert("Flipping coin...if it lands on heads your heading into the intro 😈")
+
+
+    if(diceRoll) {
+        alert("Heads🪙");
+	startIntro();
+    }
+
+    else if(!diceRoll) {
+        alert("Tails🪙");
+    }
+}
+
+else if(introDecision === "4") {
+    alert("Hmmm..that wasn't very nice. You know...I am god of this game! You can't just expect me to sit back in this comfy bed and watch people say how trash this game is. Do you really think you could get away with it! Huh. Well guess what. I got a trick up my sleeve!");
+    alert("I summon you...to death!");
+    alert("-999,999,999,999,999,999,999,999 HP");
+    currentHealth = -Infinity; 
+}
+
+
+
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
 
 // ========================================================
-// ☠️ Enemy Dies ☠️
+// ☠️ Enemy Dies ☠️																														//ENEMY DIES//
 // ========================================================
 
 function enemyDead() {
@@ -473,7 +780,7 @@ swordSlash.currentTime = 0;
 
 // ========================================================
 // 🛠️SHOW UPGRADE TABLES🛠️
-// ========================================================
+// ========================================================								                //UPGRADE TABLES//
 
 //🛠️UPGRADES BUTTON🛠️ - OPENS SKILL CLASSES
 upgrades.addEventListener("click", function() {
@@ -678,17 +985,58 @@ corruptionUpgrades.addEventListener("click", function() {
 // ========================================================
 
 
+function guardianRoll() {
+    let guardianNumber = Math.floor(Math.random() * 1000 + 1);
+    if(guardianNumber <= guardianChance) {
+        guardianFactor = 0;
+    }
+
+    else{
+        guardianFactor = 1;
+    }
+}
+
 
 // ========================================================
 // ⚡UPDATE RESOURCES/STATUS⚡
-// ========================================================
+// ========================================================								                //UPDATE RESOURCES//
 
 function updateHealthValues() {
     	HPPercentage = (currentHealth/maxHealth) * 100;
 	currentHealth = Math.round(currentHealth);
-    	hp.textContent = "HP: " + currentHealth + "/" + maxHealth;
+    	hp.textContent = playerName.toUpperCase() + " HP: " + currentHealth + "/" + maxHealth;
     	healthBar.style.width = HPPercentage + "%";
+
+if (HPPercentage > 90) {
+    healthBar.style.background = "linear-gradient(to bottom, #65ff00, #32cd32)";
+    hp.style.color = "black";
+} 
+else if (HPPercentage > 65 && HPPercentage <= 85){
+    healthBar.style.background = "linear-gradient(to bottom, #9dff00, #65ff00)";
+    hp.style.color = "black";
+} 
+else if (HPPercentage > 50 && HPPercentage <= 65){
+    healthBar.style.background = "linear-gradient(to bottom, #f6ff00, #9dff00)";
+    hp.style.color = "black";
+} 
+else if (HPPercentage > 35 && HPPercentage <= 50){
+    healthBar.style.background = "linear-gradient(to bottom, #ffbf00, #ffdd33)";
+    hp.style.color = "white";
+} 
+else if (HPPercentage > 15 && HPPercentage <= 35){
+    healthBar.style.background = "linear-gradient(to bottom, #ff7f00, #ffbf00)";
+    hp.style.color = "white";
+} 
+else if (HPPercentage > 0 && HPPercentage <= 15){
+    healthBar.style.background = "linear-gradient(to bottom, black, #ff0000)";
+    hp.style.color = "white";
 }
+
+ 
+	
+}
+
+updateHealthValues();
 
 function updateEnemyHealthValues() {
     	enemyHPPercentage = (enemyCurrentHealth/enemyMaxHealth) * 100;
@@ -702,7 +1050,7 @@ function updateXPValues() {
 	XPLabel.textContent = "XP: " + currentXP + "/" + requiredXP;
 }
 
-function updatePerks() {perk.textContent = "Perks: " + perks;}
+function updatePerks() {perk.textContent = "|" + "Skill Points: " + perks + "|";}
 
 function updateVoltageValues() {
         voltagePercentage = (voltage/maxVoltage) * 100;
@@ -711,8 +1059,6 @@ function updateVoltageValues() {
 
 }
 
-
-updateHealthValues();
 //LEVEL 2 STORY
 function level2Story() {
     alert("After surviving the swarm of " + enemyList[currentLevel - 1].toLowerCase() + "s" + ", your confidence grows… but so does the danger around you.");
@@ -1063,12 +1409,13 @@ level2Story, level3Story, level4Story, level5Story, level6Story,
 
 currentLevel = 1;
 
-// Level UP button
+// Level UP button//															//LEVEL UP BUTTON//
 levelUpButton.addEventListener("click", function() {
     // Check if player has enough XP
     if (currentXP >= requiredXP) {
 	
 	displayEnemy.textContent = enemyEmojis[currentLevel];
+	soldier.textContent = "Adds 1 " + soldierName[index] + " to your army dealing " + "+ " + knightDamage +  " damage per second";
 
 
 	
@@ -1094,7 +1441,7 @@ levelUpButton.addEventListener("click", function() {
         maxDamage += 3;
 	perks += currentLevel ;
 	perksEarnt += currentLevel;
-	perk.textContent = "|Perks: " + perks + "|";
+	perk.textContent = "|Skill Points: " + perks + "|";
         level.textContent = "|Level: " + currentLevel + "|";
 
 	updateXPValues();
@@ -1110,7 +1457,7 @@ levelUpButton.addEventListener("click", function() {
 
         setTimeout(function() {
             enemyDamage = previousEnemyDamage;
-	    enemyHealthBar.style.background = "linear-gradient(to left, green, black)";
+	    enemyHealthBar.style.background = "linear-gradient(to top, darkred, orange)";
 
 	  
         
@@ -1129,15 +1476,11 @@ levelUpButton.addEventListener("click", function() {
 });
 
 
-//UPDATES TEXT OF THE HEALTH BAR
-hp.textContent = "HP: " + currentHealth + "/" + maxHealth;
-
-
 
 criticalSfx.volume = 0.3;
 
 
-//LOSES HEALTH  BUT GAINS XP WHEN U PRESS ATTACK
+//LOSES HEALTH  BUT GAINS XP WHEN U PRESS ATTACK//											//ATTACK BUTTON//
 displayEnemy.addEventListener("click", function() {
 
     timesAttacked += 1;
@@ -1147,6 +1490,12 @@ displayEnemy.addEventListener("click", function() {
 	if(criticalWheel <= criticalChanceFactor) {
 	    criticalSfx.currentTime = 0;
 	    criticalSfx.play();
+
+	    
+	    enemyHealthBar.style.background = "linear-gradient(to right, orange, silver, white)";
+	    setTimeout(function() {
+	        enemyHealthBar.style.background = "linear-gradient(to top, darkred, orange)";
+	    },200)
 	    criticalHit = criticalDamageFactor;
 
 	    displayLabel.textContent = "Critical Hit!";
@@ -1227,7 +1576,7 @@ displayEnemy.addEventListener("click", function() {
 
 
 });
-
+//ATTACK BUTTON//														       	//ATTACK BUTTON//
 attack.addEventListener("click", function() {
 
     timesAttacked += 1;
@@ -1238,6 +1587,10 @@ attack.addEventListener("click", function() {
 	    criticalSfx.currentTime = 0;
 	    criticalSfx.play();
 	    criticalHit = criticalDamageFactor;
+	    enemyHealthBar.style.background = "linear-gradient(to right, orange, silver, white)";
+	    setTimeout(function() {
+	        enemyHealthBar.style.background = "linear-gradient(to top, darkred, orange)";
+	    },200)
 
 	    displayLabel.textContent = "Critical Hit!";
 	    displayLabel.style.background = "linear-gradient(to right, orange, silver, white)";
@@ -1292,7 +1645,7 @@ attack.addEventListener("click", function() {
             currentXP = requiredXP;
 	    updateXPValues;
 	    active = 0;
-	    levelUpButton.style.display = "block";
+	    levelUpButton.style.display = "inline";
 
         }
 
@@ -1322,7 +1675,7 @@ attack.addEventListener("click", function() {
 
 
 
-// HEALS UPON CLICK
+// HEALS UPON CLICK//															     //HEAL BUTTON//
 healButton.addEventListener("click", function() {
 
 
@@ -1338,6 +1691,7 @@ healButton.addEventListener("click", function() {
 	displayLabel.style.background = "linear-gradient(to left, red, red, red, black)";
 	displayLabel.style.opacity = 1;
 
+
 	setTimeout(function() {
  	    displayLabel.style.opacity = 0;
 	    
@@ -1351,7 +1705,7 @@ healButton.addEventListener("click", function() {
         voltageText.textContent = "Voltage: " + voltage + "/" + maxVoltage;
 
     	HPPercentage = (currentHealth/maxHealth) * 100;
-    	hp.textContent = "HP: " + currentHealth + "/" + maxHealth;
+    	hp.textContent = playerName.toUpperCase() + " HP: " + currentHealth + "/" + maxHealth;
     	healthBar.style.width = HPPercentage + "%";
 
     }
@@ -1387,7 +1741,7 @@ healButton.addEventListener("click", function() {
 
         
         healthBar.style.width = currentHealth + "%";
-        hp.textContent = "HP: " + currentHealth + "/" + maxHealth;
+        hp.textContent = playerName.toUpperCase() + " HP: " + currentHealth + "/" + maxHealth;
     }
 
 
@@ -1398,7 +1752,7 @@ healButton.addEventListener("click", function() {
 
 let upgradesOpen = false;
 
-//OPENS UPGRADE MENU
+//OPENS UPGRADE MENU//														       //OPEN UPGRADE MENU//
 upgrades.addEventListener("click",function() {
     if(!upgradesOpen) {
         upgradesGUI.style.display = "block";
@@ -1416,7 +1770,7 @@ upgrades.addEventListener("click",function() {
 
 let totalHealth = 0;
 
-//MAX HEALTH UPGRADE
+//MAX HEALTH UPGRADE//														      //MAX HEALTH UPGRADE//
 maxHealthUpgrade.addEventListener("click", function() {
     if(perks >= 1) {
         perks -= 1;
@@ -1446,7 +1800,7 @@ maxHealthUpgrade.addEventListener("click", function() {
 
 let totalHeal = 0;
 
-//HEAL UPGRADE
+//HEAL UPGRADE//															//HEAL UPGRADE//
 healUpgrade.addEventListener("click", function() {
     if(perks >= 1) {
         perks -= 1;
@@ -1475,7 +1829,7 @@ healUpgrade.addEventListener("click", function() {
 // 1000 ON THE END INDICATES THIS FUNCTION OCCURS ONCE PER SECOND
 
 
-
+//VOLTAGE LOOP//														            //VOLTAGE LOOP//														
 function runVoltageLoop() {
 
     clearInterval(voltageInterval);
@@ -1503,7 +1857,7 @@ let xpPerksRequired = 2;
 const xpPerksCost = document.querySelector("#xp-perks-cost")
 const xpPerksRequiredText = document.querySelector("#xp-perks-required");
 
-//AUTO XP UPGRADE//
+//AUTO XP UPGRADE//															 //AUTO XP UPGRADE//
 autoXP.addEventListener("click", function() {
     if(perks >= xpPerksRequired) {
         perks -= xpPerksRequired;
@@ -1531,7 +1885,7 @@ autoXP.addEventListener("click", function() {
 
 
 
-// AUTO HARVESTS XP POINTS - 1 XP PER SEC
+// AUTO HARVESTS XP POINTS//														    //AUTO MINE XP//
 function autoMineXP() {
     clearInterval(xpInterval)
         xpInterval = setInterval(function() {
@@ -1556,7 +1910,7 @@ function autoMineXP() {
 
 };
 
-//AUTO HP UPGRADE//
+//AUTO HP UPGRADE//															 //AUTO HP UPGRADE//
 autoHP.addEventListener("click", function() {
     if(perks >= 5 && !purchasedHP) {
         purchasedXP = true;
@@ -1580,7 +1934,7 @@ autoHP.addEventListener("click", function() {
 let hpRegen = 0;
 let regenActive = 1;
 
-// AUTO REGENERATES HP POINTS - 1 HP PER SEC
+// AUTO REGENERATES HP POINTS//														   //AUTO REGEN HP//
 function autoMineHP() {
     hpRegen += 1
     regenerateHpMagnitude.textContent = "+ " + hpRegen + "/s";
@@ -1602,7 +1956,7 @@ function autoMineHP() {
 	   
 
     	    HPPercentage = (currentHealth/maxHealth) * 100;
-    	    hp.textContent = "HP: " + currentHealth + "/" + maxHealth;
+    	    hp.textContent = playerName.toUpperCase() + " HP: " + currentHealth + "/" + maxHealth;
     	    healthBar.style.width = HPPercentage + "%";
 	    
 
@@ -1617,7 +1971,7 @@ function autoMineHP() {
 let fromLeft = 500;
 
 
-// VOLTAGE BOOST UPGRADE
+// VOLTAGE BOOST UPGRADE//														   //VOLTAGE BOOST//
 voltageUpgrade.addEventListener("click", function() {
     if(perks >= 2){
 
@@ -1643,7 +1997,7 @@ let healthRestored;
 let totalHealthRestored = 0;
 let requiredRefillHealth = 3;
 
-//REFILL HEALTH UPGRADE
+//REFILL HEALTH UPGRADE//													   //REFILL HEALTH UPGRADE//
 refillHealthUpgrade.addEventListener("click", function() {
 
     if(perks >= requiredRefillHealth && currentHealth < maxHealth) {
@@ -1672,7 +2026,7 @@ refillHealthUpgrade.addEventListener("click", function() {
 
 // ========================================================
 // 🔊 ENDING / DEATH SOUNDS ARRAY
-// ========================================================
+// ========================================================										  //DEATH FUNCTION//
 let endingSounds = [zombieAttack, deadRobot, deadWalking, wolfHowling, dramaticEnding, creepyWoman, beheading, heartBeep];
 let randomSfx;
                                                                                               
@@ -1712,7 +2066,8 @@ Gold Earned: ${goldEarnt.toLocaleString()}
         }
  
         else{
-            currentHealth -= enemyDamage;
+	    guardianRoll();
+            currentHealth -= enemyDamage * guardianFactor;
 	    updateHealthValues();
         }
 
@@ -1724,7 +2079,7 @@ Gold Earned: ${goldEarnt.toLocaleString()}
 
 enemyAttack();
 
-//ATTACK UPGRADE
+//ATTACK UPGRADE//														          //ATTACK UPGRADE//
 upgradeDamage.addEventListener("click", function() {
     if(perks >= 1) {
 
@@ -1743,7 +2098,7 @@ upgradeDamage.addEventListener("click", function() {
 });
 
 
-//VAMPIRISM UPGRADE
+//VAMPIRISM UPGRADE//														       //VAMPIRISM UPGRADE//
 stealHP.addEventListener("click", function() {
     if(perks >= 1) {
         perks-= 1;
@@ -1759,7 +2114,7 @@ stealHP.addEventListener("click", function() {
 });
 
 
-//RECHARGE VOLTAGE
+//RECHARGE VOLTAGE														        //RECHARGE VOLTAGE//
 charge.addEventListener("click", function() {
     voltage += 1;
     enemyCurrentHealth += 1;
@@ -1779,6 +2134,7 @@ charge.addEventListener("click", function() {
 
 });
 
+//FREEZE BUTTON																   //FREEZE BUTTON//
 freeze.addEventListener("click", function() {
     if(voltage >= maxVoltage) {
 	voltage = 0;
@@ -1790,7 +2146,7 @@ freeze.addEventListener("click", function() {
 
         setTimeout(function() {
             enemyDamage = previousEnemyDamage;
-	    enemyHealthBar.style.background = "linear-gradient(to left, green, black)";
+	    enemyHealthBar.style.background = "linear-gradient(to top, darkred, orange)";
 
 	  
         
@@ -1802,7 +2158,7 @@ freeze.addEventListener("click", function() {
 
 
 
-//MR BOXXY WOXXY
+//MR BOXXY WOXXY															  //MR BOXXY WOXXY//
 
 document.addEventListener("keydown", function(event) {
     key = event.key;
@@ -1815,7 +2171,7 @@ document.addEventListener("keydown", function(event) {
 });
 
 
-//DEV COMMANDS
+//DEV COMMANDS																    //DEV COMMANDS//
 
 devConsole.addEventListener("keydown", function(event) {
 
@@ -1847,14 +2203,14 @@ let knightsPerksRequired = 5;
 let knightInterval;
 let armyDamage = 0;
 
+let knightDamage = 0;
 
-
-// KNIGHT FUNCTION
+// KNIGHT FUNCTION															//KNIGHT FUNCTION//
 function knightAttack() {
-    armyDamage += 1;
+    armyDamage += knightDamage;
     clearInterval(knightInterval);
     knightInterval = setInterval(function() {
-	enemyCurrentHealth -= armyDamage;
+	enemyCurrentHealth -= knightDamage;
 	updateEnemyHealthValues();
 
 
@@ -1871,23 +2227,35 @@ function knightAttack() {
 
 }
 
-
-// RECRUIT KNIGHT
-
-
+let difference = 0;
+// RECRUIT KNIGHT															//RECRUIT KNIGHT//
+let knightIncrementation = 1;
+let index = 0;
 recruitKnight.addEventListener("click", function() {
-    if(perks >= knightsPerksRequired ) {
-	alert("You recruit a knight to join your army dealing -1 HP/SEC to your enemies!");
-	
+    if(perks >= knightsPerksRequired ) {	
         perks -= knightsPerksRequired;
+	knightDamage += knightIncrementation;
+	knightIncrementation += 1;
 
     	purchaseSkill.currentTime = 0;
     	purchaseSkill.play();
+	
+	
+	previousKnightDamage = knightDamage
+	
 
-        knightsPerksRequired += 5 * currentLevel;
+	soldier.textContent = "Adds 1 " + soldierName[index] + " to your army dealing " + "+ " + knightIncrementation +  " damage per second";
+	recruitKnight.textContent = soldierName[index];
+	index += 1;
+	
+
+
+
+
+        knightsPerksRequired += 3;
 	knightQuantity += 1;
-	armyTextDamage = armyDamage + 1;
-	armyDps.textContent = "|Army DPS: " + armyTextDamage + "|";
+	armyTextDamage = knightDamage;
+	armyDps.textContent = "|Army DPS: " + knightDamage + "|";
 	knightsDisplay.textContent = "Army Size: " + "⚔️" + " x" + knightQuantity;
 
 	updatePerks();
@@ -1896,7 +2264,7 @@ recruitKnight.addEventListener("click", function() {
 
 
 	perksRequiredLabel.textContent = knightsPerksRequired;
-	knightsMagnitude.textContent = knightQuantity + " Knights"; 
+	knightsMagnitude.textContent = knightQuantity + " Companions"; 
         
 	
 	
@@ -1906,14 +2274,19 @@ recruitKnight.addEventListener("click", function() {
 
 });
 
+//BUY PERK UPGRADE		                                                                                                        //BUY PERK UPGRADE//														
 buyPerk.addEventListener("click", function() {
     if(goldValue >= perkCost) {
+
+    	purchaseSkill.currentTime = 0;
+    	purchaseSkill.play();
+
         goldValue -= perkCost;
         perks += 1;
 	perkCost += Math.floor((requiredXP/2) + 100);
         
         gold.textContent = "Gold: " + goldValue;
-	buyPerk.textContent = "Buy Perk: " + perkCost + " Gold";
+	buyPerk.textContent = "Buy Skill Point: " + perkCost + " Gold";
         updatePerks();
     }
     
@@ -1923,15 +2296,15 @@ buyPerk.addEventListener("click", function() {
 
 drCost = 10;
 
+//DAMAGE RESISTANCE UPGRADE												       //DAMAGE RESISTANCE UPGRADE//
 drButton.addEventListener("click", function() {
     if(perks >= drCost) {
         purchaseSkill.currentTime = 0;
         purchaseSkill.play();
 
         perks -= drCost;
-	drCost *= 3;
-	drCost -= 15;
-	damageResistance += 5;
+	drCost += 15;
+	damageResistance += 1;
 	
 	drDecimal = 1 - (damageResistance/100);
 	
@@ -1961,6 +2334,7 @@ const concentrationMagnitude = document.querySelector("#concentration-magnitude"
 const concentrationPerksLabel = document.querySelector("#concentration-perks");
 let concentrationPerks = 5;
 
+//CONCENTRATION UPGRADE														   //CONCENTRATION UPGRADE//
 concentrationButton.addEventListener("click", function() {
     if(perks >= concentrationPerks) {
         perks -= concentrationPerks;
@@ -1976,7 +2350,7 @@ concentrationButton.addEventListener("click", function() {
 
 const ghostMagnitude = document.querySelector("#ghost-magnitude");
 
-
+//GHOST UPGRADE																    GHOST UPGRADE//
 ghostButton.addEventListener("click", function() {
     if(!ghostPurchased && playerDamage >= 4) {
  
@@ -2004,7 +2378,7 @@ ghostButton.addEventListener("click", function() {
 
 
 
-
+//MAX VOLTAGE UPGRADE														       MAX VOLTAGE UPGRADE//
 maxVoltageUpgrade.addEventListener("click", function() {
     if(perks >= maxVoltagePerksCost) {
 	
@@ -2033,7 +2407,7 @@ let windowWidth = window.innerWidth;
 
 
 
-
+//MOVING CLOUD 														                      MOVING CLOUD//
 function moveCloud1() {
     setInterval(function() {
 	left += 2;
@@ -2060,16 +2434,44 @@ function moveCloud1() {
 moveCloud1();
 
 
+//PAUSE BUTTON																      PAUSE BUTTON//
+
+const pause = document.querySelector("#pause");
+
+pause.addEventListener("click", function() {
+    alert("Game Paused");
+});
+
+
+const refresh = document.querySelector("#refresh");
+
+refresh.addEventListener("click", function() {
+    location.reload();
+});
 
 
 
-perks = 0;
 
 
+function guardianRoll() {
+    let guardianNumber = Math.floor(Math.random() * 1000 + 1);
+    if(guardianNumber <= guardianChance) {
+        guardianFactor = 0;
+    }
 
+    else{
+        guardianFactor = 1;
+    }
+}
 
+guardianAngelUpgrade.addEventListener("click", function() {
+    if(perks >= guardianRequiredPerks) {
+        perks-= guardianRequiredPerks;
+	guardianRequiredPerks += 10;
+	guardianChance += 5;
+	guardianAngelPerksCost.textContent = guardianRequiredPerks;
+	guardianAngelMagnitude.textContent = guardianChance/10 + "%";
 
-
-
-
-
+	updatePerks();
+    }
+});

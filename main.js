@@ -1,284 +1,3 @@
-// ========================================================
-// 🎮 GAME STATE VARIABLES
-// ========================================================
-let goldMultiplier = 1;
-let executionFactor = 0;
-
-
-// ------------------- PLAYER STATS ----------------------
-let currentHealth = 250;
-let maxHealth = 250;
-let currentXP = 0;
-let currentLevel = 1;
-let perks = 0; 
-let playerDamage = 2;
-let minDamage = 1;
-let maxDamage = 10;
-let heal = 20;
-let active = 1; 
-let concentrationFactor = 1; 
-let goldFactor = 1;
-let requiredXP = 200;
-
-
-let adrenalineFactor = 2;
-
-//END STATS
-let timesAttacked = 0;
-let enemiesKilled = 0;
-let perksEarnt = 0;
-let goldEarnt = 0;
-let xpEarnt = 0;
-
-// Army / Recruit Stats
-let goldValue = 0;
-let knightQuantity = 0;
-
-// Damage Resistance
-let damageResistance = 1;
-
-// Ghost / Special Effects
-let ghostDamageFactor = 1;
-let ghostPurchased = false;
-
-// Dark Rituals / DR Perks
-let drCost = 1;
-
-// Perk Costs
-let perkCost = 100;
-
-// ------------------- ENEMY STATS ----------------------
-let baseEnemyDamage = 1;
-let enemyDamage = 1 * damageResistance;
-let enemyCurrentHealth = 20;
-let enemyMaxHealth = 20;
-
-// ------------------- VOLTAGE SYSTEM -------------------
-let voltage = 100;
-let maxVoltage = 100;
-let voltageSpeed = 1000;
-let voltageLevel = 1;
-
-// Max Voltage Upgrade
-let maxVoltagePerksCost = 5;
-let addedVoltage = 0;
-
-// ------------------- INTERVALS & FACTORS -------------
-let xpInterval;
-let hpInterval;
-let voltageInterval;
-let enemyInterval;
-let xpIntervalFactor = 0;
-let xpFactor;
-let randomXP;
-let healthFactor = 0;
-
-// ------------------- PURCHASED UPGRADES --------------
-let purchasedXP = false;
-let purchasedHP = false;
-
-// ------------------- PERCENTAGES ----------------------
-let XPPercentage;
-let HPPercentage;
-let EnemyHPPercentage;
-
-
-//GUARDIAN ANGEL UPGRADE
-let guardianRequiredPerks = 5;
-let guardianChance = 0;
-let guardianFactor = 1;
-
-let presentPlayerDamage;
-
-// ========================================================
-// 🧍 PLAYER / ENEMY UI ELEMENTS
-// ========================================================
-
-// Player UI
-const hp = document.querySelector("#hp");
-const healthBar = document.querySelector("#health-bar");
-const healthContainer = document.querySelector("#health-container");
-const playerDamageLabel = document.querySelector("#player-damage");
-
-// Enemy UI
-const enemyHP = document.querySelector("#enemy-hp");
-const enemyHealthBar = document.querySelector("#enemy-health-bar");
-const enemyHealthContainer = document.querySelector("#enemy-health-container");
-
-// XP / Level UI
-const XPPoints = document.querySelector("#xp-points");
-const XPLabel = document.querySelector("#XP");
-const level = document.querySelector("#level");
-const perk = document.querySelector("#perk");
-const requiredXPLabel = document.querySelector("#required-xp");
-
-// ========================================================
-// 🔘 PLAYER ACTION BUTTONS
-// ========================================================
-const attack = document.querySelector("#attack");
-const healButton = document.querySelector("#heal");
-
-// Automation Buttons
-const autoXP = document.querySelector("#auto-xp");
-const autoHP = document.querySelector("#regenerate-hp");
-
-// ========================================================
-// 🛠 UPGRADES / SHOP
-// ========================================================
-
-// General Upgrades
-const upgrades = document.querySelector("#upgrades");
-const upgradesGUI = document.querySelector("#upgrades-gui");
-const upgradeDamage = document.querySelector("#upgrade-damage");
-const maxHealthUpgrade = document.querySelector("#max-health-upgrade");
-const healUpgrade = document.querySelector("#heal-upgrade");
-const refillHealthUpgrade = document.querySelector("#refill-health");
-const voltageUpgrade = document.querySelector("#voltage-upgrade");
-const requiredRefillPerks = document.querySelector("#required-refill-perks");
-const gold = document.querySelector("#gold");
-const buyPerk = document.querySelector("#buy-perk");
-
-// Defense Upgrades
-const defenseUpgrades = document.querySelector("#defense-upgrades");
-const defenseTable = document.querySelector("#defense-table");
-
-// Corruption Upgrades
-const corruptionUpgrades = document.querySelector("#corruption-upgrades");
-const corruptionTable = document.querySelector("#corruption-table");
-
-// Army / Knights
-const recruitKnight = document.querySelector("#recruit-knight");
-const perksRequiredLabel = document.querySelector("#perks-required");
-const knightsMagnitude = document.querySelector("#knights-magnitude");
-const knightsDisplay = document.querySelector("#knights-display");
-const armyTable = document.querySelector("#army-table");
-const armyUpgrades = document.querySelector("#army-upgrades");
-const armyDps = document.querySelector("#army-damage");
-
-// Max Voltage Upgrade UI
-const maxVoltageUpgrade = document.querySelector("#max-voltage-upgrade");
-const maxVoltageCost = document.querySelector("#max-voltage-cost");
-const maxVoltageMagnitude = document.querySelector("#max-voltage-magnitude");
-
-// DR / Damage Resistance UI
-const drPerks = document.querySelector("#dr-perks");
-const drMagnitude = document.querySelector("#dr-magnitude");
-const drButton = document.querySelector("#dr-button");
-const drLabel = document.querySelector("#dr-label");
-
-// Ghost Button
-const ghostButton = document.querySelector("#ghost-button");
-
-// ========================================================
-// ⚡ VOLTAGE SYSTEM UI
-// ========================================================
-const voltageBar = document.querySelector("#voltage-bar");
-const voltageText = document.querySelector("#voltage-text");
-const concentrationButton = document.querySelector("#concentration-button");
-
-// ========================================================
-// 🧩 MISC / OTHER ELEMENTS
-// ========================================================
-const healCost = document.querySelector("#heal-cost");
-const healPower = document.querySelector("#heal-power");
-const maxDamageLabel = document.querySelector("#max-damage");
-
-const mrBox = document.querySelector("#box");
-const stealHP = document.querySelector("#steal-hp");
-const charge = document.querySelector("#charge");
-const freeze = document.querySelector("#freeze");
-const devConsole = document.querySelector("#dev-console");
-const levelUpButton = document.querySelector("#level-up-button");
-const displayEnemy = document.querySelector("#display-enemy");
-
-const guardianAngelUpgrade = document.querySelector("#guardian-angel-upgrade");
-const guardianAngelMagnitude = document.querySelector("#guardian-angel-magnitude");
-const guardianAngelPerksCost = document.querySelector("#guardian-angel-perks-cost");
-
-const soldier = document.querySelector("#soldier");
-
-// ========================================================
-// 🔊 SOUND EFFECTS
-// ========================================================
-const swordSlash = document.querySelector("#sword-slash");
-swordSlash.volume = 0.2;
-
-const healSfx = document.querySelector("#heal-sfx");
-const levelUpSfx = document.querySelector("#level-up-sfx");
-const displayLabel = document.querySelector("#display-label");
-const zombieAttack = document.querySelector("#zombie-attack");
-
-const deadRobot = document.querySelector("#dead-robot");
-const deadWalking = document.querySelector("#dead-walking");
-const wolfHowling = document.querySelector("#wolf-howling");
-const dramaticEnding = document.querySelector("#dramatic-ending");
-const creepyWoman = document.querySelector("#creepy-woman");
-const beheading = document.querySelector("#beheading");
-
-const purchaseSkill = document.querySelector("#purchase-skill");
-const ghostWhisper = document.querySelector("#ghost-whisper");
-const knifeSfx = document.querySelector("#knife-sfx");
-const revolverSfx = document.querySelector("#revolver-sfx");
-const heartBeep = document.querySelector("#heart-beep");
-const electricitySfx = document.querySelector("#electricity-sfx");
-const criticalSfx = document.querySelector("#critical-sfx");
-const swordKill = document.querySelector("#sword-kill");
-const rage = document.querySelector("#rage");
-const fireballSfx = document.querySelector("#fireball-sfx");
-const iceSfx = document.querySelector("#ice-sfx");
-
-
-// ========================================================
-// 🔢 MAGNITUDE ELEMENTS (MOTIVATION BOOSTERS)
-// ========================================================
-const refillHealthMagnitude = document.querySelector("#refill-health-magnitude");
-const maxHealthMagnitude = document.querySelector("#max-health-magnitude");
-const healUpgradeMagnitude = document.querySelector("#heal-upgrade-magnitude");
-const regenerateHpMagnitude = document.querySelector("#regenerate-hp-magnitude");
-const stealHpMagnitude = document.querySelector("#steal-hp-magnitude");
-const autoXpMagnitude = document.querySelector("#auto-xp-magnitude");
-const voltageUpgradeMagnitude = document.querySelector("#voltage-upgrade-magnitude");
-const upgradeDamageMagnitude = document.querySelector("#upgrade-damage-magnitude");
-
-const fireball = document.querySelector("#fireball");
-const flameAnimation = document.querySelector("#flame-animation");
-const fireballUpgrade = document.querySelector("#fireball-upgrade");
-
-const fireballMagnitude = document.querySelector("#fireball-magnitude");
-
-const superNova = document.querySelector("#super-nova");
-const superNovaPerksRequired = document.querySelector("#super-nova-perks-required")
-const superNovaMagnitude = document.querySelector("#super-nova-magnitude");
-
-const spellTable = document.querySelector("#spell-upgrades-table");
-const spellUpgrades = document.querySelector("#spell-upgrades");
-
-const adrenalineUpgrade = document.querySelector("#adrenaline-upgrade");
-const adrenaline = document.querySelector("#adrenaline");
-const adrenalineMagnitude = document.querySelector("#adrenaline-magnitude");
-
-const freezeUpgrade = document.querySelector("#freeze-upgrade");
-const freezeMagnitude = document.querySelector("#freeze-magnitude");
-
-const noMercyUpgrade = document.querySelector("#no-mercy-upgrade");
-const noMercyPerksRequired = document.querySelector("#no-mercy-perks-required");
-const noMercyMagnitude = document.querySelector("#no-mercy-magnitude");
-
-const incomeTable = document.querySelector("#income-table");
-const incomeUpgrades = document.querySelector("#income-upgrades");
-
-const luckyFingersUpgrade = document.querySelector("#lucky-fingers-upgrade");
-const luckyFingersPerksRequired = document.querySelector("#lucky-fingers-perks-required");
-const luckyFingersMagnitude = document.querySelector("#lucky-fingers-magnitude");
-
-const shockwaveUpgrade = document.querySelector("#shockwave-upgrade");
-const shockwavePerksRequired = document.querySelector("#shockwave-perks-required");
-const shockwaveMagnitude = document.querySelector("#shockwave-magnitude");
-
-const executionUpgrade = document.querySelector("#execution-upgrade");
-const executionPerksRequired = document.querySelector("#execution-perks-required");
-const executionMagnitude = document.querySelector("#execution-magnitude");
-
 
 // ========================================================
 // 🔢 ENEMY LIST ARRAY
@@ -458,7 +177,7 @@ function startIntro() {
 Quick and deadly, but fragile. One wrong move could spell disaster!
 HP: 100
 Voltage: 125
-Damage: 7
+Damage: 12
 
 [2] Mage 🔮
 Masters of the arcane, but frail in close combat. Spells are your lifeline.
@@ -1108,12 +827,25 @@ function level2Story() {
     }
 
     else if(decision2 === "2") {
-        alert("You tried to hack the safe but you had no luck guessing the password. Good try though!")
-	alert("You tired yourself out! -10 Max Voltage!")
-	maxVoltage -= 10;
-	updateVoltageValues();
+	pin = prompt
+(`Enter Pin
+_ _ _ _`)
+	if(pin === "1234") {
+  	    alert("You successfully guessed the pin and found some rubies, a pen, an old hat and a box of diamonds!")
+	    alert("+ 3500 Gold!");
+	    goldValue += 3000;
+	    gold.textContent = "Gold: " + goldValue;
+        }
 
-	alert("A swarm of " + enemyList[currentLevel].toLowerCase() + "s " + "glide through the living room door and surround you! Forget the safe, forget everything! Grab your knife and fight, they’re after your blood!");
+	else{
+            alert("You tried to hack the safe but you had no luck guessing the password. Good try though!")
+	    alert("You tired yourself out! -10 Max Voltage!")
+	    maxVoltage -= 10;
+	    updateVoltageValues();
+
+	    alert("A swarm of " + enemyList[currentLevel].toLowerCase() + "s " + "glide through the living room door and surround you! Forget the safe, forget everything! Grab your knife   and fight, they’re after your blood!");
+        }
+
 
     }
 
@@ -2481,6 +2213,7 @@ paused = false;
 pause.addEventListener("click", function() {
     if(!paused) {
 	let query = prompt
+
 (`Game Paused!
 Would you like to see the help menu whilst you are here?
 [1] Yes please!
@@ -2818,4 +2551,3 @@ executionUpgrade.addEventListener("click", function() {
 	
     }
 });
-

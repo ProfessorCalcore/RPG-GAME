@@ -2481,7 +2481,8 @@ paused = false;
 pause.addEventListener("click", function() {
     if(!paused) {
 	let query = prompt
-(`Would you like to see the help menu whilst you are here?
+(`Game Paused!
+Would you like to see the help menu whilst you are here?
 [1] Yes please!
 [2] Um...nah I'm good!
 `)
@@ -2565,7 +2566,7 @@ alert(`
     }
     
     else{
-	alert("You are now weak again!");
+	alert("Game Resumed!");
         paused = false;
 	currentHealth = presentHealth;
 	voltage = presentVoltage;
@@ -2817,3 +2818,4 @@ executionUpgrade.addEventListener("click", function() {
 	
     }
 });
+

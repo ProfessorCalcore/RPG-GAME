@@ -1,6 +1,9 @@
 // ========================================================
 // 🎮 GAME STATE VARIABLES
 // ========================================================
+let goldMultiplier = 1;
+let executionFactor = 0;
+
 
 // ------------------- PLAYER STATS ----------------------
 let currentHealth = 250;
@@ -11,11 +14,14 @@ let perks = 0;
 let playerDamage = 2;
 let minDamage = 1;
 let maxDamage = 10;
-let heal = 10;
+let heal = 20;
 let active = 1; 
 let concentrationFactor = 1; 
 let goldFactor = 1;
 let requiredXP = 200;
+
+
+let adrenalineFactor = 2;
 
 //END STATS
 let timesAttacked = 0;
@@ -81,6 +87,8 @@ let EnemyHPPercentage;
 let guardianRequiredPerks = 5;
 let guardianChance = 0;
 let guardianFactor = 1;
+
+let presentPlayerDamage;
 
 // ========================================================
 // 🧍 PLAYER / ENEMY UI ELEMENTS
@@ -214,6 +222,11 @@ const revolverSfx = document.querySelector("#revolver-sfx");
 const heartBeep = document.querySelector("#heart-beep");
 const electricitySfx = document.querySelector("#electricity-sfx");
 const criticalSfx = document.querySelector("#critical-sfx");
+const swordKill = document.querySelector("#sword-kill");
+const rage = document.querySelector("#rage");
+const fireballSfx = document.querySelector("#fireball-sfx");
+const iceSfx = document.querySelector("#ice-sfx");
+
 
 // ========================================================
 // 🔢 MAGNITUDE ELEMENTS (MOTIVATION BOOSTERS)
@@ -227,223 +240,88 @@ const autoXpMagnitude = document.querySelector("#auto-xp-magnitude");
 const voltageUpgradeMagnitude = document.querySelector("#voltage-upgrade-magnitude");
 const upgradeDamageMagnitude = document.querySelector("#upgrade-damage-magnitude");
 
+const fireball = document.querySelector("#fireball");
+const flameAnimation = document.querySelector("#flame-animation");
+const fireballUpgrade = document.querySelector("#fireball-upgrade");
+
+const fireballMagnitude = document.querySelector("#fireball-magnitude");
+
+const superNova = document.querySelector("#super-nova");
+const superNovaPerksRequired = document.querySelector("#super-nova-perks-required")
+const superNovaMagnitude = document.querySelector("#super-nova-magnitude");
+
+const spellTable = document.querySelector("#spell-upgrades-table");
+const spellUpgrades = document.querySelector("#spell-upgrades");
+
+const adrenalineUpgrade = document.querySelector("#adrenaline-upgrade");
+const adrenaline = document.querySelector("#adrenaline");
+const adrenalineMagnitude = document.querySelector("#adrenaline-magnitude");
+
+const freezeUpgrade = document.querySelector("#freeze-upgrade");
+const freezeMagnitude = document.querySelector("#freeze-magnitude");
+
+const noMercyUpgrade = document.querySelector("#no-mercy-upgrade");
+const noMercyPerksRequired = document.querySelector("#no-mercy-perks-required");
+const noMercyMagnitude = document.querySelector("#no-mercy-magnitude");
+
+const incomeTable = document.querySelector("#income-table");
+const incomeUpgrades = document.querySelector("#income-upgrades");
+
+const luckyFingersUpgrade = document.querySelector("#lucky-fingers-upgrade");
+const luckyFingersPerksRequired = document.querySelector("#lucky-fingers-perks-required");
+const luckyFingersMagnitude = document.querySelector("#lucky-fingers-magnitude");
+
+const shockwaveUpgrade = document.querySelector("#shockwave-upgrade");
+const shockwavePerksRequired = document.querySelector("#shockwave-perks-required");
+const shockwaveMagnitude = document.querySelector("#shockwave-magnitude");
+
+const executionUpgrade = document.querySelector("#execution-upgrade");
+const executionPerksRequired = document.querySelector("#execution-perks-required");
+const executionMagnitude = document.querySelector("#execution-magnitude");
 
 
 // ========================================================
 // 🔢 ENEMY LIST ARRAY
 // ========================================================
 
+// enemyList condensed: remove exact duplicates
 const enemyList = [
-  "RAT",
-  "BAT",
-  "SPIDER",
-  "SNAKE",
-  "LIZARD",
-  "CAT",
-  "DOG",
-  "FERALCAT",
-  "COUGAR",
-  "HYENA",
-  "SCORPION",
-  "CRAB",
-  "CROW",
-  "IMP",
-  "KOBOLD",
-  "GOBLIN",
-  "TROLL",
-  "OGRE",
-  "STONEGOLEM",
-  "IRONOGRE",
-  "SHADOWCAT",
-  "FIREBAT",
-  "ICEWOLF",
-  "VENOMSCORPION",
-  "SPIKERAT",
-  "RAZORBAT",
-  "SHIVERWOLF",
-  "BLOODWYRM",
-  "PHOENIX",
-  "WYRM",
-  "DRAGON",
-  "DARKWRAITH",
-  "VAMPIRE",
-  "REVENANT",
-  "BEHEMOTH",
-  "HELLFIRE",
-  "NIGHTDEMON",
-  "VOIDDRAGON",
-  "FROSTLEVIATHAN",
-  "BLAZEKRAKEN",
-  "TITAN",
-  "COLOSSUS",
-  "NIGHTFANG",
-  "LEVIATHAN",
-  "SPECTER",
-  "ABYSS",
-  "OMNIS",
-  "APEX",
-  "SINGULARITY",
-  "EMBERCAT",
-  "ICEPYTHON",
-  "FIREHYENA",
-  "STORMCOUGAR",
-  "CRAGCRAB",
-  "SKYFERALCAT",
-  "IRONCROW",
-  "STONEGOBLIN",
-  "HELLKOBOLD",
-  "DARKTROLL",
-  "VOLCANOOGRE",
-  "FROSTWYRM",
-  "BLOODPHOENIX",
-  "INFERNODRAGON",
-  "NIGHTWRAITH",
-  "OMNISPECTER",
-  "APEXLEVIATHAN",
-  "SINGULARITYBEHEMOTH",
-  "ABYSSKRAKEN",
-  "VOIDNIGHTFANG",
-  "COSMOSREVENANT",
-  "HELLFANG",
-  "FIREBEAST",
-  "ICEBEAST",
-  "THUNDERBEAST",
-  "SHADOWBEAST",
-  "VOIDBEAST",
-  "NIGHTBEAST",
-  "APEXBEAST",
-  "ULTIMABEAST",
-  "CELESTIALDRAGON",
-  "VOIDTITAN",
-  "INFERNOTITAN",
-  "ETHERWYRM",
-  "COSMOSTITAN",
-  "OBLIVIONBEAST",
-  "ETERNALDRAGON",
-  "SINGULARITYTITAN",
-  "OMEGA",
-  "NULL",
-  "SINGULARITY"
+  "RAT","BAT","SPIDER","SNAKE","LIZARD","CAT","DOG","FERALCAT","COUGAR","HYENA",
+  "SCORPION","CRAB","CROW","IMP","KOBOLD","GOBLIN","TROLL","OGRE","STONEGOLEM",
+  "IRONOGRE","SHADOWCAT","FIREBAT","ICEWOLF","VENOMSCORPION","SPIKERAT","RAZORBAT",
+  "SHIVERWOLF","BLOODWYRM","PHOENIX","WYRM","DRAGON","DARKWRAITH","VAMPIRE","REVENANT",
+  "BEHEMOTH","HELLFIRE","NIGHTDEMON","VOIDDRAGON","FROSTLEVIATHAN","BLAZEKRAKEN",
+  "TITAN","COLOSSUS","NIGHTFANG","LEVIATHAN","SPECTER","ABYSS","OMNIS","APEX",
+  "SINGULARITY","EMBERCAT","ICEPYTHON","FIREHYENA","STORMCOUGAR","CRAGCRAB",
+  "SKYFERALCAT","IRONCROW","STONEGOBLIN","HELLKOBOLD","DARKTROLL","VOLCANOOGRE",
+  "FROSTWYRM","BLOODPHOENIX","INFERNODRAGON","NIGHTWRAITH","OMNISPECTER",
+  "APEXLEVIATHAN","SINGULARITYBEHEMOTH","ABYSSKRAKEN","VOIDNIGHTFANG","COSMOSREVENANT",
+  "HELLFANG","FIREBEAST","ICEBEAST","THUNDERBEAST","SHADOWBEAST","VOIDBEAST",
+  "NIGHTBEAST","APEXBEAST","ULTIMABEAST","CELESTIALDRAGON","VOIDTITAN","INFERNOTITAN",
+  "ETHERWYRM","COSMOSTITAN","OBLIVIONBEAST","ETERNALDRAGON","SINGULARITYTITAN",
+  "OMEGA","NULL"
 ];
 
+// soldierName condensed: remove repeated rank variants manually
 const soldierName = [
-  "Peasant 🧍",
-  "Drone 🤖",
-  "Wolf 🐺",
-  "Horse 🐴",
-  "Alien 👽",
-  "Goblin 🥷",
-  "Skeleton 💀",
-  "Zombie 🧟",
-  "Bandit 🗡️",
-  "Archer 🏹",
-  "Swordsman ⚔️",
-  "Wizard 🪄",
-  "Apprentice Mage 🧙‍♂️",
-  "Commander 🛡️",
-  "Prince 🤴",
-  "Princess 👸",
-  "Queen 👑",
-  "King 🤴👑",
-  "Demon 😈",
-  "Berserker 🪓",
-  "Sniper 🎯",
-  "Dragon 🐉",
-  "Basilist 🐍",
-  "Tank 🛡️",
-  "Submarine 🛳️",
-  "Jet-fighter ✈️",
-  "Witch 🧙‍♀️",
-  "Battleship 🚢",
-  "Vampire 🧛‍♂️",
-  "Necromancer 🪦",
-  "Warlock 🔮",
-  "Phoenix 🔥🦅",
-  "Titan 🏋️‍♂️",
-  "Mech 🤖🦾",
-  "Leviathan 🐋",
-  "Archangel 😇",
-  "Dreadnought 🛡️🚀",
-  "Void Knight 🌌🗡️",
-  "Time Mage ⏳🪄",
-  "Elder Dragon 🐲",
-  "Omega Beast 🐉💀",
-  "Galactic Overlord 👾",
-  "Shadow Assassin 🗡️🌑",
-  "Ice Golem ❄️🪨",
-  "Fire Elemental 🔥",
-  "Water Elemental 🌊",
-  "Earth Elemental 🌍",
-  "Lightning Elemental ⚡",
-  "Spirit Guardian 👻",
-  "Dark Knight 🖤🗡️",
-  "Light Paladin ⚔️✨",
-  "War Priest ⛪🪄",
-  "Druid 🌿🦅",
-  "Beastmaster 🐅",
-  "Minotaur 🐂",
-  "Giant 🏔️",
-  "Ogre 👹",
-  "Harpy 🦅",
-  "Mermaid 🧜‍♀️",
-  "Centaur 🐎🧍",
-  "Griffin 🦅🦁",
-  "Hydra 🐍🐍",
-  "Chimera 🐐🐉",
-  "Elemental Lord 🌪️",
-  "Lich 🪦🧙‍♂️",
-  "Soul Reaper ⚰️🗡️",
-  "Dragon Rider 🐉🧑‍🚀",
-  "Titanic Golem 🪨💪",
-  "Cyber Knight 🤖🗡️",
-  "Space Marine 🚀🪖",
-  "Alien Overlord 👽👑",
-  "Dark Sorcerer 🖤🔮",
-  "Celestial Mage 🌟🪄",
-  "Storm Giant ⛈️🏔️",
-  "Frost Dragon ❄️🐉",
-  "Inferno Demon 🔥😈",
-  "Shadow Lord 🌑👑",
-  "Void Elemental 🌌⚡",
-  "Cosmic Leviathan 🌌🐋",
-  "Galaxy Titan 🌌🏋️‍♂️",
-  "Quantum Knight ⏳🗡️",
-  "Chronomancer ⏳🪄",
-  "Eclipse Dragon 🌒🐉",
-  "Meteor Golem ☄️🪨",
-  "Nebula Witch 🌌🧙‍♀️",
-  "Void Phoenix 🌌🔥🦅",
-  "Omega Lich 🐉🪦",
-  "Stellar Dreadnought 🌟🚀",
-  "Galactic Titan 👾🏋️‍♂️",
-  "Ultimate Overlord 👑💀",
-  "Infinity Beast ♾️🐉",
-  "Celestial Archangel 🌟😇",
-  "Dark Galaxy Emperor 🌑👑",
-  "Void Omega 🌀🐉",
-  "Time Reaper ⏳⚰️",
-  "Cosmic Dragon 🪐🐲",
-  "Eternal Leviathan ♾️🐋",
-  "Quantum Overlord ⏳👾",
-  "Omni Titan ♾️🏋️‍♂️",
-  "Godslayer 🗡️⚡",
-  "Universe Warden 🌌🛡️",
-  "Multiverse Monarch ♾️👑",
-  "Omniverse Entity 🌌♾️"
+  "Peasant 🧍","Drone 🤖","Wolf 🐺","Horse 🐴","Alien 👽","Goblin 🥷","Skeleton 💀",
+  "Zombie 🧟","Bandit 🗡️","Archer 🏹","Swordsman ⚔️","Wizard 🪄","Apprentice Mage 🧙‍♂️",
+  "Commander 🛡️","Prince 🤴","Princess 👸","Queen 👑","King 🤴👑","Demon 😈",
+  "Berserker 🪓","Sniper 🎯","Dragon 🐉","Basilist 🐍","Tank 🛡️","Submarine 🛳️",
+  "Jet-fighter ✈️","Witch 🧙‍♀️","Battleship 🚢","Vampire 🧛‍♂️","Necromancer 🪦",
+  "Warlock 🔮","Phoenix 🔥🦅","Titan 🏋️‍♂️","Mech 🤖🦾","Leviathan 🐋","Archangel 😇"
 ];
 
 
 
+// enemyEmojis condensed: remove duplicates
 const enemyEmojis = [
-  "🐀", "🦇", "🕷️", "🐍", "🦎", "🐱", "🐶", "🐈‍⬛", "🐆", "🦡",
-  "🦂", "🦀", "🐦", "👹", "👺", "👺", "👹", "👹", "🗿", "🤖",
-  "🐈‍⬛", "🔥🦇", "❄️🐺", "☠️🦂", "🐀🗡️", "🦇🗡️", "🐺❄️", "🐍🩸", "🦅🔥", "🐉",
-  "🐉", "👻", "🧛", "☠️", "🐘", "🔥💀", "😈", "🐉🌌", "❄️🐋", "🔥🦑",
-  "🗿💪", "🗿", "🐺🌑", "🐋", "👻", "🌌", "✨", "🏔️", "⚫", "🐱🔥",
-  "❄️🐍", "🔥🦁", "🌩️🐆", "🦀🗻", "🦅🐈‍⬛", "🦅", "🐉🪨", "👹🔥", "👻❄️", "🐉🔥",
-  "👻🌌", "🐋🗿", "⚫🦑", "🐺🌌", "🌌👻", "🐉🗿", "⚫", "🐉", "⚫", "🐉",
-  "⚫", "🐉", "⚫"
+  "🐀","🦇","🕷️","🐍","🦎","🐱","🐶","🐈‍⬛","🐆","🦡",
+  "🦂","🦀","🐦","👹","👺","🗿","🔥🦇","❄️🐺","☠️🦂","🐀🗡️",
+  "🦇🗡️","🐺❄️","🐍🩸","🦅🔥","🐉","👻","🧛","☠️","🐘","🔥💀",
+  "😈","🐉🌌","❄️🐋","🔥🦑","🗿💪","⚫","🐱🔥","❄️🐍","🔥🦁","🌩️🐆"
 ];
+
 
 
 
@@ -478,7 +356,7 @@ criticalHitUpgrade.addEventListener("click", function() {
 	purchaseSkill.play();
         perks -= criticalChanceRequiredPerks;
 
-	criticalChanceRequiredPerks += 15;
+	criticalChanceRequiredPerks += 3;
 	updatePerks();
 	
 	criticalChanceFactor += 1;
@@ -503,7 +381,7 @@ criticalDamageUpgrade.addEventListener("click", function() {
 	purchaseSkill.play();
 
         perks -= criticalDamageRequiredPerks;
-	criticalDamageRequiredPerks += 15;
+	criticalDamageRequiredPerks += 8;
 	updatePerks();
 
 	criticalDamageFactor += 0.25;
@@ -598,7 +476,8 @@ Damage: 5
 The balanced warrior. Reliable in every situation, the default starting class.
 HP: 250
 Voltage: 100
-Damage: 2`)
+Damage: 2
+Damage Resistance 5%`)
 
     if(playerClass === "1") {
         alert("Assassin Selected!");
@@ -607,7 +486,7 @@ Damage: 2`)
 	maxHealth = 100;
 	voltage = 125;
 	maxVoltage = 125;
-	playerDamage = 7;
+	playerDamage = 12;
 	
 	updateHealthValues();
 	updateVoltageValues();
@@ -616,7 +495,7 @@ Damage: 2`)
 alert(`🗡️Assassin Stats🗡️ 
 Health: 100
 Voltage: 125
-Damage: 7 `);
+Damage: 12 `);
 	level1Story();
 
     }
@@ -665,12 +544,24 @@ Damage: 5 `);
 
 
     else if(playerClass === "4") {
-        alert("Knight Selected!");	
+        alert("Knight Selected!");
+	damageResistance += 5;
+
+	drDecimal = 1 - (damageResistance/100);
+	newEnemyDamage = baseEnemyDamage * drDecimal;
+	newEnemyDamage = Math.floor(newEnemyDamage);
+	enemyDamage = newEnemyDamage;	
+	drLabel.textContent = "DR: " + damageResistance + " %";
+	maxDamageLabel.textContent = "|" + "Enemy DPS: " + newEnemyDamage;
+	drPerks.textContent = drCost	
+	drMagnitude.textContent = damageResistance + " %";	
+	drLabel.textContent = "DR: " + damageResistance + " %";	
 	
 alert(`⚔️Knight Stats⚔️ 
 Health: 250
 Voltage: 100
-Damage: 2 `)
+Damage: 2 
+Damage Resistance: 5%`)
 	level1Story();
 
     }
@@ -714,15 +605,15 @@ else if(introDecision === "4") {
 
 
 ////////////////////////////////////////////////////////////////////////////////
-
+swordKill.volume = 0.5;
 
 // ========================================================
 // ☠️ Enemy Dies ☠️																														//ENEMY DIES//
 // ========================================================
 
 function enemyDead() {
-swordSlash.currentTime = 0;
-    	swordSlash.play();
+	swordKill.currentTime = 0;
+    	swordKill.play();
 	enemiesKilled += 1;
 
 
@@ -753,8 +644,8 @@ swordSlash.currentTime = 0;
 
 
 	//🪙GOLD ADDED HERE!🪙
-	goldValue += Math.floor(enemyMaxHealth * goldFactor);
-	goldEarnt += Math.floor(enemyMaxHealth * goldFactor);
+	goldValue += Math.floor(enemyMaxHealth * goldMultiplier);
+	goldEarnt += Math.floor(enemyMaxHealth * goldMultiplier);
 
 	gold.textContent = "Gold: " + goldValue;
 
@@ -801,6 +692,10 @@ healthUpgrades.addEventListener("click", function() {
 	armyUpgrades.style.display = "none";  
 	defenseUpgrades.style.display = "none";
 	corruptionUpgrades.style.display = "none";
+	spellUpgrades.style.display = "none";
+	incomeUpgrades.style.display = "none";
+
+
     }
 
     else if(healthTable.style.display === "block") {
@@ -812,6 +707,10 @@ healthUpgrades.addEventListener("click", function() {
 	armyUpgrades.style.display = "block";
 	defenseUpgrades.style.display = "block";
 	corruptionUpgrades.style.display = "block";
+	spellUpgrades.style.display = "block";
+	incomeUpgrades.style.display = "block";
+
+
     }
     
 });
@@ -827,6 +726,10 @@ voltageUpgrades.addEventListener("click", function() {
 	armyUpgrades.style.display = "none";  
 	defenseUpgrades.style.display = "none"; 
 	corruptionUpgrades.style.display = "none";
+	spellUpgrades.style.display = "none";
+	incomeUpgrades.style.display = "none";
+
+
     }
 
     else if(voltageTable.style.display === "block") {
@@ -838,6 +741,10 @@ voltageUpgrades.addEventListener("click", function() {
 	armyUpgrades.style.display = "block";
 	defenseUpgrades.style.display = "block";
 	corruptionUpgrades.style.display = "block";
+	spellUpgrades.style.display = "block";
+	incomeUpgrades.style.display = "block";
+
+
     }
     
 });
@@ -853,6 +760,10 @@ damageUpgrades.addEventListener("click", function() {
 	armyUpgrades.style.display = "none";  	
 	defenseUpgrades.style.display = "none";
 	corruptionUpgrades.style.display = "none";
+	spellUpgrades.style.display = "none";
+	incomeUpgrades.style.display = "none";
+
+
     }
 
     else if(damageTable.style.display === "block") {
@@ -864,6 +775,10 @@ damageUpgrades.addEventListener("click", function() {
 	armyUpgrades.style.display = "block";
 	defenseUpgrades.style.display = "block";
 	corruptionUpgrades.style.display = "block";
+	spellUpgrades.style.display = "block";
+	incomeUpgrades.style.display = "block";
+
+
     }
     
 });
@@ -880,7 +795,10 @@ xpUpgrades.addEventListener("click", function() {
 	armyUpgrades.style.display = "none";
 	defenseUpgrades.style.display = "none";	   
 	corruptionUpgrades.style.display = "none";
-	
+	spellUpgrades.style.display = "none";
+	incomeUpgrades.style.display = "none";
+
+
     }
 
     else if(xpTable.style.display === "block") {
@@ -892,6 +810,10 @@ xpUpgrades.addEventListener("click", function() {
 	armyUpgrades.style.display = "block";
 	defenseUpgrades.style.display = "block";
 	corruptionUpgrades.style.display = "block";
+	spellUpgrades.style.display = "block";
+	incomeUpgrades.style.display = "block";
+
+
     }
     
 });
@@ -908,6 +830,10 @@ armyUpgrades.addEventListener("click", function() {
  	xpUpgrades.style.display = "none";
 	defenseUpgrades.style.display = "none";
 	corruptionUpgrades.style.display = "none";
+	spellUpgrades.style.display = "none";
+	incomeUpgrades.style.display = "none";
+
+
 
     }
 
@@ -920,6 +846,10 @@ armyUpgrades.addEventListener("click", function() {
  	xpUpgrades.style.display = "block";
 	defenseUpgrades.style.display = "block";
 	corruptionUpgrades.style.display = "block";
+	spellUpgrades.style.display = "block";
+	incomeUpgrades.style.display = "block";
+
+
         
     }
     
@@ -937,6 +867,10 @@ defenseUpgrades.addEventListener("click", function() {
 	voltageUpgrades.style.display = "none";
 	armyUpgrades.style.display = "none";
 	corruptionUpgrades.style.display = "none";
+	spellUpgrades.style.display = "none";
+	incomeUpgrades.style.display = "none";
+
+
 	
     }
     
@@ -949,6 +883,10 @@ defenseUpgrades.addEventListener("click", function() {
 	voltageUpgrades.style.display = "block";
 	armyUpgrades.style.display = "block";
 	corruptionUpgrades.style.display = "block";
+	spellUpgrades.style.display = "block";
+	incomeUpgrades.style.display = "block";
+
+
     }   
 
 });
@@ -964,6 +902,10 @@ corruptionUpgrades.addEventListener("click", function() {
 	voltageUpgrades.style.display = "none";
 	armyUpgrades.style.display = "none";
 	defenseUpgrades.style.display = "none";
+	spellUpgrades.style.display = "none";
+	incomeUpgrades.style.display = "none";
+
+
 	
     }
     
@@ -976,6 +918,73 @@ corruptionUpgrades.addEventListener("click", function() {
 	voltageUpgrades.style.display = "block";
 	armyUpgrades.style.display = "block";
 	defenseUpgrades.style.display = "block";
+	spellUpgrades.style.display = "block";
+	incomeUpgrades.style.display = "block";
+
+    }   
+
+});
+
+//🕷️Spell Table🕷️
+spellUpgrades.addEventListener("click", function() {
+    if(spellTable.style.display === "none"){
+        spellTable.style.display = "block";
+
+	healthUpgrades.style.display = "none";
+	xpUpgrades.style.display = "none";	
+	damageUpgrades.style.display = "none";
+	voltageUpgrades.style.display = "none";
+	armyUpgrades.style.display = "none";
+	defenseUpgrades.style.display = "none";
+	corruptionUpgrades.style.display = "none";
+	incomeUpgrades.style.display = "none";
+
+	
+    }
+    
+    else if(spellTable.style.display === "block"){
+        spellTable.style.display = "none";
+
+	healthUpgrades.style.display = "block";
+	xpUpgrades.style.display = "block";	
+	damageUpgrades.style.display = "block";
+	voltageUpgrades.style.display = "block";
+	armyUpgrades.style.display = "block";
+	defenseUpgrades.style.display = "block";
+	corruptionUpgrades.style.display = "block";
+	incomeUpgrades.style.display = "block";
+
+    }   
+
+});
+
+//Income Table
+incomeUpgrades.addEventListener("click", function() {
+    if(incomeTable.style.display === "none"){
+        incomeTable.style.display = "block";
+
+	healthUpgrades.style.display = "none";
+	xpUpgrades.style.display = "none";	
+	damageUpgrades.style.display = "none";
+	voltageUpgrades.style.display = "none";
+	armyUpgrades.style.display = "none";
+	defenseUpgrades.style.display = "none";
+	corruptionUpgrades.style.display = "none";
+	spellUpgrades.style.display = "none";
+	
+    }
+    
+    else if(incomeTable.style.display === "block"){
+        incomeTable.style.display = "none";
+
+	healthUpgrades.style.display = "block";
+	xpUpgrades.style.display = "block";	
+	damageUpgrades.style.display = "block";
+	voltageUpgrades.style.display = "block";
+	armyUpgrades.style.display = "block";
+	defenseUpgrades.style.display = "block";
+	corruptionUpgrades.style.display = "block";
+	spellUpgrades.style.display = "block";
     }   
 
 });
@@ -984,7 +993,7 @@ corruptionUpgrades.addEventListener("click", function() {
 // END
 // ========================================================
 
-
+//GUARDIAN ANGEL FUNCTION
 function guardianRoll() {
     let guardianNumber = Math.floor(Math.random() * 1000 + 1);
     if(guardianNumber <= guardianChance) {
@@ -996,7 +1005,23 @@ function guardianRoll() {
     }
 }
 
-
+// EXECUTION FUNCTION
+function executionRoll() {
+    let executionNumber = Math.floor(Math.random() * 400 + 1);
+    if(executionNumber <= executionFactor) {
+	criticalSfx.currentTime = 0;
+	criticalSfx.play()
+        enemyDead();
+	
+	displayLabel.textContent = "Execution!"
+	displayLabel.style.opacity = 1;
+	displayLabel.style.backgroundColor = "darkred";
+	displayLabel.style.color = "white";
+	setTimeout(function() {
+	    displayLabel.style.opacity = 0;
+	}, 2000)
+    }
+}
 // ========================================================
 // ⚡UPDATE RESOURCES/STATUS⚡
 // ========================================================								                //UPDATE RESOURCES//
@@ -1413,9 +1438,9 @@ currentLevel = 1;
 levelUpButton.addEventListener("click", function() {
     // Check if player has enough XP
     if (currentXP >= requiredXP) {
-	
+	updateHealthValues();
 	displayEnemy.textContent = enemyEmojis[currentLevel];
-	soldier.textContent = "Adds 1 " + soldierName[index] + " to your army dealing " + "+ " + knightDamage +  " damage per second";
+
 
 
 	
@@ -1428,8 +1453,12 @@ levelUpButton.addEventListener("click", function() {
 	enemyMaxHealth += (currentLevel * currentLevel);
 	enemyDamage += (currentLevel);
 	baseEnemyDamage += (currentLevel);
-	maxHealth += 5;
+	maxHealth += 10;
+	voltage = maxVoltage;
+	currentHealth = maxHealth;
+
 	updateHealthValues();
+	updateVoltageValues();
 	maxDamageLabel.textContent = "|Enemy DPS: " + enemyDamage + "|";
 	
 	enemyAttack();
@@ -1483,7 +1512,8 @@ criticalSfx.volume = 0.3;
 //LOSES HEALTH  BUT GAINS XP WHEN U PRESS ATTACK//											//ATTACK BUTTON//
 displayEnemy.addEventListener("click", function() {
 
-    timesAttacked += 1;
+	executionRoll();
+        timesAttacked += 1;
 
 	criticalWheel = Math.floor(Math.random() * 100 + 1);
 
@@ -1578,8 +1608,9 @@ displayEnemy.addEventListener("click", function() {
 });
 //ATTACK BUTTON//														       	//ATTACK BUTTON//
 attack.addEventListener("click", function() {
-
-    timesAttacked += 1;
+	
+	executionRoll();
+    	timesAttacked += 1;
 
 	criticalWheel = Math.floor(Math.random() * 100 + 1);
 
@@ -2087,7 +2118,9 @@ upgradeDamage.addEventListener("click", function() {
     	purchaseSkill.play();
 
         perks -= 1;
+	
         playerDamage += 1 * ghostDamageFactor;
+	if(presentPlayerDamage)presentPlayerDamage += 1;
 	updatePerks();
 	playerDamageLabel.textContent = "|Player Damage: " + playerDamage + "|";
 	upgradeDamageMagnitude.textContent = "- " + playerDamage + " HP";
@@ -2116,7 +2149,7 @@ stealHP.addEventListener("click", function() {
 
 //RECHARGE VOLTAGE														        //RECHARGE VOLTAGE//
 charge.addEventListener("click", function() {
-    voltage += 1;
+    voltage += shockwaveFactor;
     enemyCurrentHealth += 1;
     currentXP -= 1;
     
@@ -2136,8 +2169,9 @@ charge.addEventListener("click", function() {
 
 //FREEZE BUTTON																   //FREEZE BUTTON//
 freeze.addEventListener("click", function() {
-    if(voltage >= maxVoltage) {
-	voltage = 0;
+    if(voltage >= maxVoltage/2) {
+	voltage -= Math.floor(maxVoltage/2);
+	iceSfx.play();
         previousEnemyDamage = enemyDamage
 
         enemyDamage = 0;
@@ -2337,6 +2371,10 @@ let concentrationPerks = 5;
 //CONCENTRATION UPGRADE														   //CONCENTRATION UPGRADE//
 concentrationButton.addEventListener("click", function() {
     if(perks >= concentrationPerks) {
+	purchaseSkill.currentTime = 0;
+	purchaseSkill.play();
+
+	
         perks -= concentrationPerks;
 	concentrationFactor += 1;
 	concentrationPerksLabel.textContent = concentrationPerks;
@@ -2437,9 +2475,114 @@ moveCloud1();
 //PAUSE BUTTON																      PAUSE BUTTON//
 
 const pause = document.querySelector("#pause");
+paused = false;
+
 
 pause.addEventListener("click", function() {
-    alert("Game Paused");
+    if(!paused) {
+	let query = prompt
+(`Would you like to see the help menu whilst you are here?
+[1] Yes please!
+[2] Um...nah I'm good!
+`)
+
+
+        if(query === "1") {
+alert(`
+🎮 Welcome to Split-Seconds! 🎮
+1️⃣ Attack Enemies ⚔️
+- Click 🗡️ Attack to damage enemies.
+- Your damage depends on your Player Damage stats.
+- Watch Enemy HP to track damage.
+
+2️⃣ Heal Yourself 💖
+- Click ❤️‍🩹 Heal to restore HP.
+- Check Heal Cost (voltage) before using.
+- Upgrades like 💉Second Chance💉 and 💚Regeneration💚 make healing stronger.
+
+3️⃣ Skills & Upgrades ✨
+- Earn Skill Points when you level up.
+- Spend them on 🛡️Defence Upgrades🛡️, 💥Damage Upgrades💥, ⚡Voltage Upgrades⚡, etc.
+- Some upgrades enhance stats, some unlock fun abilities (Guardian Angel, Vampirism, etc.).
+
+4️⃣ Army / Knights 🪖
+- Recruit soldiers via 🪖 Army Upgrades 🪖.
+- Each soldier adds DPS (damage per second).
+- Cycling soldier types gives stronger units.
+- Track Army Size and Army DPS for power.
+
+5️⃣ Voltage System ⚡
+- Voltage builds over time. You can improve your voltage stats via Voltage Upgrades
+- Upgrades like ⚡Fluxify⚡ increase regeneration or max voltage.
+- Spend voltage for abilities or boosts.
+
+6️⃣ Pause Button ⏸️ 
+- Click Pause to enter god mode: ∞ HP, ∞ Voltage.
+- This gives you time to take a peek at upgrades. No rush.
+- You will notice this gives you crazy high health. This is only temporary. It saves you from dying!
+- You can also use the pause button to come back to this menu.
+- Whilst frozen in God-Mode, you cannot do anything useful.
+
+7️⃣ Dev Console 💻
+- This console was intended for developer use. Ignore it! You are not hacking my game..good luck trying though!
+
+💡 Tips for Beginners
+- Focus on healing upgrades and voltage upgrades to maximise your protection against enemy attacks!
+- You don't have to level up as soon as the prompt shows...spend time earning gold if the level is too challenging!
+- Pick your classes wisely, different classes have different starting attributes!
+- You get to pick a lot of choices in this game. Take your time to choose the one that will help you!
+
+
+
+
+`);
+	}
+	
+
+
+	paused = true;
+	presentHealth = currentHealth;
+	presentVoltage = voltage;
+	presentKnightDamage = knightDamage;
+	presentPlayerDamage = playerDamage;
+	presentRequiredXP = requiredXP;
+	presentCurrentXP = currentXP;
+
+
+	
+	currentHealth = Infinity;
+	voltage = -Infinity;
+	knightDamage = -Infinity;
+	playerDamage = 0;
+	requiredXP = Infinity;
+	currentXP = -Infinity;
+
+	updateHealthValues();
+	updateVoltageValues();
+	updateXPValues();
+	playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage + "|";
+
+    }
+    
+    else{
+	alert("You are now weak again!");
+        paused = false;
+	currentHealth = presentHealth;
+	voltage = presentVoltage;
+	knightDamage = presentKnightDamage;
+	playerDamage = presentPlayerDamage;
+	requiredXP = presentRequiredXP;
+	currentXP = presentCurrentXP;
+
+	updateHealthValues();
+	updateVoltageValues();
+	updateXPValues();
+
+	playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage + "|";
+
+    }
+
+
 });
 
 
@@ -2473,5 +2616,204 @@ guardianAngelUpgrade.addEventListener("click", function() {
 	guardianAngelMagnitude.textContent = guardianChance/10 + "%";
 
 	updatePerks();
+    }
+});
+
+let activatedFireball = false;
+
+let fireballDps = 1;
+
+fireball.addEventListener("click", function() {
+    if(voltage >= 30 && !activatedFireball) {
+
+	activatedFireball = true;
+	fireballSfx.currentTime = 0;
+	fireballSfx.play();
+
+	voltage -= 30;
+	flameAnimation.style.display = "inline";
+         enemyCurrentHealth -= 5;
+
+	if(enemyCurrentHealth >= 0) {
+  	    enemyDead();
+        }
+
+	updateEnemyHealthValues();
+         updateVoltageValues();
+
+	fireActive = setInterval(function() {
+	    enemyCurrentHealth -= fireballDps;
+	    updateEnemyHealthValues();
+	    if(enemyCurrentHealth <= 0) enemyDead();
+	},1000);
+
+	setTimeout(function() {
+	    clearInterval(fireActive);   
+	    activatedFireball = false;
+	    flameAnimation.style.display = "none";
+	}, 10000);
+
+    }
+});
+
+
+
+
+
+
+let fireballBought = false;
+fireballUpgrade.addEventListener("click",function() {
+    if(perks >= 3 && !fireballBought) {
+ 
+        fireballBought = true;
+        purchaseSkill.currentTime = 0;
+        purchaseSkill.play();
+        perks -= 3;
+        fireball.style.display = "inline";
+
+        fireballMagnitude.textContent = "Fireball Unlocked!";
+    }
+
+});
+
+let superNovaRequiredPerks = 3
+superNova.addEventListener("click", function() {
+    if(perks >= superNovaRequiredPerks) {
+        perks-= superNovaRequiredPerks;
+        fireballDps += 1;
+        superNovaRequiredPerks += 5;
+        superNovaPerksRequired.textContent = superNovaRequiredPerks;
+        superNovaMagnitude.textContent = fireballDps + " DPS";      
+    }
+
+});
+
+let currentDamage;
+let adrenalineActivated = false;
+
+adrenaline.addEventListener("click", function() {
+    if(voltage >= 50 && !adrenalineActivated) {
+	adrenalineActivated = true;
+
+	displayLabel.textContent = "!ADRENALINE ACTIVATED!"
+	displayLabel.style.opacity = 1;
+	displayLabel.style.background = "linear-gradient(to top, red, black)";
+	displayLabel.style.color = "white";
+
+
+	voltage -= 50;
+	rage.play();
+        currentDamage = playerDamage;
+	playerDamage *= adrenalineFactor;
+	playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage + "|";
+	setTimeout(function() {
+	    playerDamage = currentDamage;
+	    playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage + "|";
+	    adrenalineActivated = false;
+	    displayLabel.style.opacity = 0;
+	    
+	}, 10000);    
+    }
+});
+
+
+adrenalineUpgrade.addEventListener("click", function() {
+    if(perks >= 5) {
+        perks -= 5;
+	purchaseSkill.play();
+	adrenaline.style.display = "inline";
+	adrenalineMagnitude.textContent = "Adrenaline Unlocked!";
+	updatePerks();
+
+    }
+});
+
+freezeUpgrade.addEventListener("click", function() {
+    if(perks >= 5) {
+	purchaseSkill.currentTime = 0;
+        purchaseSkill.play();
+	perks -= 5;
+	freeze.style.display = "inline";
+    }
+});
+
+let noMercyRequiredPerks = 5;
+
+noMercyUpgrade.addEventListener("click", function() {
+    if(perks >= noMercyRequiredPerks) {
+        perks-= noMercyRequiredPerks;
+
+	adrenalineFactor += 0.5;
+	
+	noMercyRequiredPerks += 5;
+	noMercyPerksRequired.textContent = noMercyRequiredPerks;
+	noMercyMagnitude.textContent = "x" + adrenalineFactor;
+
+	updatePerks();
+    }
+})
+
+let luckyFingersRequiredPerks = 1;
+
+luckyFingersUpgrade.addEventListener("click", function() {
+    if(perks >= luckyFingersRequiredPerks) {
+	perks-= luckyFingersRequiredPerks;
+
+	purchaseSkill.currentTime = 0;
+	purchaseSkill.play();
+
+	luckyFingersRequiredPerks += 3;
+	
+	goldMultiplier += 0.25;
+
+	luckyFingersPerksRequired.textContent = luckyFingersRequiredPerks;
+	luckyFingersMagnitude.textContent = "x" + goldMultiplier;
+
+	updatePerks();
+	
+    }
+});
+
+let shockwaveFactor = 1;
+let shockwaveRequiredPerks = 4;
+
+shockwaveUpgrade.addEventListener("click", function() {
+    if(perks >= shockwaveRequiredPerks) {
+	electricitySfx.currentTime = 0;
+	electricitySfx.play();
+
+	perks -= shockwaveRequiredPerks;
+	shockwaveRequiredPerks *= 2;
+	shockwaveFactor += 1;
+
+	shockwavePerksRequired.textContent = shockwaveRequiredPerks;
+	shockwaveMagnitude.textContent = "+" + shockwaveFactor + " V";
+    }
+
+});
+
+
+
+
+
+
+
+
+executionRequiredPerks = 2;
+
+executionUpgrade.addEventListener("click", function() {
+    if(perks >= executionRequiredPerks) {
+        perks -= executionRequiredPerks;
+
+	purchaseSkill.currentTime = 0;
+	purchaseSkill.play();
+
+	executionRequiredPerks += 6;
+	executionFactor += 1;
+	
+	executionPerksRequired.textContent = executionRequiredPerks;
+	executionMagnitude.textContent = executionFactor/4 + " %";
+	
+	
     }
 });

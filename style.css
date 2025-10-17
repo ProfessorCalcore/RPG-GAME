@@ -481,7 +481,7 @@
 
 	  #heal-upgrade:hover{
 	      transform: scale(1.1);
-	      box-shadow: 0 0 10px 5px blue;
+	      box-shadow: 0 0 10px 5px purple;
 	      background-color: white !important;	
 	      color: black !important;
 	      font-weight: bold;
@@ -559,5 +559,137 @@
 	      font-weight: bold;
           }
 
+	  #fireball-upgrade{
+	  	background-color: black;
+		color: white;
+	  }
+
+	  #super-nova{
+	  	background-color: black;
+		color: white;
+	  }
+
+	  #fireball-upgrade:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px purple;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
 
 
+	  #spell-upgrades:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px purple;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #super-nova:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px purple;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #fireball:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px orange;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);
+          }
+
+	  #no-mercy-upgrade:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px purple;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);
+          }
+
+	  #adrenaline:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px red;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);
+          }
+
+	  #adrenaline-upgrade:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px purple;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);
+          }
+
+	  #freeze-upgrade:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px purple;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);
+          }
+
+
+	  #flame-animation{
+	  	font-size: 300px;
+		position: absolute;
+		top: 40%;
+		left: 37%;
+		background: transparent;
+		border: none;
+		z-index: -3;
+		display: none;
+		animation: flicker 5s infinite alternate;
+	  }
+
+	#income-upgrades:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px lime;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);
+          }
+
+	#income-upgrades{
+		background-color: black;
+		color: white;
+          }
+
+
+	
+	@keyframes flicker {
+  		0%   { transform: translate(0,0) scale(1); opacity: 1; }
+  		25%  { transform: translate(2px,-2px) scale(1.05); opacity: 0.9; }
+  		50%  { transform: translate(-2px,2px) scale(0.95); opacity: 0.8; }
+  		75%  { transform: translate(1px,-1px) scale(1.1); opacity: 0.85; }
+  		100% { transform: translate(0,0) scale(1); opacity: 1; }
+	}
+
+	#lucky-fingers-upgrade:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px lime;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#shockwave-upgrade:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px orange;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#execution-upgrade:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px red;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}

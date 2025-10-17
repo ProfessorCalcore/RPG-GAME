@@ -23,13 +23,14 @@
 	<button id="pause">⏸️</button>
 	<button id = "refresh">🔄</refresh>
 
+	<button id= "flame-animation">🔥</button>
+
 
 
 
 
 
 	<button id="display-enemy">🐀</button>
-	<a href="https://lichess.org/q81djwqO">Play Chess</a>
 
 
 <!--------------HP LABELS------------------------------------------------------------------------------------------------------->
@@ -103,11 +104,16 @@
 
 	<button id="charge" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%">⚡</button>
 
-	<button id="freeze" style="background-color: #333; color: cyan; font-size: 30px; border-radius: 50% ">❄️</button>
+	<button id="fireball" style="background-color: #333; color: cyan; font-size: 30px; border-radius: 50%; display: none;">🔥</button>
+
+	<button id="freeze" style="background-color: #333; color: cyan; font-size: 30px; border-radius: 50%; display: none;">❄️</button>
+
+        <button id="adrenaline" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display: none;">😤</button>
 
 
-        <button id="upgrades" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%">🛠️
-       </button>
+        <button id="upgrades" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%">🛠️</button>
+
+
 
 <!---------------------------------------------------------->
         <input id="dev-console" style="display:block; background-color: #333; color: white;" placeholder="Enter Command...">
@@ -200,6 +206,13 @@
 	    <td id="critical-damage-perks-cost">5</td>
 	    <td id="critical-damage-magnitude">x2.0</td>	
 	</tr>
+
+	<tr>
+	    <td><button id="execution-upgrade" style="background-color: black; color: white;">💀Execution💀</button></td>
+	    <td>Chance to Instantly Kill an enemy!</td>
+	    <td id="execution-perks-required">2</td>
+	    <td id="execution-magnitude">0%</td>	
+	</tr>
 </table>
 <!-------------------------------------------------------------------------------------------------------->
 
@@ -223,12 +236,6 @@
             <td id="dr-magnitude">0x</td>
         </tr>
 
-         <tr>
-             <td><button id="heal-upgrade" style="background-color: black; color: white;">❤️‍🩹Bandages❤️‍🩹</button></td>
-              <td>Improves heal skill by +5 additional HP</td>
-              <td>1</td>
-              <td id="heal-upgrade-magnitude">0x</td>
-        </tr>  
 
 	<tr>
 	    <td><button id="guardian-angel-upgrade" style="background-color: black; color: white;">🕊️Guardian Angel🕊️</button></td>
@@ -286,6 +293,30 @@
 </table>
 <!--------------------------------------------------------------------------------------------------------->    
 
+<!------------------------INCOME UPGRADES------------------------------------------------------------------------->
+<button id="income-upgrades">💸Income Upgrades💸</button>
+
+<table id="income-table" border=1 style="display:none; border-collapse:collapse; background-color: black; color: white;">
+    <caption>Income Upgrades</caption>
+
+        <tr>
+	    <th>Skill</th>
+	    <th>Description</th>
+	    <th>Skill Points Cost</th>
+	    <th>Magnitude</th>
+	</tr>
+
+	<tr>
+	    <td><button id="lucky-fingers-upgrade" style="background-color: black; color: white;">🍀Lucky Fingers🍀</button></td>
+	    <td>Fill your pockets: Loot +25% more gold!</td>
+	    <td id="lucky-fingers-perks-required">1</td>
+	    <td id="lucky-fingers-magnitude">1x</td>
+	</tr>
+  
+</table>
+
+<!---------------------------------------------------------------------------------------------------------------->
+
 
 <!--------------------VOLTAGE UPGRADES--------------------------------------------------------------------->
 <button id ="voltage-upgrades" style="display: block; background-color: black; color: white;">⚡Voltage Upgrades⚡</button>
@@ -314,8 +345,83 @@
 	    <td id="max-voltage-magnitude">0x</td>
 	</tr>
 
+	<tr>
+	    <td><button id="shockwave-upgrade" style="background-color: black; color: white;">🔊Shockwave🔊</button></td>
+	    <td>Increases amount of Voltage recovered per tap + 1</td>
+	    <td id="shockwave-perks-required">4</td>
+	    <td id="shockwave-magnitude">+1 V</td>
+	</tr>
+
+
+
+
+
 </table>
 <!--------------------------------------------------------------------------------------------------------->
+
+<!-------------------------------------------------SPELLS------------------------------------------------>
+<button id="spell-upgrades" style="background-color: black; color: white;">🪄Spell Upgrades🪄</button>
+
+<table id="spell-upgrades-table" border='1' style="display: none; border-collapse: collapse; background-color: black; color: white;">
+    <caption>Spell Upgrades</caption>
+    
+    <tr>
+        <th>Skill</th>
+        <th>Description</th>
+        <th>Skill Points Required</th>
+        <th>Magnitude</th>        
+    </tr>
+
+
+<tr>
+    <td><button id="fireball-upgrade">🔥Fireball🔥</button></td>
+    <td>Unleash a blazing fireball at enemies, causing 5 initial damage and lingering 1 DPS for 10 seconds!</td>
+    <td>3</td>
+    <td id="fireball-magnitude">0x</td>
+</tr>
+
+<tr>
+    <td><button id="super-nova">☄️Super Nova☄️</button></td>
+    <td>Ignites enemies for an extra +1 damage per second</td>
+    <td id="super-nova-perks-required">3</td>
+    <td id="super-nova-magnitude">1 DPS</td>
+</tr>
+
+
+<tr>
+    <td><button id="heal-upgrade" style="background-color: black; color: white;">❤️‍🩹First Aid❤️‍🩹</button></td>
+    <td>Boosts healing by +5 HP</td>
+    <td>1</td>
+    <td id="heal-upgrade-magnitude">0x</td>
+</tr>
+
+<tr>
+    <td><button id="freeze-upgrade" style="background-color: black; color: white;">❄️Ice Age❄️</button></td>
+    <td>Freezes an enemy for 10 seconds but drains 50% of your voltage!</td>
+    <td>5</td>
+    <td id="freeze-magnitude">0x</td>
+</tr>
+
+<tr>
+    <td><button id="adrenaline-upgrade" style="background-color: black; color: white;">😤Adrenaline😤</button></td>
+    <td>Doubles your damage for 10 seconds!</td>
+    <td>5</td>
+    <td id="adrenaline-magnitude">0x</td>
+</tr>
+
+<tr>
+    <td><button id="no-mercy-upgrade" style="background-color: black; color: white;">😈No Mercy😈</button></td>
+    <td>Increases damage bonus during adrenaline by 50%!</td>
+    <td id="no-mercy-perks-required">5</td>
+    <td id="no-mercy-magnitude">2x</td>
+</tr>
+
+
+</table>
+
+<!---------------------------------------------------------------------------------------------------------------->
+
+
 
 
 <!------------------------XP UPGRADES----------------------------------------------------------------------------->
@@ -342,11 +448,6 @@
 	    <td id="concentration-perks">5</td>
 	    <td id="concentration-magnitude">0x</td>
 	</tr>
-
-
-
-
-
 
 
 </table>
@@ -390,9 +491,14 @@
 
 
 	<audio id="critical-sfx" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/glass-shatter-impact-93797.mp3" preload="auto"></audio>
+	<audio id="sword-kill" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/ui-6-sound-effect-modern-smooth-fade-out-stereo-332452.mp3" preload="auto"></audio>
+
+	<audio id="rage" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/epic-dragon-roar-364481.mp3" preload="auto"></audio>
+	<audio id="fireball-sfx" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/fireball-impact-351961.mp3" preload="auto"></audio>
+	<audio id="ice-sfx" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/iced-magic-2-378608.mp3" preload="auto"></audio>
 
 
-
+	
 	
 	<script src="variables.js"></script>
 	<script src="const.js"></script>
@@ -400,4 +506,3 @@
         <script src = "main.js"></script>
     </body>
 </html>
-

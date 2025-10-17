@@ -290,6 +290,71 @@
 		font-size: 100px;	
 	  }
 
+	#factory{
+		font-size: 150px;
+		position:absolute;
+		left: 60%;
+		top: 65%;
+		z-index: -7;
+		filter: brightness(16%);
+	}
+
+	#castle{
+		font-size: 100px;
+		position:absolute;
+		left: 50%;
+		top: 70%;
+		z-index: -7;
+		filter: brightness(16%);
+	}
+
+	#office{
+		font-size: 89px;
+		position:absolute;
+		left: 78%;
+		top: 80%;
+		z-index: -7;
+		filter: brightness(16%);
+	}
+
+	#office2{
+		font-size: 89px;
+		position:absolute;
+		left: 83%;
+		top: 80%;
+		z-index: -7;
+		filter: brightness(16%);
+	}
+
+	#bank{
+		font-size: 259px;
+		position:absolute;
+		left: 83%;
+		top: 60%;
+		z-index: -7;
+		filter: brightness(16%);
+	}
+
+	#school{
+		font-size: 100px;
+		position:absolute;
+		left: 01%;
+		top: 68%;
+		z-index: -7;
+		filter: brightness(16%);
+	}
+
+	#construction{
+		font-size: 100px;
+		position:absolute;
+		left: 58%;
+		top: 70%;
+		z-index: -7;
+		filter: brightness(16%);
+	}
+
+	
+
 
 	  #tree{	
 	  	position:absolute;
@@ -693,3 +758,4 @@
 		color: black !important;
 		transform: scale(1.1);		
 	}
+

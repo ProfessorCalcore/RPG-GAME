@@ -29,6 +29,7 @@
 
 
 
+
 	<label id="grave">⚰️</label>
 	<label id="player-icon">🤺</label>
 	<label id="tree">🪵</label>
@@ -54,10 +55,15 @@
 	<label id="army-damage" style="margin-right: 10px; background-color: #333; color: white;">|Army DPS: 0| </label>
 
         <label id="max-damage" style="margin-right: 10px; background-color: #333; color: white;">|Enemy DPS: 1| </label>
+	<label id="lucky-dip-label" style="margin-right:10px; background-color: #333; color: white;">|Lucky Dip Cost: 5|</label>
+
 	<label id="knights-display" style="display: block;font-family:arial; background-color: transparent; color: white;">Army Size:⚔️ x0</label>
 	<label id="gold" style="margin-right:10px; background-color: #333; color: white;">Gold: 0</label>
 
+
 	<label id="dr-label" style="margin-right: 10px; background-color: #333; color: white;">DR: 1% </label>
+	<label id="crit-label" style="margin-right: 10px; background-color: #333; color: white;">Crit Chance: 1% </label>
+
 
 
 <!------------------------------------------------------------------------------------------------------------------------------>
@@ -121,11 +127,19 @@
 	<button id="fireball" style="background-color: #333; color: cyan; font-size: 30px; border-radius: 50%; display: none;">🔥</button>
 
 	<button id="freeze" style="background-color: #333; color: cyan; font-size: 30px; border-radius: 50%; display: none;">❄️</button>
-
         <button id="adrenaline" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display: none;">😤</button>
+        <button id="lucky-dip" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">🎁</button>
+        <button id="mage-fury" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">🔮</button>
+        <button id="shield-wall" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">🛡️</button>
+        <button id="marked-for-death" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">🥷</button>
+	<button id="near-death-experience" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">🪓</button>
+
+
 
 
         <button id="upgrades" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%">🛠️</button>
+
+
 
 
 
@@ -155,7 +169,7 @@
     <tr>
         <td><button id="recruit-knight" style="background-color: black; color: white; ">🟢Slime🟢 </button></td>
         <td id ="soldier">Adds 1 🟢Slime🟢  to your army dealing +1 damage per second</td>
-        <td id="perks-required">5</td>
+        <td id="perks-required">2</td>
         <td id="knights-magnitude">0x</td>
     </tr>
 </table>
@@ -177,9 +191,18 @@
 	<tr>
 	    <td><button id="ghost-button" style="background-color: black; color: white;">👻Ghost👻</button></td>
 	    <td>Permenantly Doubles your Health but you deal half as much damage from now on</td>
-	    <td id="ghost-requirements-cost">Sharpened Upgrade X3</td>
+	    <td id="ghost-requirements-cost">Lvl 4</td>
 	    <td id="ghost-magnitude">0x</td>
 	</tr>
+
+	<tr>
+	    <td><button id="sell-soul" style="background-color: black; color: white;">😈Soul Pact😈</button></td>
+	    <td>Surrender your arcane and electrical power to the devil. In return, your flesh hardens, your Max Health quintupled, your mortality nearly erased.</td>
+	    <td>Lvl 7</td>
+	    <td id="sell-soul-magnitude">0x</td>
+	</tr>
+
+
      
 </table>
 
@@ -245,8 +268,8 @@
 
         <tr>
             <td><button id="dr-button" style="background-color: black; color: white;">🗡️❌Damage Resistance🗡️❌</button></td>
-            <td>Increases Damage Resistance by 5%</td>
-            <td id="dr-perks">10</td>
+            <td>Increases Damage Resistance by +1%</td>
+            <td id="dr-perks">3</td>
             <td id="dr-magnitude">0x</td>
         </tr>
 
@@ -254,7 +277,7 @@
 	<tr>
 	    <td><button id="guardian-angel-upgrade" style="background-color: black; color: white;">🕊️Guardian Angel🕊️</button></td>
 	    <td>Chance to avoid all damage from an attack + 0.5%</td>
-	    <td id="guardian-angel-perks-cost">10</td>
+	    <td id="guardian-angel-perks-cost">7</td>
 	    <td id="guardian-angel-magnitude">0 %</td>
 	</tr>
 
@@ -285,7 +308,7 @@
 
          <tr>
           <td><button id="max-health-upgrade" style="background-color: black; color: white;">❤️‍🔥Endurance❤️‍🔥</button></td>
-          <td>Increases max health by 10 pts</td>
+          <td>Increases max health by 25 pts</td>
           <td>1</td>
           <td id="max-health-magnitude">0x</td>
         </tr>
@@ -293,17 +316,24 @@
 
          <tr>
           <td><button id="regenerate-hp" style="background-color: black; color: white;">💚Regeneration💚</button></td>
-          <td>HP automatically heals over time</td>
-          <td>5</td>
+          <td>Boosts your natural healing rate by +1 HP/Sec</td>
+          <td id="hp-regen-perks-cost">2</td>
           <td id="regenerate-hp-magnitude">0x</td>
         </tr>   
 
          <tr>
           <td><button id="steal-hp" style="background-color: black; color: white;">🩸Vampirism🩸</button></td>
-          <td>Absorbs +2 HP every time you defeat an enemy</td>
-          <td>1</td>
-          <td id="steal-hp-magnitude">0x</td>
+          <td>Siphon +1% of an enemy's lifeforce on death</td>
+          <td id="vampire-perks-required">4</td>
+          <td id="steal-hp-magnitude">0%</td>
         </tr>   
+
+         <tr>
+          <td><button id="antibodies-upgrade" style="background-color: black; color: white;">🧬Antibodies🧬</button></td>
+          <td>Gain an extra +5 Max Hp per level</td>
+          <td id="antibodies-perk-cost">2</td>
+          <td id="antibodies-magnitude">0%</td>
+        </tr>  
 </table>
 <!--------------------------------------------------------------------------------------------------------->    
 
@@ -430,6 +460,13 @@
     <td id="no-mercy-magnitude">2x</td>
 </tr>
 
+<tr>
+    <td><button id="lucky-dip-spell-upgrade" style="background-color: black; color: white;">🎁Gift of Fate🎁</button></td>
+    <td>Allows you to purchase random upgrades!</td>
+    <td>1</td>
+    <td id="lucky-dip-magnitude">0x</td>
+</tr>
+
 
 </table>
 
@@ -459,7 +496,7 @@
 	<tr>
 	    <td><button id="concentration-button" style="background-color: black; color: white;">🧠Concentration🧠</button></td>
 	    <td>Increases the amount of XP you earn per hit</td>
-	    <td id="concentration-perks">5</td>
+	    <td id="concentration-perks">1</td>
 	    <td id="concentration-magnitude">0x</td>
 	</tr>
 
@@ -510,14 +547,18 @@
 	<audio id="rage" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/epic-dragon-roar-364481.mp3" preload="auto"></audio>
 	<audio id="fireball-sfx" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/fireball-impact-351961.mp3" preload="auto"></audio>
 	<audio id="ice-sfx" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/iced-magic-2-378608.mp3" preload="auto"></audio>
+	<audio id="devil-laugh" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/diabolisches-lachen-252777 (1).mp3" preload="auto"></audio>
+	<audio id="armour-powerup" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/swing-whoosh-metal-hit-15-234629.mp3" preload="auto"></audio>
+	<audio id="viking-power" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/elemental-magic-spell-cast-d-228349.mp3" preload="auto"></audio>
+	<audio id="assassin-power" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/explosion-6801.mp3" preload="auto"></audio>
+	<audio id="mage-power" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/electric-90746.mp3" preload="auto"></audio>
 
 
 	
 	
-
+	<script src="variables.js"></script>
+	<script src="const.js"></script>
 
         <script src = "main.js"></script>
     </body>
 </html>
-
-

@@ -59,6 +59,9 @@ let maxVoltage = 100;
 let voltageSpeed = 1000;
 let voltageLevel = 1;
 
+let fireballBought = false;
+let fireballDamage = 5;
+
 // Max Voltage Upgrade
 let maxVoltagePerksCost = 5;
 let addedVoltage = 0;
@@ -72,7 +75,12 @@ let xpIntervalFactor = 0;
 let xpFactor;
 let randomXP;
 let healthFactor = 0;
+let antibodiesFactor = 10;
+let boughtSellSoul = false;
 
+
+let luckyDipPerkCost = 5;
+let luckyDipPressed = false;
 // ------------------- PURCHASED UPGRADES --------------
 let purchasedXP = false;
 let purchasedHP = false;
@@ -84,11 +92,18 @@ let EnemyHPPercentage;
 
 
 //GUARDIAN ANGEL UPGRADE
-let guardianRequiredPerks = 5;
+let guardianRequiredPerks = 7;
 let guardianChance = 0;
 let guardianFactor = 1;
 
 let presentPlayerDamage;
+
+let mageInterval;
+let mageFuryActivated = false;
+
+let specialUsed = false;
+
+
 
 
 // ========================================================
@@ -228,7 +243,11 @@ const rage = document.querySelector("#rage");
 const fireballSfx = document.querySelector("#fireball-sfx");
 const iceSfx = document.querySelector("#ice-sfx");
 
-
+const devilLaugh = document.querySelector("#devil-laugh");
+const armourPowerUp = document.querySelector("#armour-powerup");
+const vikingPower = document.querySelector("#viking-power")
+const assassinPower = document.querySelector("#assassin-power");
+const magePower = document.querySelector("#mage-power");
 // ========================================================
 // 🔢 MAGNITUDE ELEMENTS (MOTIVATION BOOSTERS)
 // ========================================================
@@ -279,6 +298,33 @@ const shockwaveMagnitude = document.querySelector("#shockwave-magnitude");
 const executionUpgrade = document.querySelector("#execution-upgrade");
 const executionPerksRequired = document.querySelector("#execution-perks-required");
 const executionMagnitude = document.querySelector("#execution-magnitude");
+
+const vampirismPerksRequired = document.querySelector("#vampire-perks-required");
+
+const antibodiesUpgrade = document.querySelector("#antibodies-upgrade");
+const antibodiesMagnitude = document.querySelector("#antibodies-magnitude");
+const antibodiesPerksRequired = document.querySelector("#antibodies-perk-cost");
+
+const hpRegenPerksRequired = document.querySelector("#hp-regen-perks-cost");
+
+const sellSoulUpgrade = document.querySelector("#sell-soul");
+const sellSoulMagnitude = document.querySelector("#sell-soul-magnitude");
+
+const luckyDipButton = document.querySelector("#lucky-dip");
+const luckyDipLabel = document.querySelector("#lucky-dip-label");
+const luckyDipSpellUpgrade = document.querySelector("#lucky-dip-spell-upgrade");
+const luckyDipMagnitude = document.querySelector("#lucky-dip-magnitude");
+
+const mageFury = document.querySelector("#mage-fury");
+const shieldWall = document.querySelector("#shield-wall");
+
+const markedForDeath = document.querySelector("#marked-for-death");
+const critLabel = document.querySelector("#crit-label");
+
+const nearDeathExperience = document.querySelector("#near-death-experience");
+
+
+
 // ========================================================
 // 🔢 ENEMY LIST ARRAY
 // ========================================================
@@ -359,6 +405,7 @@ criticalHitUpgrade.addEventListener("click", function() {
 	updatePerks();
 	
 	criticalChanceFactor += 1;
+	critLabel.textContent = "Crit Chance: " + criticalChanceFactor + " %";
 	
 	criticalHitPerksCost.textContent = criticalChanceRequiredPerks;
 	criticalHitMagnitude.textContent = criticalChanceFactor + " %";
@@ -401,19 +448,19 @@ let playerName = "";
 
 introDecision = prompt(`
 Welcome to the Game! Would you like to skip the intro?
-[1] Yes - Skip this stupid intro!
-[2] No - I wanna make my player name!
-[3] Let Fate Decide!
-[4] You call this a game? Pff..
+[1] ⚡ Skip the lame intro — let's get to the action!
+[2] 🖊️ No way — I'm naming my legend!
+[3] 🎲 Fate's call — roll the dice!
+[4] 😏 A 'game'? Please… this is amateur hour.
 `)
 
 function level1Story() {
     alert("After going to bed in your cosy warm house. you wake up in an abandoned mansion in the dark ages...before you can do anything you hear the annoying squeak of rats tearing through the floorboard....theres a knife in the bedside table! Take it and slaughter those parasites!");
     level1decision = prompt
-(`[1] Awww but they are adorable!
-[2] Ahhhhhh! I'm terrified of rats!
-[3] Can't I just run away?
-[4] Can't wait to make them bleed!`);
+(`[1] 🥹 Aww… tiny fluffballs? Kinda cute, I guess.  
+[2] 😱 NOPE! Rats! I’m outta here!  
+[3] 🏃‍♂️ Can I just sprint away like a sane person?!  
+[4] 🩸 Ohhh yes… time to make these little pests regret existing!`);
 
     if(level1decision === "1") {
 	alert("Aww how cute. The rats blushed like strawberrys as you complimented their cute noses. Thanks for making them feel special wecials!");
@@ -453,7 +500,7 @@ function startIntro() {
     alert("Welcome " + playerName + "!");
     let playerClass = prompt
 (`Choose a class to determine your fate:
-1] Assassin 🗡️
+1] Assassin 🥷
 Quick and deadly, but fragile. One wrong move could spell disaster!
 HP: 100
 Voltage: 125
@@ -486,15 +533,18 @@ Damage Resistance 5%`)
 	voltage = 125;
 	maxVoltage = 125;
 	playerDamage = 12;
+
+	markedForDeath.style.display = "inline";
 	
 	updateHealthValues();
 	updateVoltageValues();
 	playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage;
 
-alert(`🗡️Assassin Stats🗡️ 
+alert(`🥷Assassin Stats🥷
 Health: 100
 Voltage: 125
-Damage: 12 `);
+Damage: 12 
+Special Ability: 🥷Marked For Death🥷 - Critical Chance improved by 25% for 15 seconds!`);
 	level1Story();
 
     }
@@ -508,6 +558,8 @@ Damage: 12 `);
 	maxVoltage = 300;
 	playerDamage = 1;
 	voltageSpeed /= 2;
+
+	mageFury.style.display = "inline";
 	
 	updateHealthValues();
 	updateVoltageValues();
@@ -515,9 +567,10 @@ Damage: 12 `);
 
 alert(`🔮Mage Stats🔮 
 Health: 75
+Damage: 1
 Voltage: 300
 Voltage Regeneration: 2 V/Sec
-Damage: 1 `);
+Special Ability: 🔮Sorceror's Fury🔮 - Rapidly regenerate Voltage for a short period of time.`);
 	level1Story();
     }
 
@@ -534,33 +587,27 @@ Damage: 1 `);
 	updateVoltageValues();
 	playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage;
 
+	nearDeathExperience.style.display = "inline";
+
 alert(`🪓Viking Stats🪓 
 Health: 500
 Voltage: 40
-Damage: 5 `);
+Damage: 5 
+Special Ability: 🪓Near Death Experience🪓 - Completely Restores Health upon use!`);
 	level1Story();
     }
 
 
     else if(playerClass === "4") {
         alert("Knight Selected!");
-	damageResistance += 5;
-
-	drDecimal = 1 - (damageResistance/100);
-	newEnemyDamage = baseEnemyDamage * drDecimal;
-	newEnemyDamage = Math.floor(newEnemyDamage);
-	enemyDamage = newEnemyDamage;	
-	drLabel.textContent = "DR: " + damageResistance + " %";
-	maxDamageLabel.textContent = "|" + "Enemy DPS: " + newEnemyDamage;
-	drPerks.textContent = drCost	
-	drMagnitude.textContent = damageResistance + " %";	
-	drLabel.textContent = "DR: " + damageResistance + " %";	
+	shieldWall.style.display = "inline";
 	
 alert(`⚔️Knight Stats⚔️ 
 Health: 250
-Voltage: 100
 Damage: 2 
-Damage Resistance: 5%`)
+Voltage: 100
+Special Ability: 🛡️Shield Wall🛡️ - Incoming damage is reduced by 25% for a brief period
+`)
 	level1Story();
 
     }
@@ -634,6 +681,10 @@ function enemyDead() {
         }
 	
         enemyCurrentHealth = enemyMaxHealth;
+
+        healthFactor = Math.ceil((enemyMaxHealth * vampirismPercentage));
+	console.log(healthFactor);
+
 	currentHealth += healthFactor;
 	updateEnemyHealthValues();
 
@@ -1026,10 +1077,19 @@ function executionRoll() {
 // ========================================================								                //UPDATE RESOURCES//
 
 function updateHealthValues() {
+	
     	HPPercentage = (currentHealth/maxHealth) * 100;
 	currentHealth = Math.round(currentHealth);
-    	hp.textContent = playerName.toUpperCase() + " HP: " + currentHealth + "/" + maxHealth;
+    	hp.textContent = playerName.toUpperCase() + " HP: " + currentHealth.toLocaleString() + "/" + maxHealth.toLocaleString();
     	healthBar.style.width = HPPercentage + "%";
+
+	if(currentHealth === Infinity) {
+	    hp.textContent = playerName.toUpperCase() + " HP: " + " ∞";
+        }
+
+	else if(currentHealth === -Infinity) {
+	    hp.textContent = playerName.toUpperCase() + " HP: " + " -∞";
+        }
 
 if (HPPercentage > 90) {
     healthBar.style.background = "linear-gradient(to bottom, #65ff00, #32cd32)";
@@ -1064,22 +1124,41 @@ updateHealthValues();
 
 function updateEnemyHealthValues() {
     	enemyHPPercentage = (enemyCurrentHealth/enemyMaxHealth) * 100;
-	enemyHP.textContent = enemyList[currentLevel-1] + " HP: " + Math.floor(enemyCurrentHealth) + "/" + enemyMaxHealth;
     	enemyHealthBar.style.width = enemyHPPercentage + "%";
+	if(enemyCurrentHealth === Infinity) {
+	    enemyHP.textContent = enemyList[currentLevel-1] + " HP: " + "∞";
+	}
+	else{
+	    enemyHP.textContent = enemyList[currentLevel-1] + " HP: " + Math.floor(enemyCurrentHealth.toLocaleString()) + "/" + enemyMaxHealth.toLocaleString();
+	}
 }
 
 function updateXPValues() {
         XPPercentage = (currentXP/requiredXP) * 100;
 	XPPoints.style.width = XPPercentage + "%";
-	XPLabel.textContent = "XP: " + currentXP + "/" + requiredXP;
+	XPLabel.textContent = "XP: " + currentXP.toLocaleString() + "/" + requiredXP.toLocaleString();
+	if(currentXP === Infinity) {
+            XPLabel.textContent = "XP: " + "∞";    
+        }
+
+	else if(currentXP === -Infinity) {
+            XPLabel.textContent = "XP: " + "-∞";    
+        }
 }
 
-function updatePerks() {perk.textContent = "|" + "Skill Points: " + perks + "|";}
+function updatePerks() {perk.textContent = "|" + "Skill Points: " + perks.toLocaleString() + "|";}
 
 function updateVoltageValues() {
         voltagePercentage = (voltage/maxVoltage) * 100;
         voltageBar.style.width = voltagePercentage + "%";
-        voltageText.textContent = "Voltage: " + voltage + "/" + maxVoltage;
+        voltageText.textContent = "Voltage: " + voltage.toLocaleString() + "/" + maxVoltage.toLocaleString();
+	if(voltage === Infinity) {
+            voltageText.textContent = "Voltage: " + "∞";
+        }
+
+	else if(voltage === -Infinity) {
+            voltageText.textContent = "Voltage: " + "-∞";
+        }
 
 }
 
@@ -1089,10 +1168,10 @@ function level2Story() {
     alert("You have a few moments to prepare before moving forward. How will you increase your chances of surviving what's ahead?");
  
    let decision2 = prompt(`
-[1] Sharpern your dull knife
-[2] Check the wall safe for contents
-[3] Turn on the fire
-[4] Read the newspaper
+[1] 🔪 Give your knife a spa day
+[2] 🔒 Peek at the wall safe — are you feeling lucky?
+[3] 🔥 Crank up the fire — sizzle time
+[4] 📰 Flip the newspaper — what's going on in the world today?
 `);
     
     if(decision2 === "1"){
@@ -1166,10 +1245,10 @@ function level3Story() {
 	alert("You reach the courtyard… a maze of webs and shadows. Giant " + enemyList[currentLevel].toLowerCase() + "s " + "block every exit, forcing you to face them before escape.");
 	alert("Despite the panic, a lucky coin falls from the eerie sky. You have the chance to double your gold or lose it all. What will you do?")
 	let decisions3 = prompt(`
-[1] Flip the coin
-[2] Leave it for the next idiot
-[3] Keep the coin
-[4] Destroy the coin
+[1] 🪙 Flip the coin
+[2] 🚶‍♂️ Leave it for the next fool
+[3] ✋ Keep the coin
+[4] 💥 Smash the coin
 `)
 	if(decisions3 === "1") {
 	    alert("You decide to flip the coin in the hope of doubling the weight of coins in your pocket!")
@@ -1282,9 +1361,9 @@ function level5Story() {
 	alert("Before you embark on the long journey, a mysterious opportunity appears—you may make a single wish! Choose wisely…");
 
 	let decisions5 = prompt(`
-[1] Double Health
-[2] Double Damage
-[3] Double Max Voltage
+[1] 💖Double Health
+[2] 💥Double Damage
+[3] ⚡Double Max Voltage
 `);
 
 	if (decisions5 === "1") {
@@ -1318,10 +1397,10 @@ function level6Story() {
 	alert("He tilts his head and gives you the most adorable puppy eyes… 'russian roulette' he mutters..\nWhat do you do?");
 
 	decision6 = prompt(`
-[1] Play
-[2] Play but ask him to go first
-[3] Rob his gun
-[4] Offer a blood sacrifice to avoid playing the game
+[1] 🔥 Enter the game.
+[2] 🙃  Agree — force him to move first.
+[3] 🔫 Disarm him — steal the gun.
+[4] 🩸 Make a blood offering to spare yourself.
 `)
 
 let chamber = Math.floor(Math.random() * 6 + 1);
@@ -1418,19 +1497,88 @@ let chamber = Math.floor(Math.random() * 6 + 1);
 	    updateHealthValues();
 	}
 
-
-
-
-
-
-
-
 }
+
+function level7Story() {
+    alert("You arrive at a small town in chaos—flames burn, steel clashes, and in the center stands a giant, shimmering portal. Guarding it is a massive, menacing " + enemyList[currentLevel].toLowerCase() + " , swatting down anyone who dares approach. Townsfolk try to reach the portal, but all fall before its fearsome presence");
+    alert("Whilst you have the advantage of suprise, you plan your move before you act.");
+
+    let level7Prompt = prompt(
+`Your next move awaits:  
+[1] ⚔️ Storm in, blades aflame!  
+[2] 🙏Whisper a prayer to the developer, beseeching fortune.  
+[3] 🏰Loot the armory for a legendary suit of armor.  
+[4]💰 Pay for reinforcements to join your fight!`
+    );
+
+    if (level7Prompt === "1") {
+        alert("You charge into the battlefield slicing and dicing anyone who gets in your way! As you do so your weapon breaks in half from slicing through futuristic alien armour....this is not looking good!");
+        playerDamage /= 2;
+        playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage;
+
+        let level7Prompt2 = prompt(
+`Oops...what now?
+[1] Chuck it away and use one of your dead foes' weapon
+[2] Pay the local blacksmith to quickly repair it for a cost of 3000 gold`
+        );
+
+        if (level7Prompt2 === "1") {
+            alert("You pick up a bloody sword and use it in your fight against the giant cat!");
+            alert("Damage decreased by 50%");
+            playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage;
+        }
+
+        else if (level7Prompt2 === "2") {
+            if (goldValue >= 3000) {
+                goldValue -= 3000;
+                gold.textContent = "Gold: " + gold.value;
+                alert("You pay the blacksmith to repair your sword, as you hand him a heavy sack of coins he appreciates your presence and offers you a much more powerful sword to use! He wishes you good luck and you already feel the weight of its power!");
+                alert("Damage x2");
+                playerDamage *= 4;
+                playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage;
+
+
+            }
+
+            else {
+                alert("You don't have enough gold for that so that leaves one option!");
+                alert("You pick up a bloody sword and use it in your fight against the giant cat!");
+                alert("Damage decreased by 50%");
+                playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage;
+            }
+        }
+    }
+
+
+
+    else if (level7Prompt === "2") {
+       alert("As you whisper a prayer to the God of Programming, he offers you 3 Skill Points to aid you in your next fight! Use them good!")
+       alert("+3 Skill Points!");
+       perks += 3;
+       updatePerks();
+    }
+
+    else if (level7Prompt === "3") {
+        alert("You throw a rock through the window and squeese through into the armory. You see a lovely shiny piece of knight armour and you take it for yourself!")
+	alert("Damage Resistance increased by +5%");
+	damageResistance += 4;
+	damageResistanceFunction();       
+    }
+
+    else if (level7Prompt === "4") {
+        goldValue -= 1000;
+	alert("You pay mercenaries to help you in your fight, draining its lifeforce!");
+	alert("Enemy Max Health permenantly decreased by -10");
+	enemyMaxHealth -= 10;
+	updateEnemyHealthValues();
+    }
+}
+
 
 
 currentLevel = 1;
 
-timelines = [level2Story, level3Story, level4Story, level5Story, level6Story, 
+timelines = [level2Story, level3Story, level4Story, level5Story, level6Story, level7Story,
 
 level2Story, level3Story, level4Story, level5Story, level6Story,
 level2Story, level3Story, level4Story, level5Story, level6Story,
@@ -1454,7 +1602,7 @@ levelUpButton.addEventListener("click", function() {
 	displayEnemy.textContent = enemyEmojis[currentLevel];
 
 
-
+	specialUsed = false;
 	
 	timelines[currentLevel-1]();
 	
@@ -1465,7 +1613,7 @@ levelUpButton.addEventListener("click", function() {
 	enemyMaxHealth += (currentLevel * currentLevel);
 	enemyDamage += (currentLevel);
 	baseEnemyDamage += (currentLevel);
-	maxHealth += 10;
+	maxHealth += antibodiesFactor;
 	voltage = maxVoltage;
 	currentHealth = maxHealth;
 
@@ -1817,8 +1965,8 @@ let totalHealth = 0;
 maxHealthUpgrade.addEventListener("click", function() {
     if(perks >= 1) {
         perks -= 1;
-    maxHealth += 10;
-    totalHealth += 10;
+    maxHealth += 25;
+    totalHealth += 25;
 
     purchaseSkill.currentTime = 0;
     purchaseSkill.play();
@@ -1880,10 +2028,12 @@ function runVoltageLoop() {
 
         if(voltage + voltageLevel < maxVoltage) {
             voltage += voltageLevel;
-            voltagePercentage = (voltage/maxVoltage) * 100;
-            voltageBar.style.width = voltagePercentage + "%";
-            voltageText.textContent = "Voltage: " + voltage + "/" + maxVoltage;
+	    updateVoltageValues();
+
         }
+
+
+
 	
 	else{
            voltage = maxVoltage;
@@ -1897,7 +2047,6 @@ function runVoltageLoop() {
 runVoltageLoop();
 
 let xpPerksRequired = 2;
-const xpPerksCost = document.querySelector("#xp-perks-cost")
 const xpPerksRequiredText = document.querySelector("#xp-perks-required");
 
 //AUTO XP UPGRADE//															 //AUTO XP UPGRADE//
@@ -1909,16 +2058,15 @@ autoXP.addEventListener("click", function() {
     	purchaseSkill.play();
 	
 	xpPerksRequired += 1 * currentLevel;
-    autoMineXP();
-    xpIntervalFactor += 1;
-    autoXpMagnitude.textContent = "+ " + xpIntervalFactor + " XP/s";
-    xpPerksRequiredText.textContent = xpPerksRequired;
-    xpPerksCost.textContent = xpPerksRequired;
+        autoMineXP();
+        xpIntervalFactor += 1;
+
+        autoXpMagnitude.textContent = "+ " + xpIntervalFactor + " XP/s";
+        xpPerksRequiredText.textContent = xpPerksRequired;
 
 	
-
-    perk.textContent = "Perks: " + perks;
-    updateXPValues();
+        updatePerks();
+        updateXPValues();
 
 
    
@@ -1953,17 +2101,20 @@ function autoMineXP() {
 
 };
 
+let hpRegenRequiredPerks = 2;
+
 //AUTO HP UPGRADE//															 //AUTO HP UPGRADE//
 autoHP.addEventListener("click", function() {
-    if(perks >= 5 && !purchasedHP) {
+    if(perks >= hpRegenRequiredPerks) {
         purchasedXP = true;
-        perks -= 5;
+        perks -= hpRegenRequiredPerks;
+	hpRegenRequiredPerks += 1;
 
     	purchaseSkill.currentTime = 0;
     	purchaseSkill.play();
 
     autoMineHP();
-    autoHP.textContent = "OUT OF STOCK";
+    hpRegenPerksRequired.textContent = hpRegenRequiredPerks;
 
 	
 
@@ -1979,12 +2130,11 @@ let regenActive = 1;
 
 // AUTO REGENERATES HP POINTS//														   //AUTO REGEN HP//
 function autoMineHP() {
-    hpRegen += 1
+    hpRegen += 1;
     regenerateHpMagnitude.textContent = "+ " + hpRegen + "/s";
+    clearInterval(hpInterval);
     
-
-    
-    if(!hpInterval && currentHealth + hpRegen <= maxHealth){
+    if(currentHealth + hpRegen <= maxHealth){
         hpInterval = setInterval(function() {
 	    
             if(currentHealth + hpRegen >= maxHealth) {
@@ -1995,7 +2145,7 @@ function autoMineHP() {
 	    else regenActive = 1;
              
 
-            currentHealth += 1 * regenActive;
+            currentHealth += hpRegen * regenActive;
 	   
 
     	    HPPercentage = (currentHealth/maxHealth) * 100;
@@ -2142,18 +2292,27 @@ upgradeDamage.addEventListener("click", function() {
 
 });
 
+vampirismPercentage = 0;
+vampirismInteger = 0;
+vampirismRequiredPerks = 4;
 
 //VAMPIRISM UPGRADE//														       //VAMPIRISM UPGRADE//
 stealHP.addEventListener("click", function() {
-    if(perks >= 1) {
-        perks-= 1;
+    if(perks >= vampirismRequiredPerks) {
+        perks-= vampirismRequiredPerks;
+	vampirismRequiredPerks += 1;
+
+	vampirismPercentage += 0.01;
+	vampirismInteger += 1;
 
     	purchaseSkill.currentTime = 0;
     	purchaseSkill.play();
 
         perk.textContent = "Perks: " + perks;
-        healthFactor += 2;
-	stealHpMagnitude.textContent = "Absorbs: " + healthFactor + " HP";
+
+	vampirismPerksRequired.textContent = vampirismRequiredPerks;
+	stealHpMagnitude.textContent = "Absorbs: " + (vampirismInteger) + "%" + " HP";
+	console.log(healthFactor);
     }
 
 });
@@ -2179,12 +2338,16 @@ charge.addEventListener("click", function() {
 
 });
 
+let freezeActive = false;
+
 //FREEZE BUTTON																   //FREEZE BUTTON//
 freeze.addEventListener("click", function() {
-    if(voltage >= maxVoltage/2) {
+    if(voltage >= maxVoltage/2 && !freezeActive) {
+	freezeActive = true;
 	voltage -= Math.floor(maxVoltage/2);
 	iceSfx.play();
         previousEnemyDamage = enemyDamage
+	freeze.style.filter = "brightness(25%) grayscale(100%)";
 
         enemyDamage = 0;
 	
@@ -2193,9 +2356,12 @@ freeze.addEventListener("click", function() {
         setTimeout(function() {
             enemyDamage = previousEnemyDamage;
 	    enemyHealthBar.style.background = "linear-gradient(to top, darkred, orange)";
+	    freezeActive = false;
+	    freeze.style.filter = "brightness(100%) grayscale(0%)";
+
 
 	  
-        
+           
         
         }, 10000)
     }
@@ -2217,13 +2383,17 @@ document.addEventListener("keydown", function(event) {
 });
 
 
-//DEV COMMANDS																    //DEV COMMANDS//
+let checkOpacity;
+//DEV COMMANDS	
+
+														    //DEV COMMANDS//
 
 devConsole.addEventListener("keydown", function(event) {
 
     if(event.key === "Enter") {
         if(devConsole.value === "hack perks") {
-            perks += 1000000;
+	    electricitySfx.play();
+            perks += 10;
             updatePerks();
         }
 
@@ -2232,7 +2402,7 @@ devConsole.addEventListener("keydown", function(event) {
         }
 
         if(devConsole.value === "hack level") {
-            currentXP = requiredXP;
+            currentLevel += 1;
             updateXPValues();
         }
 
@@ -2245,7 +2415,7 @@ devConsole.addEventListener("keydown", function(event) {
 
 });
 
-let knightsPerksRequired = 5;
+let knightsPerksRequired = 2;
 let knightInterval;
 let armyDamage = 0;
 
@@ -2273,6 +2443,7 @@ function knightAttack() {
 
 }
 
+
 let difference = 0;
 // RECRUIT KNIGHT															//RECRUIT KNIGHT//
 let knightIncrementation = 1;
@@ -2298,7 +2469,7 @@ recruitKnight.addEventListener("click", function() {
 
 
 
-        knightsPerksRequired += 3;
+        knightsPerksRequired += 2;
 	knightQuantity += 1;
 	armyTextDamage = knightDamage;
 	armyDps.textContent = "|Army DPS: " + knightDamage + "|";
@@ -2340,23 +2511,11 @@ buyPerk.addEventListener("click", function() {
 });
 
 
-drCost = 10;
+drCost = 3;
 
-//DAMAGE RESISTANCE UPGRADE												       //DAMAGE RESISTANCE UPGRADE//
-drButton.addEventListener("click", function() {
-    if(perks >= drCost) {
-        purchaseSkill.currentTime = 0;
-        purchaseSkill.play();
-
-        perks -= drCost;
-	drCost += 15;
+function damageResistanceFunction() {
 	damageResistance += 1;
-	
 	drDecimal = 1 - (damageResistance/100);
-	
-
-
-
 
 	newEnemyDamage = baseEnemyDamage * drDecimal;
 	newEnemyDamage = Math.floor(newEnemyDamage);
@@ -2370,7 +2529,17 @@ drButton.addEventListener("click", function() {
 	drMagnitude.textContent = damageResistance + " %";
 	
 	updatePerks();
+}
+
+//DAMAGE RESISTANCE UPGRADE												       //DAMAGE RESISTANCE UPGRADE//
+drButton.addEventListener("click", function() {
+    if(perks >= drCost) {
+        purchaseSkill.currentTime = 0;
+        purchaseSkill.play();
+        perks -= drCost;
+	drCost += 2;
 	
+	damageResistanceFunction();
     }
 
 
@@ -2378,17 +2547,17 @@ drButton.addEventListener("click", function() {
 
 const concentrationMagnitude = document.querySelector("#concentration-magnitude")
 const concentrationPerksLabel = document.querySelector("#concentration-perks");
-let concentrationPerks = 5;
+let concentrationPerks = 1;
 
 //CONCENTRATION UPGRADE														   //CONCENTRATION UPGRADE//
 concentrationButton.addEventListener("click", function() {
     if(perks >= concentrationPerks) {
 	purchaseSkill.currentTime = 0;
 	purchaseSkill.play();
-
-	
         perks -= concentrationPerks;
-	concentrationFactor += 1;
+	concentrationPerks += 1;
+
+	concentrationFactor += 3;
 	concentrationPerksLabel.textContent = concentrationPerks;
 	concentrationMagnitude.textContent = "+" + concentrationFactor + " XP/Hit";
 
@@ -2402,7 +2571,7 @@ const ghostMagnitude = document.querySelector("#ghost-magnitude");
 
 //GHOST UPGRADE																    GHOST UPGRADE//
 ghostButton.addEventListener("click", function() {
-    if(!ghostPurchased && playerDamage >= 4) {
+    if(!ghostPurchased && currentLevel >= 4) {
  
     ghostWhisper.play();
     alert("💀 You become a ghost, your body gone forever. Your strikes are weaker, but blades and attacks barely touch you.");
@@ -2547,7 +2716,7 @@ alert(`
 - You get to pick a lot of choices in this game. Take your time to choose the one that will help you!
 
 
-
+20:27 18/10/2025
 
 `);
 	}
@@ -2561,19 +2730,21 @@ alert(`
 	presentPlayerDamage = playerDamage;
 	presentRequiredXP = requiredXP;
 	presentCurrentXP = currentXP;
+	presentEnemyHP = enemyCurrentHealth;
 
 
-	
-	currentHealth = Infinity;
+	enemyCurrentHealth = Infinity
 	voltage = -Infinity;
 	knightDamage = -Infinity;
 	playerDamage = 0;
 	requiredXP = Infinity;
 	currentXP = -Infinity;
+	currentHealth = Infinity;	
 
 	updateHealthValues();
 	updateVoltageValues();
 	updateXPValues();
+	updateEnemyHealthValues();
 	playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage + "|";
 
     }
@@ -2587,10 +2758,18 @@ alert(`
 	playerDamage = presentPlayerDamage;
 	requiredXP = presentRequiredXP;
 	currentXP = presentCurrentXP;
+	enemyCurrentHealth = presentEnemyHP;
+
+	if(boughtSellSoul) {
+	    voltage = -Infinity;
+	}
+
 
 	updateHealthValues();
 	updateVoltageValues();
 	updateXPValues();
+	updateEnemyHealthValues();
+
 
 	playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage + "|";
 
@@ -2621,14 +2800,24 @@ function guardianRoll() {
     }
 }
 
+
+function guardianFunction() {
+    guardianChance += 5;
+    guardianAngelPerksCost.textContent = guardianRequiredPerks;
+    guardianAngelMagnitude.textContent = guardianChance/10 + "%";
+}
+
+
+
 guardianAngelUpgrade.addEventListener("click", function() {
     if(perks >= guardianRequiredPerks) {
         perks-= guardianRequiredPerks;
-	guardianRequiredPerks += 10;
-	guardianChance += 5;
-	guardianAngelPerksCost.textContent = guardianRequiredPerks;
-	guardianAngelMagnitude.textContent = guardianChance/10 + "%";
 
+	purchaseSkill.currentTime = 0;
+	purchaseSkill.play();
+	guardianRequiredPerks += 4;
+	guardianFunction();
+	
 	updatePerks();
     }
 });
@@ -2646,7 +2835,7 @@ fireball.addEventListener("click", function() {
 
 	voltage -= 30;
 	flameAnimation.style.display = "inline";
-         enemyCurrentHealth -= 5;
+         enemyCurrentHealth -= fireballDamage;
 
 	if(enemyCurrentHealth >= 0) {
   	    enemyDead();
@@ -2671,21 +2860,30 @@ fireball.addEventListener("click", function() {
 });
 
 
+function fireballFunction() {
+
+     if(luckyDipPressed && fireballBought) {
+	alert("Fireball already unlocked! Increasing fireball Damage by + 10!");
+	fireballDamage += 10;
+     }
+
+
+     fireballBought = true;
+     purchaseSkill.currentTime = 0;
+     purchaseSkill.play();
+     perks -= 3;
+     fireball.style.display = "inline";
+     fireballMagnitude.textContent = "Fireball Unlocked!";
 
 
 
+}
 
-let fireballBought = false;
+
+
 fireballUpgrade.addEventListener("click",function() {
     if(perks >= 3 && !fireballBought) {
- 
-        fireballBought = true;
-        purchaseSkill.currentTime = 0;
-        purchaseSkill.play();
-        perks -= 3;
-        fireball.style.display = "inline";
-
-        fireballMagnitude.textContent = "Fireball Unlocked!";
+	fireballFunction();
     }
 
 });
@@ -2694,6 +2892,10 @@ let superNovaRequiredPerks = 3
 superNova.addEventListener("click", function() {
     if(perks >= superNovaRequiredPerks) {
         perks-= superNovaRequiredPerks;
+
+	purchaseSkill.currentTime = 0;
+	purchaseSkill.play();
+
         fireballDps += 1;
         superNovaRequiredPerks += 5;
         superNovaPerksRequired.textContent = superNovaRequiredPerks;
@@ -2734,6 +2936,7 @@ adrenaline.addEventListener("click", function() {
 adrenalineUpgrade.addEventListener("click", function() {
     if(perks >= 5) {
         perks -= 5;
+	purchaseSkill.currentTime = 0;
 	purchaseSkill.play();
 	adrenaline.style.display = "inline";
 	adrenalineMagnitude.textContent = "Adrenaline Unlocked!";
@@ -2756,6 +2959,9 @@ let noMercyRequiredPerks = 5;
 noMercyUpgrade.addEventListener("click", function() {
     if(perks >= noMercyRequiredPerks) {
         perks-= noMercyRequiredPerks;
+
+	purchaseSkill.currentTime = 0;
+	purchaseSkill.play();
 
 	adrenalineFactor += 0.5;
 	
@@ -2808,9 +3014,11 @@ shockwaveUpgrade.addEventListener("click", function() {
 
 
 
-
-
-
+function executionFunction() {
+    executionFactor += 1;
+    executionPerksRequired.textContent = executionRequiredPerks;
+    executionMagnitude.textContent = executionFactor/4 + " %";
+}
 
 
 executionRequiredPerks = 2;
@@ -2821,14 +3029,303 @@ executionUpgrade.addEventListener("click", function() {
 
 	purchaseSkill.currentTime = 0;
 	purchaseSkill.play();
-
 	executionRequiredPerks += 6;
-	executionFactor += 1;
-	
-	executionPerksRequired.textContent = executionRequiredPerks;
-	executionMagnitude.textContent = executionFactor/4 + " %";
+
+	executionFunction();
+
 	
 	
     }
 });
 
+let antibodiesRequiredPerks = 2;
+
+antibodiesUpgrade.addEventListener("click", function() {
+    if(perks >= antibodiesRequiredPerks);
+        perks -= antibodiesRequiredPerks;
+	purchaseSkill.currentTime = 0;
+	purchaseSkill.play();
+	antibodiesRequiredPerks += 6;
+	antibodiesFactor += 5;
+
+	antibodiesPerksRequired.textContent = antibodiesRequiredPerks;
+	antibodiesMagnitude.textContent = "+" + antibodiesFactor + " HP";
+	
+	
+        
+});
+
+function sellSoulFunction() {
+       if(!boughtSellSoul) {
+           boughtSellSoul = true; 
+           alert("As the ritual tears your soul from your flesh, your divine power plunges into the infernal abyss... Spells fail, your voltage collapses to negative infinity, and yet your  body feels unbreakable. You are near-immortal, but at a devilish cost.");
+	      alert(
+`Max Health X5
+Voltage Depleted`)
+
+           healButton.style.display = "none"; 
+           charge.style.display = "none";
+           freeze.style.display = "none";
+           adrenaline.style.display = "none";
+           fireballUpgrade.style.display = "none";
+       
+           devilLaugh.play();
+           maxHealth *= 5;
+           currentHealth = maxHealth;
+           presentHealth = maxHealth;
+           voltage = -Infinity;
+           updateHealthValues();
+           updateVoltageValues();
+           sellSoulMagnitude.textContent = "Soul Pact Activated";
+       }
+
+       else{
+           if(luckyDipPressed) {
+   	       alert("You have already Unlocked Soul Pact so instead max health increased by +75!");
+	       maxHealth += 75;
+	       currentHealth += 75;
+	       updateHealthValues();
+	       luckyDipPressed = false;
+	   }
+       }
+
+}
+
+
+sellSoulUpgrade.addEventListener("click", function() {
+    if(currentLevel >= 7 && !boughtSellSoul) {
+	sellSoulFunction();
+    }
+})
+
+let randomUpgrades = [sellSoulFunction, executionFunction, fireballFunction, guardianFunction]
+
+
+luckyDipButton.addEventListener("click", function(){
+    if(perks >= luckyDipPerkCost) {
+	alert("🎲Rolling Dice🎲");
+		
+        perks -= luckyDipPerkCost;
+	luckyDipPerkCost += 3;
+	luckyDipPressed = true;
+	
+	let randomUpgradeSelection = Math.floor(Math.random() * randomUpgrades.length);
+
+	if(randomUpgradeSelection === 0 && !boughtSellSoul) alert("😈Initiating Soul Pact!😈");
+
+	else if(randomUpgradeSelection === 1) {
+	    alert(
+`💀Execution Skill Upgraded!💀
+${(executionFactor+1)/4} % chance of causing an instant death!`
+)
+        }
+
+	else if(randomUpgradeSelection === 2 && !fireballBought){
+	    alert(
+`🔥FireBall Skill Upgraded!🔥
+You can now cast Fireballs, dealing 5 base damage and setting enemies ablaze for 1 HP per second over 10 seconds.`
+)
+        }
+
+	else if(randomUpgradeSelection === 3){
+	    alert(
+`🕊️Guardian Skill Upgraded!🕊️
+${(guardianFactor+1)/2} % chance of absorbing all damage from an enemy attack`
+)
+        }
+
+
+
+	updatePerks();
+
+	console.log(randomUpgradeSelection);
+	
+	randomUpgrades[randomUpgradeSelection]();
+	luckyDipLabel.textContent = "|" + "Lucky Dip Cost: " + luckyDipPerkCost;
+	
+	
+    }
+});
+
+let luckyDipBought = false;
+luckyDipSpellUpgrade.addEventListener("click", function() {
+    if(perks >= 1 && !luckyDipBought) {
+	luckyDipBought = true;
+	alert("You’ve unlocked the Gift of Fate! Spend skill points on these gift boxes to receive a completely random upgrade. The skill point cost increases only for Lucky Dips, not for individual skills.")
+	purchaseSkill.currentTime = 0;
+	purchaseSkill.play();
+
+        perks -= 1;
+	luckyDipButton.style.display = "inline";
+	luckyDipMagnitude.textContent = "Gift of Fate Unlocked!";
+	updatePerks();
+    }
+});
+
+checkHeal = setInterval(function() {
+	if(voltage >= 25) {
+	    healButton.style.filter = "brightness(100%) grayscale(0%)";
+	}
+	if(voltage < 25){
+	    healButton.style.filter = "brightness(25%) grayscale(100%)";
+	}
+	if(voltage >= 30) {
+            fireball.style.filter = "brightness(100%) grayscale(0%)";
+        }
+	if(voltage < 30) {
+	    fireball.style.filter = "brightness(25%) grayscale(100%)";
+        }
+
+	if(voltage >= 50) {
+            adrenaline.style.filter = "brightness(100%) grayscale(0%)";
+        }
+	if(voltage < 50) {
+	    adrenaline.style.filter = "brightness(25%) grayscale(100%)";
+        }
+
+	if(voltage / maxVoltage >= 0.5 && !freezeActive) {
+            freeze.style.filter = "brightness(100%) grayscale(0%)";
+        }
+	if(voltage / maxVoltage  < 0.5) {
+	    freeze.style.filter = "brightness(25%) grayscale(100%)";
+        }
+
+
+	if(perks >= luckyDipPerkCost) {
+            luckyDipButton.style.filter = "brightness(100%) grayscale(0%)";
+        }
+	if(perks <= luckyDipPerkCost) {
+	    luckyDipButton.style.filter = "brightness(25%) grayscale(100%)";
+        }
+	
+	if(mageFuryActivated | specialUsed) {
+            mageFury.style.filter = "brightness(25%) grayscale(100%)";      
+        }
+
+	if(!mageFuryActivated && !specialUsed) {
+            mageFury.style.filter = "brightness(100%) grayscale(0%)";      
+        }
+
+	if(shieldWallActivated | specialUsed) {
+            shieldWall.style.filter = "brightness(25%) grayscale(100%)";      
+        }
+
+	if(!shieldWallActivated && !specialUsed) {
+            shieldWall.style.filter = "brightness(100%) grayscale(0%)";      
+        }
+
+	if(markedForDeathActive | specialUsed) {
+            markedForDeath.style.filter = "brightness(25%) grayscale(100%)";      
+        }
+
+	if(!markedForDeathActive && !specialUsed) {
+            markedForDeath.style.filter = "brightness(100%) grayscale(0%)";      
+        }
+
+	if(specialUsed) {
+            nearDeathExperience.style.filter = "brightness(25%) grayscale(100%)";      
+        }
+
+	if(!specialUsed) {
+            nearDeathExperience.style.filter = "brightness(100%) grayscale(0%)";      
+        }
+
+
+
+	
+}, 100);
+
+
+
+mageFury.addEventListener("click", function() {
+    if(!mageFuryActivated && !specialUsed) {
+	mageFuryActivated = true;
+	specialUsed = true;
+
+	magePower.play();
+	displayLabel.textContent = "🔮Sorcerers Fury Activated!🔮";
+	displayLabel.style.opacity = 1;
+	displayLabel.style.background = "linear-gradient(to top, purple, blue)";
+	displayLabel.style.color = "white";
+
+        mageInterval = setInterval(function() {
+            voltage += 1;
+	    if(voltage >= maxVoltage) voltage = maxVoltage;
+	    updateVoltageValues();
+        },100)  
+	
+        setTimeout(function() {
+            clearInterval(mageInterval);
+	    mageFuryActivated = false;	
+        }, 15000);    
+    }
+
+});
+
+let shieldWallActivated = false;
+
+shieldWall.addEventListener("click", function() {
+    if(!shieldWallActivated && !specialUsed){
+	specialUsed = true;
+	armourPowerUp.play();
+
+	displayLabel.textContent = "🛡️Shield Wall Activated!🛡️"
+	displayLabel.style.background = "linear-gradient(to top , silver, darkgrey, grey, black)";
+	displayLabel.style.color = "black";
+	displayLabel.style.opacity  = 1;
+
+        damageResistance += 24;   
+        damageResistanceFunction()
+
+        setTimeout(function() {
+            damageResistance -= 25;
+	    enemyDamage = Math.floor(baseEnemyDamage * drDecimal);
+   	    drLabel.textContent = "DR: " + damageResistance + " %";
+	    displayLabel.style.opacity = 0;
+    }, 15000); 
+    }
+});
+
+let markedForDeathActive = false;
+
+markedForDeath.addEventListener("click", function() {
+    if(!markedForDeathActive && !specialUsed) {
+	markedForDeathActive = true;
+	specialUsed = true;
+	assassinPower.play();
+
+        criticalChanceFactor += 25;
+	critLabel.textContent = "Crit Chance: " + criticalChanceFactor + " %";
+
+	displayLabel.textContent =
+`🥷Marked for Death Active!🥷
++25% Crit Chance for 15 secs!`
+	displayLabel.style.opacity = 1;
+	displayLabel.style.background = "linear-gradient(to top, purple, black)";
+	displayLabel.style.color = "white";
+
+	setTimeout(function() {
+            criticalChanceFactor -= 25;
+	    displayLabel.style.opacity = 0;
+	    markedForDeathActive = false;
+        },15000);
+    }
+});
+
+
+nearDeathExperience.addEventListener("click", function() {
+    if(!specialUsed) {
+	specialUsed = true;
+	vikingPower.play();
+        currentHealth = maxHealth;
+        updateHealthValues();
+
+	displayLabel.textContent =
+`🪓Near-Death Experience Activated!🪓
+Health fully restored`
+	displayLabel.style.opacity = 1;
+	displayLabel.style.color = "white";
+	displayLabel.style.background = "linear-gradient(to top, red, silver)";
+    }
+
+});

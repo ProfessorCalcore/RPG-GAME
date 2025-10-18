@@ -1,105 +1,828 @@
-// ========================================================
-// 🎮 GAME STATE VARIABLES
-// ========================================================
-let goldMultiplier = 1;
-let executionFactor = 0;
+	   body{
+	       transition: all 5s ease;
+    background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+
+           }   
+		
+
+	   #attack:hover{
+	       transform:scale(1.3);
+	       background-color: white !important;
+	       box-shadow: 0 0 10px 5px orange;
 
 
-// ------------------- PLAYER STATS ----------------------
-let currentHealth = 250;
-let maxHealth = 250;
-let currentXP = 0;
-let currentLevel = 1;
-let perks = 0; 
-let playerDamage = 2;
-let minDamage = 1;
-let maxDamage = 10;
-let heal = 20;
-let active = 1; 
-let concentrationFactor = 1; 
-let goldFactor = 1;
-let requiredXP = 200;
+	   }
+
+	   #heal:hover{
+	       transform:scale(1.3);
+	       background-color: white !important;
+	       box-shadow: 0 0 10px 5px crimson;
 
 
-let adrenalineFactor = 2;
 
-//END STATS
-let timesAttacked = 0;
-let enemiesKilled = 0;
-let perksEarnt = 0;
-let goldEarnt = 0;
-let xpEarnt = 0;
+	   }
 
-// Army / Recruit Stats
-let goldValue = 0;
-let knightQuantity = 0;
-
-// Damage Resistance
-let damageResistance = 1;
-
-// Ghost / Special Effects
-let ghostDamageFactor = 1;
-let ghostPurchased = false;
-
-// Dark Rituals / DR Perks
-let drCost = 1;
-
-// Perk Costs
-let perkCost = 100;
-
-// ------------------- ENEMY STATS ----------------------
-let baseEnemyDamage = 1;
-let enemyDamage = 1 * damageResistance;
-let enemyCurrentHealth = 20;
-let enemyMaxHealth = 20;
-
-// ------------------- VOLTAGE SYSTEM -------------------
-let voltage = 100;
-let maxVoltage = 100;
-let voltageSpeed = 1000;
-let voltageLevel = 1;
-
-let fireballBought = false;
-let fireballDamage = 5;
-
-// Max Voltage Upgrade
-let maxVoltagePerksCost = 5;
-let addedVoltage = 0;
-
-// ------------------- INTERVALS & FACTORS -------------
-let xpInterval;
-let hpInterval;
-let voltageInterval;
-let enemyInterval;
-let xpIntervalFactor = 0;
-let xpFactor;
-let randomXP;
-let healthFactor = 0;
-let antibodiesFactor = 10;
-let boughtSellSoul = false;
+	   #charge:hover{
+	       transform:scale(1.3);
+	       background-color: white !important;
+	       box-shadow: 0 0 10px 5px #ffb84d;
 
 
-let luckyDipPerkCost = 5;
-let luckyDipPressed = false;
-// ------------------- PURCHASED UPGRADES --------------
-let purchasedXP = false;
-let purchasedHP = false;
+	   }
 
-// ------------------- PERCENTAGES ----------------------
-let XPPercentage;
-let HPPercentage;
-let EnemyHPPercentage;
+	   #freeze:hover{
+	       transform:scale(1.3);
+	       background-color: white !important;
+	       box-shadow: 0 0 10px 5px cyan;
+
+	   }
+
+	   #upgrades:hover{
+ 	   	transform: scale(1.3);
+	        background-color: white !important;
+		box-shadow: 0 0 10px 5px purple;       
+           }
 
 
-//GUARDIAN ANGEL UPGRADE
-let guardianRequiredPerks = 7;
-let guardianChance = 0;
-let guardianFactor = 1;
+	   #display-label{
+	   	position:absolute;
+ 		left: 50%;
+		top:5%;
+		opacity: 0;
+		transition: all 5s ease;
+		font-weight:bold;
+		font-family:arial;	
+		font-size:30px;
+		white-space:pre;
+           }
+	
 
-let presentPlayerDamage;
+	
 
-let mageInterval;
-let mageFuryActivated = false;
 
-let specialUsed = false;
+	   #health-container{
+                position: relative;
+    		background-color: grey;
+    		width: 200px;
+    		height: 20px;
+		margin-top: 1px;
+                margin-bottom: 1px;
+		border: 2px solid black;
+		border-radius: 10px;
+            }
 
+            #health-bar{
+    		position: relative;
+	        background-size: 400px 100%;
+   		width: 100%;
+    		height: 100%;
+		transition: all 1s ease;
+		border-radius: 10px;
+    		background:linear-gradient(to top, lime);
+	    }
+
+	   #hp{
+                position: absolute;
+                top: 0;
+		left: 0;
+		color: white;
+                width: 100%;
+
+                
+           }
+
+	   #enemy-health-container{
+                position: relative;
+    		background-color: grey;
+    		width: 400px;
+    		height: 20px;
+		margin-top: 1px;
+                margin-bottom: 1px;
+		border: 2px solid black;
+		border-radius: 10px;
+
+
+           }
+
+           #enemy-health-bar{
+    		position: relative;
+		background:linear-gradient(to top, darkred, orange);
+	        background-size: 400px 100%;
+   		width: 100%;
+    		height: 100%;
+		transition: all 0.5s ease;
+		border-radius: 10px;
+
+           }
+
+           #enemy-hp{
+                position: absolute;
+                top: 0;
+		left: 0;
+		color: white;
+                width: 100%;
+           }
+
+
+
+
+
+
+
+
+
+
+
+        
+           #attack img{
+           	display: inline-block;
+                vertical-align: middle;
+           }
+       
+           #heal img{
+           	display: inline-block;
+                vertical-align: middle;
+                
+           }
+
+           #xp-container{
+                position: relative;
+           	width: 300px;
+                height: 20px;
+		background-color: grey;
+		margin-top: 1px;
+                margin-bottom: 1px;
+		border: 2px solid black;
+		transition: all 0.5s ease;
+		border-radius: 10px;
+
+               
+           }
+
+           #xp-points{
+           	width: 100%;
+                height: 100%;
+		background: linear-gradient(to bottom, yellow, orange);
+		background-size: 300px, 100%;
+		transition: all 0.5s ease;
+		border-radius: 10px;
+		
+
+           }
+
+	   #XP{
+               position: absolute;
+	       color:black;
+               left: 0;
+               top: 0;
+	   }
+           
+           #upgrades-gui{
+ 	   	display: none;
+           }
+
+           #voltage-container{
+                position: relative;
+           	width: 200px;
+                height: 20px;
+                background-color: grey;
+		margin-top: 1px;
+		border: 2px solid black;
+		transition: all 0.5s ease;
+		border-radius: 10px;
+
+           }
+
+           #voltage-bar{
+           	width: 100%;
+                height: 100%;
+                background: linear-gradient(to top, blue, cyan);
+  		background-size: 200px, 100%;
+		transition: all 1s ease;
+		border-radius: 10px;
+
+           }
+ 
+	   #voltage-text{
+           	color: white;
+                position: absolute;
+                left: 0;
+                top: 0;
+           }
+
+	   #box{
+		position: absolute;
+		background-color: white;
+		width: 5px;
+		height: 5px;
+		top: 500px;
+		left: 500px;
+
+	
+	  }
+
+	  #dev-console{
+		position:absolute;
+	  	width:200px;
+		height:20px;
+		right:0px;
+		bottom:10px;
+		
+          }
+
+	  #display-enemy{
+	  	width: 100px;
+		height: 100px;
+		background: none;
+	        filter: invert(0%);
+		border: 0;
+	 	position:absolute;
+		top: 60%;
+		left: 40%;
+		font-size: 210px;
+		transition: filter 2s ease;
+		z-index: -2;
+		
+	  }
+
+
+	  #display-enemy:hover{
+	  	transform: scale(1.1);
+	  }
+
+	  #buy-perk:hover{
+	  	transform: scale(1.2);
+	  }
+
+	  #cloud1{
+          	position: absolute;
+		left: 5%;
+		top: 0%;
+		font-size: 100px;
+		z-index: -10;
+		transition: all 20s ease;
+ 		white-space: nowrap
+          }
+
+
+	  #moon{	
+	  	position:absolute;
+		left: 90%;
+		top: 0%;
+		z-index: -11;
+		font-size: 100px;
+	  }
+
+
+	  #house{	
+	  	position:absolute;
+		left: 0%;
+		top: 10%;
+		z-index: -4;
+		font-size: 500px;
+		filter:brightness(60%);
+	  }
+
+	  #grave{	
+	  	position:absolute;
+		left: 75%;
+		top: 80%;
+		z-index: -7;
+		font-size: 100px;	
+	  }
+
+	#factory{
+		font-size: 150px;
+		position:absolute;
+		left: 60%;
+		top: 65%;
+		z-index: -7;
+		filter: brightness(16%);
+	}
+
+	#castle{
+		font-size: 100px;
+		position:absolute;
+		left: 50%;
+		top: 70%;
+		z-index: -7;
+		filter: brightness(16%);
+	}
+
+	#office{
+		font-size: 89px;
+		position:absolute;
+		left: 78%;
+		top: 80%;
+		z-index: -7;
+		filter: brightness(16%);
+	}
+
+	#office2{
+		font-size: 89px;
+		position:absolute;
+		left: 83%;
+		top: 80%;
+		z-index: -7;
+		filter: brightness(16%);
+	}
+
+	#bank{
+		font-size: 259px;
+		position:absolute;
+		left: 83%;
+		top: 60%;
+		z-index: -7;
+		filter: brightness(16%);
+	}
+
+	#school{
+		font-size: 100px;
+		position:absolute;
+		left: 01%;
+		top: 68%;
+		z-index: -7;
+		filter: brightness(16%);
+	}
+
+	#construction{
+		font-size: 100px;
+		position:absolute;
+		left: 58%;
+		top: 70%;
+		z-index: -7;
+		filter: brightness(16%);
+	}
+
+	
+
+
+	  #tree{	
+	  	position:absolute;
+		left: 85%;
+		top:70%;
+		z-index: -3;
+		font-size: 200px;	
+	  }
+
+	  #player-icon{	
+	  	position:absolute;
+		left: 30%;
+		top: 52%;
+		font-size: 200px;
+		z-index: -10;
+		transform: scaleX(-1);	
+	  }
+
+	  #canvas{
+	  	position: absolute;
+		z-index: -6;
+		width: 100%;
+	  }
+
+
+	  #army-upgrades:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px green;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+
+	  }
+
+	  #corruption-upgrades:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px purple;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+	  }
+
+	  #damage-upgrades:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px red;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+	  }
+
+	  #defense-upgrades:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px blue;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+	  }
+
+	  #health-upgrades:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px red;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+   	  }
+
+	  #voltage-upgrades:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px orange;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+ 	  }
+
+	  #xp-upgrades:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px yellow;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+ 	  }
+
+
+          #buy-perk:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px yellow;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+	  }
+
+	  #level-up-button:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px yellow;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #pause{
+	  	font-size: 40px !important;
+		position: absolute;
+	 	left: 28%;
+		top:70%;
+		background-color: #333;
+		outline: none;
+		border-radius: 100%;
+		
+          }
+
+
+
+	  #pause:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px yellow;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #refresh{
+	  	font-size: 40px !important;
+		position: absolute;
+	 	left: 92%;
+		top:75%;
+		background-color: #333;
+		outline: none;
+		border-radius: 100%;
+		
+          }
+
+
+
+	  #refresh:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px cyan;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #recruit-knight:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px green;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #ghost-button:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px purple;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #upgrade-damage:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px crimson;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+	
+	  #critical-hit-upgrade:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px crimson;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+	
+	  #critical-damage-upgrade:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px crimson;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #dr-button:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px blue;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #heal-upgrade:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px purple;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #guardian-angel-upgrade:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px blue;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #refill-health:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px crimson;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #max-health-upgrade:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px crimson;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #regenerate-hp:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px crimson;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #steal-hp:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px crimson;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #voltage-upgrade:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px orange;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #max-voltage-upgrade:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px orange;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #auto-xp:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px yellow;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #concentration-button:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px yellow;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #fireball-upgrade{
+	  	background-color: black;
+		color: white;
+	  }
+
+	  #super-nova{
+	  	background-color: black;
+		color: white;
+	  }
+
+	  #fireball-upgrade:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px purple;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+
+	  #spell-upgrades:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px purple;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #super-nova:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px purple;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #fireball:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px orange;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);
+          }
+
+	  #no-mercy-upgrade:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px purple;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);
+          }
+
+	  #adrenaline:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px red;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);
+          }
+
+	  #adrenaline-upgrade:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px purple;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);
+          }
+
+	  #freeze-upgrade:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px purple;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);
+          }
+
+
+	  #flame-animation{
+	  	font-size: 300px;
+		position: absolute;
+		top: 40%;
+		left: 37%;
+		background: transparent;
+		border: none;
+		z-index: -3;
+		display: none;
+		animation: flicker 5s infinite alternate;
+	  }
+
+	#income-upgrades:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px lime;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);
+          }
+
+	#income-upgrades{
+		background-color: black;
+		color: white;
+          }
+
+
+	
+	@keyframes flicker {
+  		0%   { transform: translate(0,0) scale(1); opacity: 1; }
+  		25%  { transform: translate(2px,-2px) scale(1.05); opacity: 0.9; }
+  		50%  { transform: translate(-2px,2px) scale(0.95); opacity: 0.8; }
+  		75%  { transform: translate(1px,-1px) scale(1.1); opacity: 0.85; }
+  		100% { transform: translate(0,0) scale(1); opacity: 1; }
+	}
+
+	#lucky-fingers-upgrade:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px lime;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#shockwave-upgrade:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px orange;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#execution-upgrade:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px red;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#antibodies-upgrade:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px red;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#sell-soul:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px purple;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#lucky-dip:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px lime;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+
+	#mage-fury:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px white;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#shield-wall:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px white;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+
+	#marked-for-death:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px white;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+
+	#near-death-experience:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px white;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#lucky-dip-spell-upgrade:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px purple;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}

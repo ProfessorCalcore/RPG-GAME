@@ -3419,3 +3419,4 @@ realEstateUpgrade.addEventListener("click", function() {
 	updatePerks();
     }
 });
+

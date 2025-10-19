@@ -4,6 +4,8 @@
 let goldMultiplier = 1;
 let executionFactor = 0;
 
+let storyLevel = 1;
+
 
 // ------------------- PLAYER STATS ----------------------
 let currentHealth = 250;
@@ -77,6 +79,8 @@ let randomXP;
 let healthFactor = 0;
 let antibodiesFactor = 10;
 let boughtSellSoul = false;
+storyLevel = currentLevel;
+
 
 
 let luckyDipPerkCost = 5;
@@ -321,6 +325,7 @@ const critLabel = document.querySelector("#crit-label");
 const nearDeathExperience = document.querySelector("#near-death-experience");
 
 
+
 // ========================================================
 // 🔢 ENEMY LIST ARRAY
 // ========================================================
@@ -451,7 +456,7 @@ Welcome to the Game! Would you like to skip the intro?
 `)
 
 function level1Story() {
-    alert("After going to bed in your cosy warm house. you wake up in an abandoned mansion in the dark ages...before you can do anything you hear the annoying squeak of rats tearing through the floorboard....theres a knife in the bedside table! Take it and slaughter those parasites!");
+    alert("Your eyes awaken. You are lying in a bedroom within an abandoned mansion. Before you can do anything you hear the annoying squeak of rats tearing through the floorboard....theres a knife in the bedside table! Take it and slaughter those parasites!");
     level1decision = prompt
 (`[1] 🥹 Aww… tiny fluffballs? Kinda cute, I guess.  
 [2] 😱 NOPE! Rats! I’m outta here!  
@@ -490,7 +495,7 @@ function level1Story() {
 }
 
 function startIntro() {
-    alert("A portal opens. The devil smirks. One step into the unknown, and the age of humans fades. The dark ages rise again… and you are alone.");
+    alert("The Light fades and shadows of the past envy you. One step into the unknown, and the age of humans fades. The dark ages rise again… and you are alone.");
     alert("You have no idea who you are...who are you...tell us..");
     playerName = prompt("Enter your forgotten name...");
     alert("Welcome " + playerName + "!");
@@ -499,8 +504,8 @@ function startIntro() {
 1] Assassin 🥷
 Quick and deadly, but fragile. One wrong move could spell disaster!
 HP: 100
-Voltage: 125
-Damage: 12
+Voltage: 85
+Damage: 9
 
 [2] Mage 🔮
 Masters of the arcane, but frail in close combat. Spells are your lifeline.
@@ -526,9 +531,9 @@ Damage Resistance 5%`)
 
 	currentHealth = 100;
 	maxHealth = 100;
-	voltage = 125;
-	maxVoltage = 125;
-	playerDamage = 12;
+	voltage = 85;
+	maxVoltage = 85;
+	playerDamage = 9;
 
 	markedForDeath.style.display = "inline";
 	
@@ -538,8 +543,8 @@ Damage Resistance 5%`)
 
 alert(`🥷Assassin Stats🥷
 Health: 100
-Voltage: 125
-Damage: 12 
+Voltage: 85
+Damage: 9 
 Special Ability: 🥷Marked For Death🥷 - Critical Chance improved by 25% for 15 seconds!`);
 	level1Story();
 
@@ -550,10 +555,9 @@ Special Ability: 🥷Marked For Death🥷 - Critical Chance improved by 25% for 
 	
 	currentHealth = 75;
 	maxHealth = 75;
-	voltage = 300;
-	maxVoltage = 300;
+	voltage = 200;
+	maxVoltage = 200;
 	playerDamage = 1;
-	voltageSpeed /= 2;
 
 	mageFury.style.display = "inline";
 	
@@ -564,8 +568,7 @@ Special Ability: 🥷Marked For Death🥷 - Critical Chance improved by 25% for 
 alert(`🔮Mage Stats🔮 
 Health: 75
 Damage: 1
-Voltage: 300
-Voltage Regeneration: 2 V/Sec
+Voltage: 200
 Special Ability: 🔮Sorceror's Fury🔮 - Rapidly regenerate Voltage for a short period of time.`);
 	level1Story();
     }
@@ -575,7 +578,7 @@ Special Ability: 🔮Sorceror's Fury🔮 - Rapidly regenerate Voltage for a shor
 
 	currentHealth = 500;
 	maxHealth = 500;
-	voltageoltage = 40;
+	voltage = 40;
 	maxVoltage = 40;
 	playerDamage = 5;
 	
@@ -1122,10 +1125,10 @@ function updateEnemyHealthValues() {
     	enemyHPPercentage = (enemyCurrentHealth/enemyMaxHealth) * 100;
     	enemyHealthBar.style.width = enemyHPPercentage + "%";
 	if(enemyCurrentHealth === Infinity) {
-	    enemyHP.textContent = enemyList[currentLevel-1] + " HP: " + "∞";
+	    enemyHP.textContent = enemyList[storyLevel-1] + " HP: " + "∞";
 	}
 	else{
-	    enemyHP.textContent = enemyList[currentLevel-1] + " HP: " + Math.floor(enemyCurrentHealth.toLocaleString()) + "/" + enemyMaxHealth.toLocaleString();
+	    enemyHP.textContent = enemyList[storyLevel-1] + " HP: " + Math.floor(enemyCurrentHealth.toLocaleString()) + "/" + enemyMaxHealth.toLocaleString();
 	}
 }
 
@@ -1160,7 +1163,7 @@ function updateVoltageValues() {
 
 //LEVEL 2 STORY
 function level2Story() {
-    alert("After surviving the swarm of " + enemyList[currentLevel - 1].toLowerCase() + "s" + ", your confidence grows… but so does the danger around you.");
+    alert("After surviving the swarm of " + enemyList[storyLevel - 1].toLowerCase() + "s" + ", your confidence grows… but so does the danger around you.");
     alert("You have a few moments to prepare before moving forward. How will you increase your chances of surviving what's ahead?");
  
    let decision2 = prompt(`
@@ -1175,7 +1178,7 @@ function level2Story() {
 	playerDamage += 1;
 	playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage;
 
-	alert("A wave of " + enemyList[currentLevel].toLowerCase() + "s" + " bursts through the window, drawn by the scent of your last fight. Grip your sharpened knife—it's about to get wild!");
+	alert("A wave of " + enemyList[storyLevel].toLowerCase() + "s" + " bursts through the window, drawn by the scent of your last fight. Grip your sharpened knife—it's about to get wild!");
 
 
 
@@ -1198,7 +1201,7 @@ _ _ _ _`)
 	    maxVoltage -= 10;
 	    updateVoltageValues();
 
-	    alert("A swarm of " + enemyList[currentLevel].toLowerCase() + "s " + "glide through the living room door and surround you! Forget the safe, forget everything! Grab your knife   and fight, they’re after your blood!");
+	    alert("A swarm of " + enemyList[storyLevel].toLowerCase() + "s " + "glide through the living room door and surround you! Forget the safe, forget everything! Grab your knife   and fight, they’re after your blood!");
         }
 
 
@@ -1208,7 +1211,7 @@ _ _ _ _`)
         alert("You use a match to light the fireplace creating a cosy atmosphere in this gloomy mansion");
 	alert("The fire makes enemies more frightened! -5 enemy HP")
 	enemyMaxHealth -= 5;
-	alert("A swarm of " + enemyList[currentLevel].toLowerCase() + "s " + "approach you from the distance and looks like they don't like the look of the fire. They avoid it. Use it in your favour!")
+	alert("A swarm of " + enemyList[storyLevel].toLowerCase() + "s " + "approach you from the distance and looks like they don't like the look of the fire. They avoid it. Use it in your favour!")
     }
 
     else if(decision2 === "4") {
@@ -1216,7 +1219,7 @@ _ _ _ _`)
 	damageResistance += 2;
 	drLabel.textContent = "DR: " + damageResistance + "%";
 
-	alert("After you got distracted practising the dodge technique a swarm of " + enemyList[currentLevel].toLowerCase() + "s " + "storm through the open window biting at ur neck!") 
+	alert("After you got distracted practising the dodge technique a swarm of " + enemyList[storyLevel].toLowerCase() + "s " + "storm through the open window biting at ur neck!") 
 
 	alert("-15 HP! Blood dripping on the floor. Time for payback!");
 	currentHealth -= 15;
@@ -1230,15 +1233,19 @@ _ _ _ _`)
 	
 	drLabel.textContent = "DR: " + damageResistance + " %";
 	maxDamageLabel.textContent = "|" + "Enemy DPS: " + newEnemyDamage;
+    }
 
-
-	
+    else{
+        alert("You missed an opportunity!");
+	alert("-1 Damage");
+	playerDamage -= 1;
+	playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage;
     }
 
 }
 
 function level3Story() {
-	alert("You reach the courtyard… a maze of webs and shadows. Giant " + enemyList[currentLevel].toLowerCase() + "s " + "block every exit, forcing you to face them before escape.");
+	alert("You reach the courtyard… a maze of webs and shadows. Giant " + enemyList[storyLevel].toLowerCase() + "s " + "block every exit, forcing you to face them before escape.");
 	alert("Despite the panic, a lucky coin falls from the eerie sky. You have the chance to double your gold or lose it all. What will you do?")
 	let decisions3 = prompt(`
 [1] 🪙 Flip the coin
@@ -1299,7 +1306,7 @@ function level3Story() {
 	else if (decisions3 === "2") {
             alert("You decide not to gamble your gold. Sad times you could have been rich.")
 
-	    alert("Caution! " + enemyList[currentLevel].toLowerCase() + "s" + " surround the maze that you are in. They are 4 times the size of you but don't worry...not like their skin is made of iron anyway. Destroy them!")
+	    alert("Caution! " + enemyList[storyLevel].toLowerCase() + "s" + " surround the maze that you are in. They are 4 times the size of you but don't worry...not like their skin is made of iron anyway. Destroy them!")
         }
 
 	else if(decisions3 === "3") {
@@ -1316,25 +1323,25 @@ function level3Story() {
 	    alert("A blessing descends from the heavens! All gold looted from enemies is now 10% greater!");
 	    goldFactor += 0.1;
 
-	    alert("Caution! " + enemyList[currentLevel].toLowerCase() + "s" + " Giant Spiders now surround you. Their fangs are poisonous but their skin is pathetic. Find their weakness and destroy them before you become their new breeding ground. Yuck!")
+	    alert("Caution! " + enemyList[storyLevel].toLowerCase() + "s" + " Giant Spiders now surround you. Their fangs are poisonous but their skin is pathetic. Find their weakness and destroy them before you become their new breeding ground. Yuck!")
         }
 }
 
 
 
 function level4Story() {
-	alert("You kill the last " + enemyList[currentLevel-1].toLowerCase() + " causing the others to flee in distress");
+	alert("You kill the last " + enemyList[storyLevel-1].toLowerCase() + " causing the others to flee in distress");
 	alert("Now which way is out?")
 	let decision4 = prompt("Direction: left/right/stay");
 	if(decision4 === "left"){
-	    alert("You found the exit! A " + enemyList[currentLevel].toLowerCase() + " ambushes you outside the maze. Keep an eye on your health and destroy that thing!")
+	    alert("You found the exit! A " + enemyList[storyLevel].toLowerCase() + " ambushes you outside the maze. Keep an eye on your health and destroy that thing!")
         }
 
 	else if(decision4 === "right") {
 	    alert("You got lost further in the maze causing you to get hungry and tired. -20 HP and -10 V");
 	    currentHealth -= 20;
 	    voltage -= 10;
-	    alert("A " + enemyList[currentLevel].toLowerCase() + " finds your lost soul, ignore how weak you are right now and grab that pathetic knife of yours to kill the " + enemyList[currentLevel].toLowerCase() + " before it kills you!");
+	    alert("A " + enemyList[storyLevel].toLowerCase() + " finds your lost soul, ignore how weak you are right now and grab that pathetic knife of yours to kill the " + enemyList[storyLevel].toLowerCase() + " before it kills you!");
         
         }
 
@@ -1344,7 +1351,7 @@ function level4Story() {
 	    updateVoltageValues();
 	        
 	    alert("As you are taking a sip from your bottle you notice a black slivering shadow approach you from behind.")
-	    alert("You dodge out the way and grab your knife out. Looks like the " + enemyList[currentLevel].toLowerCase() + " of the labyrinth has arrived")
+	    alert("You dodge out the way and grab your knife out. Looks like the " + enemyList[storyLevel].toLowerCase() + " of the labyrinth has arrived")
         }
 
 	
@@ -1352,7 +1359,7 @@ function level4Story() {
 }
 
 function level5Story() {
-	alert("You finish the " + enemyList[currentLevel - 1].toLowerCase() +  " with a precise, throbbing stab to its great yellow eye!");
+	alert("You finish the " + enemyList[storyLevel - 1].toLowerCase() +  " with a precise, throbbing stab to its great yellow eye!");
 	alert("Looking around, the area is clear. You decide to find the nearest settlement to uncover what's going on.");
 	alert("Before you embark on the long journey, a mysterious opportunity appears—you may make a single wish! Choose wisely…");
 
@@ -1368,7 +1375,7 @@ function level5Story() {
 	    updateHealthValues();
 	    alert("Max Health doubled!");
 
-	    alert("Suddenly, a dark-grey " + enemyList[currentLevel].toLowerCase() + " ambushes you in the forest. The shadows are thick, so you set a tree ablaze to illuminate the area. Let's see if your rock-like hide can save you…");
+	    alert("Suddenly, a dark-grey " + enemyList[storyLevel].toLowerCase() + " ambushes you in the forest. The shadows are thick, so you set a tree ablaze to illuminate the area. Let's see if your rock-like hide can save you…");
 
 	} else if (decisions5 === "2") {
 	    alert("Your weapon fuses with the venom of death itself!");
@@ -1376,19 +1383,19 @@ function level5Story() {
 	    playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage + "|";
 	    alert("You now deal twice as much damage!");
 
-	    alert("A bright-green " + enemyList[currentLevel].toLowerCase() + " ambushes you in the forest. It's almost pitch-dark, so you light a torch and place it on a tree. Let's see if your venomous weapon strikes true…");
+	    alert("A bright-green " + enemyList[storyLevel].toLowerCase() + " ambushes you in the forest. It's almost pitch-dark, so you light a torch and place it on a tree. Let's see if your venomous weapon strikes true…");
 
 	} else if (decisions5 === "3") {
 	    alert("A surge of energy courses through your body, electrifying every vein!");
 	    maxVoltage *= 2;
 	    alert("Voltage capacity doubled!");
 
-	    alert("A giant " + enemyList[currentLevel].toLowerCase() + "s" + " ambushes you in the forest. The darkness is nearly complete, but your super-charged battery powers your flashlight. Time to see if raw energy can illuminate your victory…");
+	    alert("A giant " + enemyList[storyLevel].toLowerCase() + "s" + " ambushes you in the forest. The darkness is nearly complete, but your super-charged battery powers your flashlight. Time to see if raw energy can illuminate your victory…");
 	}
 }
 
 function level6Story() {
-	alert("With the " + enemyList[currentLevel-1].toLowerCase() + " slain, you press onwards. From the distance you notice faint flickering lights...could it be a settlement?");
+	alert("With the " + enemyList[storyLevel-1].toLowerCase() + " slain, you press onwards. From the distance you notice faint flickering lights...could it be a settlement?");
 	alert("You approach the lights, but suddenly a friendly zombie lumbers out of the forest clutching a rusty revolver.")
 	alert("He tilts his head and gives you the most adorable puppy eyes… 'russian roulette' he mutters..\nWhat do you do?");
 
@@ -1495,8 +1502,9 @@ let chamber = Math.floor(Math.random() * 6 + 1);
 
 }
 
+
 function level7Story() {
-    alert("You arrive at a small town in chaos—flames burn, steel clashes, and in the center stands a giant, shimmering portal. Guarding it is a massive, menacing " + enemyList[currentLevel].toLowerCase() + " , swatting down anyone who dares approach. Townsfolk try to reach the portal, but all fall before its fearsome presence");
+    alert("You arrive at a small town in chaos—flames burn, steel clashes, and in the center stands a giant, shimmering portal. Guarding it is a massive, menacing " + enemyList[storyLevel].toLowerCase() + " , swatting down anyone who dares approach. Townsfolk try to reach the portal, but all fall before its fearsome presence");
     alert("Whilst you have the advantage of suprise, you plan your move before you act.");
 
     let level7Prompt = prompt(
@@ -1508,7 +1516,7 @@ function level7Story() {
     );
 
     if (level7Prompt === "1") {
-        alert("You charge into the battlefield slicing and dicing anyone who gets in your way! As you do so your weapon breaks in half from slicing through futuristic alien armour....this is not looking good!");
+        alert("You go full berserk, hacking and slashing everything in sight! And just like that—SNAP! Your weapon explodes against futuristic alien armor… yeah, we’re in trouble now");
         playerDamage /= 2;
         playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage;
 
@@ -1519,7 +1527,7 @@ function level7Story() {
         );
 
         if (level7Prompt2 === "1") {
-            alert("You pick up a bloody sword and use it in your fight against the giant cat!");
+            alert("You pick up a bloody sword and use it in your fight against the giant " + enemyList[currentLevel].toLowerCase());
             alert("Damage decreased by 50%");
             playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage;
         }
@@ -1528,7 +1536,7 @@ function level7Story() {
             if (goldValue >= 3000) {
                 goldValue -= 3000;
                 gold.textContent = "Gold: " + gold.value;
-                alert("You pay the blacksmith to repair your sword, as you hand him a heavy sack of coins he appreciates your presence and offers you a much more powerful sword to use! He wishes you good luck and you already feel the weight of its power!");
+                alert("You pay the blacksmith, coins clattering everywhere, and he smirks, offering you a ridiculously powerful sword. Just holding it, you can already feel the chaos it would unleash!");
                 alert("Damage x2");
                 playerDamage *= 4;
                 playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage;
@@ -1537,8 +1545,8 @@ function level7Story() {
             }
 
             else {
-                alert("You don't have enough gold for that so that leaves one option!");
-                alert("You pick up a bloody sword and use it in your fight against the giant cat!");
+                alert("Did you forget how bankrupt you were? There's no way you can afford the repairs!");
+                alert("You pick up a bloody sword and use it in your fight against the giant " + enemyList[storyLevel].toLowerCase());
                 alert("Damage decreased by 50%");
                 playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage;
             }
@@ -1548,33 +1556,90 @@ function level7Story() {
 
 
     else if (level7Prompt === "2") {
-       alert("As you whisper a prayer to the God of Programming, he offers you 3 Skill Points to aid you in your next fight! Use them good!")
+       alert("You whisper a prayer to the almighty God of Programming. He smirks and injects 3 bonus Skill Points into your veins. Go on… make 'em count (or break the game, your call).")
        alert("+3 Skill Points!");
        perks += 3;
        updatePerks();
     }
 
     else if (level7Prompt === "3") {
-        alert("You throw a rock through the window and squeese through into the armory. You see a lovely shiny piece of knight armour and you take it for yourself!")
+	alert("You hurl a rock through the window and squeeze inside the armory. Your eyes land on a gleaming suit of knight’s armor thats hanging on the wall...way too tempting to resist, you snatch it up for yourself!");
 	alert("Damage Resistance increased by +5%");
 	damageResistance += 4;
-	damageResistanceFunction();       
+	damageResistanceFunction();   
     }
 
     else if (level7Prompt === "4") {
         goldValue -= 1000;
-	alert("You pay mercenaries to help you in your fight, draining its lifeforce!");
-	alert("Enemy Max Health permenantly decreased by -10");
-	enemyMaxHealth -= 10;
+	alert(" Mercenaries arrive, weapons clashing and boots pounding! They teach you lethal tricks to strike the enemy's weak spots!");
+	alert("Enemy Max Health permenantly decreased by -20");
+	enemyMaxHealth -= 20;
 	updateEnemyHealthValues();
     }
 }
 
+function level8Story() {
+    alert("After annihalting the vincinity with your deadly strikes, the portal guardian is now dead and you are free to enter another dimension! This is the next step to figuring out why you are in this timeline and why time is collapsing on itself...")
+
+    let level8StoryPrompt = prompt
+(`You have the option to travel back in time...would you like to proceed?
+[1] Yes
+[2] Continue Story
+`)
+    if(level8StoryPrompt === "1") {
+        alert("...");
+alert("...");
+alert("Light swallows you whole. Your consciousness peels apart as time folds in on itself, dragging your mind backward through everything you’ve ever been.");
+alert("You see flashes—forests crawling with lizards… snarling dogs… swirling portals… blood on your hands… a rat torn apart… spiders closing in… voices screaming for help… bodies falling… static… buzzing… reality tearing itself in half…");
+    startIntro();  
+	storyLevel = 0;
+	enemyCurrentHealth = currentLevel * 10;;
+	enemyMaxHealth = currentLevel * 10;
+	enemyDamage = currentLevel;
+
+    }
+
+    else if(level8StoryPrompt ==="2"){
+        alert("You walk towards the bright light and your body gets sucked in transporting your soul to another realm of time...");
+	alert("After a dizzying series of twists and turns, you plummet through the sky and crash into a shimmering pool of water. Around you, lush tropical greenery stretches as far as the eye can see. Towering trees sway gently above, rivers sparkle as they meander peacefully, and before you, the world of the dinosaurs comes alive.!")
+
+	alert("In the distance, a shimmering oasis appears, bathed in golden sunlight. As you approach, your eyes fall upon a perfectly ripe, crimson apple hanging from a twisted, ancient tree. Its skin glistens like it holds a world of secrets, promising a sweet reward after hours of relentless struggle. Your stomach growls, your hands tremble with anticipation… you’ve earned this taste of paradise.");
+	
+let level8StoryPrompt2 = prompt
+(`Juicy temptations....what to do...?
+[1] 🍎Bite the apple and taste it's power!
+[2] 🚶‍♂️Leave the apple alone...for now
+`)
+
+if(level8StoryPrompt2 === "1") {
+    alert(" You crunch on the juicy apple! Knowledge explodes through your veins and leveling up feels instant… but the apple bites back! You've aged 20 years, losing 10 max HP and voltage. Power never comes free!");
+    alert("Your journey accelerates! Leveling up now demands 500 less XP — feel the surge of unstoppable power!")    
+    alert("From the shadows behind the ancient trees, a low growl rises. You sense the ground shake beneath unseen feet… brace yourself, chaos is about to strike!");
+
+
+    requiredXP -= 500;
+    maxHealth -= 10;
+    maxVoltage -= 10;
+
+    updateHealthValues();
+    updateVoltageValues();
+    updateXPValues();
+}
+
+else if(level8StoryPrompt2 === "2") {
+    alert("You walk away from the apple never knowing what it's potential could have been...");
+    alert("You hear something creep out from behind one of the trees, get ready...");
+}
+
+
+
+    }
+}
 
 
 currentLevel = 1;
 
-timelines = [level2Story, level3Story, level4Story, level5Story, level6Story, level7Story,
+timelines = [level2Story, level3Story, level4Story, level5Story, level6Story, level7Story, level8Story,
 
 level2Story, level3Story, level4Story, level5Story, level6Story,
 level2Story, level3Story, level4Story, level5Story, level6Story,
@@ -1589,30 +1654,28 @@ level2Story, level3Story, level4Story, level5Story, level6Story,
  ]
 
 currentLevel = 1;
-
-// Level UP button//															//LEVEL UP BUTTON//
-levelUpButton.addEventListener("click", function() {
-    // Check if player has enough XP
-    if (currentXP >= requiredXP) {
-	updateHealthValues();
-	displayEnemy.textContent = enemyEmojis[currentLevel];
-
+function levelUpFunction() {
+updateHealthValues();
+	displayEnemy.textContent = enemyEmojis[storyLevel];
 
 	specialUsed = false;
 	
-	timelines[currentLevel-1]();
+	timelines[storyLevel-1]();
 	
 	active = 1;
         levelUpButton.style.display = "none";
         levelUpSfx.play();
 
-	enemyMaxHealth += (currentLevel * currentLevel);
-	enemyDamage += (currentLevel);
-	baseEnemyDamage += (currentLevel);
+	enemyMaxHealth += (storyLevel * storyLevel );
+	console.log("Enemy Current Health = currentLevel * currentLevel = " + enemyCurrentHealth);
+	enemyDamage += (storyLevel);
+	baseEnemyDamage += (storyLevel);
+	console.log(enemyDamage);
 	maxHealth += antibodiesFactor;
 	voltage = maxVoltage;
 	currentHealth = maxHealth;
 
+	
 	updateHealthValues();
 	updateVoltageValues();
 	maxDamageLabel.textContent = "|Enemy DPS: " + enemyDamage + "|";
@@ -1623,11 +1686,15 @@ levelUpButton.addEventListener("click", function() {
 
         currentXP = 0;
         currentLevel += 1;
+	storyLevel += 1;
         maxDamage += 3;
-	perks += currentLevel ;
-	perksEarnt += currentLevel;
+	perks += storyLevel ;
+	perksEarnt += storyLevel;
 	perk.textContent = "|Skill Points: " + perks + "|";
         level.textContent = "|Level: " + currentLevel + "|";
+
+	enemyHP.textContent = enemyList[storyLevel-1].toUpperCase() + " HP" + ": " + enemyCurrentHealth + "/" + enemyMaxHealth;
+	console.log("Story Level: " + storyLevel);
 
 	updateXPValues();
 
@@ -1639,6 +1706,8 @@ levelUpButton.addEventListener("click", function() {
         enemyDamage = 0;
 	
 	enemyHealthBar.style.background = "linear-gradient(to right, #a0e9ff, #70d6ff, #ccefff, #ffffff)";
+	displayEnemy.textContent = enemyEmojis[storyLevel-1];
+
 
         setTimeout(function() {
             enemyDamage = previousEnemyDamage;
@@ -1647,7 +1716,7 @@ levelUpButton.addEventListener("click", function() {
 	  
         
         
-        }, 10000)
+        }, 5000)
 
         displayLabel.style.opacity = 1;
         displayLabel.textContent = "Level Up!";
@@ -1657,6 +1726,15 @@ levelUpButton.addEventListener("click", function() {
         setTimeout(function() {
             displayLabel.style.opacity = 0;
         }, 3000);
+
+}
+
+
+// Level UP button//															//LEVEL UP BUTTON//
+levelUpButton.addEventListener("click", function() {
+    // Check if player has enough XP
+    if(currentXP >= requiredXP) {
+        levelUpFunction();    
     }
 });
 
@@ -2398,8 +2476,7 @@ devConsole.addEventListener("keydown", function(event) {
         }
 
         if(devConsole.value === "hack level") {
-            currentLevel += 1;
-            updateXPValues();
+	    levelUpFunction();
         }
 
         if(devConsole.value === "death") {
@@ -2880,6 +2957,7 @@ function fireballFunction() {
 fireballUpgrade.addEventListener("click",function() {
     if(perks >= 3 && !fireballBought) {
 	fireballFunction();
+	updatePerks();
     }
 
 });
@@ -2895,7 +2973,9 @@ superNova.addEventListener("click", function() {
         fireballDps += 1;
         superNovaRequiredPerks += 5;
         superNovaPerksRequired.textContent = superNovaRequiredPerks;
-        superNovaMagnitude.textContent = fireballDps + " DPS";      
+        superNovaMagnitude.textContent = fireballDps + " DPS";
+
+	updatePerks();      
     }
 
 });
@@ -3325,6 +3405,3 @@ Health fully restored`
     }
 
 });
-
-
-

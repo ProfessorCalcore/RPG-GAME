@@ -24,6 +24,8 @@
 	<label id="bank">🏛️</label>
 	<label id="school">🏪</label>
 	<label id="construction">🏗️</label>
+	<label id="saturn">🪐</label>
+
 
 
 
@@ -87,7 +89,6 @@
 <!--------------XP LABELS----------------------------------------------------------------------------------->
 	<label id="level" style="margin-right: 10px; background-color: #333; color: white;">|Level: 1|</label>
         <label id="perk" style="margin-right: 10px; background-color: #333; color: white;">|Skill Points: 0|</label>
-        <label id="required-xp" style="margin-right: 10px; background-color: #333; color: white;">|Required XP: 500|</label>
 	<button id="buy-perk" style="background-color: #333; color: white;">Buy Skill Point: 100 Gold</button>
 	<button id="level-up-button" style="display: none; background-color: #333; color: white;">Level Up!</button>
 
@@ -203,6 +204,8 @@
 	</tr>
 
 
+
+
      
 </table>
 
@@ -267,9 +270,9 @@
         </tr>
 
         <tr>
-            <td><button id="dr-button" style="background-color: black; color: white;">🗡️❌Damage Resistance🗡️❌</button></td>
-            <td>Increases Damage Resistance by +1%</td>
-            <td id="dr-perks">3</td>
+            <td><button id="dr-button" style="background-color: black; color: white;">🛡️Damage Resistance🛡️</button></td>
+            <td>Increases Damage Resistance by +3%</td>
+            <td id="dr-perks">1</td>
             <td id="dr-magnitude">0x</td>
         </tr>
 
@@ -277,9 +280,18 @@
 	<tr>
 	    <td><button id="guardian-angel-upgrade" style="background-color: black; color: white;">🕊️Guardian Angel🕊️</button></td>
 	    <td>Chance to avoid all damage from an attack + 0.5%</td>
-	    <td id="guardian-angel-perks-cost">7</td>
+	    <td id="guardian-angel-perks-cost">2</td>
 	    <td id="guardian-angel-magnitude">0 %</td>
 	</tr>
+
+
+	<tr>
+	    <td><button id="eye-for-eye-upgrade" style="background-color: black; color: white;">👁️Eye for an Eye👁️</button></td>
+	    <td>Reflects +2% of damage back onto the attacker</td>
+	    <td id="eye-for-eye-perks-cost">1</td>
+	    <td id="eye-for-eye-magnitude">0%</td>
+	</tr>
+
 
 
 </table>
@@ -290,7 +302,7 @@
 <button id="health-upgrades" style="display: block; background-color: black; color: white;">💖Health Upgrades💖</button>
 
 
-<table id="health-table" border=1 style="border-collapse: collapse; display: none; background-color: black; color: white;">
+<table id="health-table" border=1 style="border-collapse: collapse; display: none; background-color: black; color: white; z-index: 1000; position: relative;">
     <caption>Health Skills</caption>
         <tr>
             <th>Skill</th>
@@ -306,6 +318,12 @@
           <td id="refill-health-magnitude">0x</td>
         </tr>
 
+<tr>
+    <td><button id="heal-upgrade" style="background-color: black; color: white; z-index: 10;">❤️‍🩹First Aid❤️‍🩹</button></td>
+    <td>Boosts healing by +5 HP</td>
+    <td>1</td>
+    <td id="heal-upgrade-magnitude">0x</td>
+</tr>
          <tr>
           <td><button id="max-health-upgrade" style="background-color: black; color: white;">❤️‍🔥Endurance❤️‍🔥</button></td>
           <td>Increases max health by 25 pts</td>
@@ -328,11 +346,26 @@
           <td id="steal-hp-magnitude">0%</td>
         </tr>   
 
+        <tr>
+          <td><button id="mosquito" style="background-color: black; color: white;">🦟Mosquito🦟</button></td>
+          <td>Gain 1 HP each time you strike an enemy</td>
+          <td id="mosquito-perks-required">15</td>
+          <td id="mosquito-magnitude">0x</td>
+        </tr>   
+
+	<tr>
+  	    <td><button id="antibodies-upgrade" style="background-color: black; color: white;">🧬Antibodies🧬</button></td>
+  	    <td>Gain an extra +5 Max HP per level</td>
+  	    <td id="antibodies-perk-cost">2</td>
+  	    <td id="antibodies-magnitude">0%</td>
+	</tr>
+
+
          <tr>
-          <td><button id="antibodies-upgrade" style="background-color: black; color: white;">🧬Antibodies🧬</button></td>
-          <td>Gain an extra +5 Max Hp per level</td>
-          <td id="antibodies-perk-cost">2</td>
-          <td id="antibodies-magnitude">0%</td>
+          <td><button id="bloodthirsty-upgrade" style="background-color: black; color: white;">🩸Bloodthirsty🩸</button></td>
+          <td>Each critical strike grants +1 to Max Health</td>
+          <td id="bloodthirsty-perks-required">8</td>
+          <td id="bloodthirsty-magnitude">0x</td>
         </tr>  
 </table>
 <!--------------------------------------------------------------------------------------------------------->    
@@ -356,6 +389,13 @@
 	    <td id="lucky-fingers-perks-required">1</td>
 	    <td id="lucky-fingers-magnitude">1x</td>
 	</tr>
+
+	<tr>
+	    <td><button id="real-estate-upgrade" style="background-color: black; color: white;">🕴️Mafia🕴️</button></td>
+	    <td>Take over the world, run your empire, and watch taxes grow!</td>
+	    <td id="real-estate-perks-required">1</td>
+	    <td id="real-estate-magnitude">0x</td>
+	</tr>
   
 </table>
 
@@ -378,7 +418,7 @@
         <tr>
             <td><button id="voltage-upgrade" style="background-color: black; color: white;">⚡Fluxify⚡</button></td>
             <td>Regenerates +1 Volts Per Seconds</td>
-            <td>2</td>
+            <td id="voltage-regen-perks-required">2</td>
             <td id="voltage-upgrade-magnitude">0x</td>
         </tr>
 
@@ -431,13 +471,6 @@
     <td id="super-nova-magnitude">1 DPS</td>
 </tr>
 
-
-<tr>
-    <td><button id="heal-upgrade" style="background-color: black; color: white;">❤️‍🩹First Aid❤️‍🩹</button></td>
-    <td>Boosts healing by +5 HP</td>
-    <td>1</td>
-    <td id="heal-upgrade-magnitude">0x</td>
-</tr>
 
 <tr>
     <td><button id="freeze-upgrade" style="background-color: black; color: white;">❄️Ice Age❄️</button></td>
@@ -556,7 +589,8 @@
 
 	
 	
-	
+
+
         <script src = "main.js"></script>
     </body>
 </html>

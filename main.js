@@ -145,6 +145,40 @@ let luckyDipBought = false;
 let realEstateRequiredPerks = 1;
 let realEstateInterval;
 let incomeFactor = 0;
+let antibodiesRequiredPerks = 2;
+let executionRequiredPerks = 2;
+
+
+let shockwaveFactor = 1;
+let shockwaveRequiredPerks = 4;
+let luckyFingersRequiredPerks = 1;
+let noMercyRequiredPerks = 5;
+
+let currentDamage;
+let adrenalineActivated = false;
+let superNovaRequiredPerks = 3
+let activatedFireball = false;
+
+let fireballDps = 1;
+let paused = false;
+
+let windowWidth = window.innerWidth;
+let concentrationPerks = 1;
+
+let knightIncrementation = 1;
+let index = 0;
+let difference = 0;
+
+let knightsPerksRequired = 2;
+let knightInterval;
+let armyDamage = 0;
+
+let knightDamage = 0;
+let checkOpacity;
+
+let vampirismPercentage = 0;
+let vampirismInteger = 0;
+let vampirismRequiredPerks = 4;
 
 // ========================================================
 // 🧍 PLAYER / ENEMY UI ELEMENTS
@@ -389,11 +423,23 @@ const realEstateUpgrade = document.querySelector("#real-estate-upgrade");
 const realEstatePerksRequired = document.querySelector("#real-estate-perks-required");
 const realEstateMagnitude = document.querySelector("#real-estate-magnitude");
 
+const stopTimeButton = document.querySelector("#stop-time");
+const refresh = document.querySelector("#refresh");
+const pause = document.querySelector("#pause");
+const cloud1 = document.querySelector("#cloud1");
+const cloud1Style = window.getComputedStyle(cloud1);
+const concentrationMagnitude = document.querySelector("#concentration-magnitude")
+const concentrationPerksLabel = document.querySelector("#concentration-perks");
+const ghostMagnitude = document.querySelector("#ghost-magnitude");
+
+
 
 swordKill.volume = 0.5;
 criticalSfx.volume = 0.3;
 
 
+let left = parseInt(cloud1Style.left);
+freezeActive = false;
 
 // ========================================================
 // 🔢 ENEMY LIST ARRAY
@@ -462,6 +508,13 @@ const xpTable = document.querySelector("#xp-table");
 // ========================================================
 // 🎬INTRO🎬 #INTRO
 // ========================================================
+alert(
+`Patch Notes V.1.09
+- Brand New Skill Added - Slow Time that slows down the enemy attack rate
+- Sepia filter added when slow time is applied
+- Pause bug where health didnt remain frozen fixed by removing enemy damage temporarily
+`)
+
 
 introDecision = prompt(`
 Welcome to the Game! Would you like to skip the intro?
@@ -667,11 +720,9 @@ function enemyDead() {
 	enemiesKilled += 1;
 
 
-	displayEnemy.style.filter = "invert(100%)";
-
-
 	setTimeout(function() {
-	    displayEnemy.style.filter = "invert(0%)";
+                displayEnemy.style.filter = "invert(0%)";
+          
 
 	
 	}, 1000);
@@ -988,10 +1039,19 @@ incomeUpgrades.addEventListener("click", function() {
 	spellUpgrades.style.display = "block";
     }   
 });
-
 // ========================================================
 // 🛠️FUNCTIONS🛠️ #FUNCTIONS
 // ========================================================
+//🩸BLOODTHIRSTY FUNCTION🩸
+function bloodthirstyFunction() {
+    purchaseSkill.currentTime = 0;
+    purchaseSkill.play();
+
+    bloodthirstyFactor += 1;
+    bloodthirstyPerksRequired.textContent = bloodthirstyRequiredPerks;
+    bloodthirstyMagnitude.textContent = "+ " + bloodthirstyFactor + " HP";
+}
+
 //🎯CRITICAL CHANCE FUNCTION🎯
 criticalHitUpgrade.addEventListener("click", function() {
     if(perks >= criticalChanceRequiredPerks) {
@@ -1028,19 +1088,35 @@ criticalDamageUpgrade.addEventListener("click", function() {
         }
 });
 
-//🕊️GUARDIAN ANGEL FUNCTION🕊️
-function guardianRoll() {
-let guardianNumber = Math.floor(Math.random() * 1000 + 1);
-    if(guardianNumber <= guardianChance) {
-        guardianFactor = 0;
-    }
+//🛡️DAMAGE RESISTANCE FUNCTION🛡️
+function damageResistanceFunction() {
+	purchaseSkill.currentTime = 0;
+	purchaseSkill.play();
 
-    else{
-        guardianFactor = 1;
-    }
+	damageResistance += 3;
+	drDecimal = 1 - (damageResistance/100);
+
+	newEnemyDamage = enemyDamage * drDecimal;
+	newEnemyDamage = Math.ceil(newEnemyDamage);
+	enemyDamage = newEnemyDamage;
+	
+	drLabel.textContent = "DR: " + damageResistance + " %";
+	maxDamageLabel.textContent = "|" + "Enemy DPS: " + newEnemyDamage;
+	drPerks.textContent = drCost	
+	drMagnitude.textContent = damageResistance + " %";
+	updatePerks();
 }
 
 //💀EXECUTION FUNCTION💀
+function executionFunction() {
+    purchaseSkill.currentTime = 0;
+    purchaseSkill.play();
+    executionFactor += 1;
+    executionPerksRequired.textContent = executionRequiredPerks;
+    executionMagnitude.textContent = executionFactor/4 + " %";
+}
+
+//💀EXECUTION FUNCTION ROLL💀
 function executionRoll() {
     let executionNumber = Math.floor(Math.random() * 400 + 1);
     if(executionNumber <= executionFactor) {
@@ -1058,15 +1134,42 @@ function executionRoll() {
     }
 }
 
-//🩸BLOODTHIRSTY FUNCTION🩸
-function bloodthirstyFunction() {
-    purchaseSkill.currentTime = 0;
-    purchaseSkill.play();
+//🕊️GUARDIAN ANGEL ROLL🕊️
+function guardianRoll() {
+let guardianNumber = Math.floor(Math.random() * 1000 + 1);
+    if(guardianNumber <= guardianChance) {
+        guardianFactor = 0;
+    }
 
-    bloodthirstyFactor += 1;
-    bloodthirstyPerksRequired.textContent = bloodthirstyRequiredPerks;
-    bloodthirstyMagnitude.textContent = "+ " + bloodthirstyFactor + " HP";
+    else{
+        guardianFactor = 1;
+    }
 }
+
+//🕊️GUARDIAN ANGEL FUNCTION🕊️
+function guardianFunction() {
+    purchaseSkill.play();
+    guardianChance += 5;
+    guardianAngelPerksCost.textContent = guardianRequiredPerks;
+    guardianAngelMagnitude.textContent = guardianChance/10 + "%";
+}
+
+//🪖ARMY DPS INTERVAL🪖
+function knightAttack() {
+    armyDamage += knightDamage;
+    clearInterval(knightInterval);
+    knightInterval = setInterval(function() {
+	enemyCurrentHealth -= knightDamage;
+	updateEnemyHealthValues();
+
+	if(enemyCurrentHealth <= 0) {
+	    enemyCurrentHealth = enemyMaxHealth;
+	    updateEnemyHealthValues();
+	    enemyDead();
+        }
+    }, 1000);
+}
+
 //💲REAL ESTATE FUNCTION💲
 function realEstateFunction() {
     incomeFactor += 1;
@@ -1080,6 +1183,45 @@ realEstateInterval = setInterval(function() {
     goldValue += incomeFactor;
     gold.textContent = "Gold: " + goldValue.toLocaleString();   
 },1000);
+}
+
+//😈SELL SOUL FUNCTION😈
+function sellSoulFunction() {
+       if(!boughtSellSoul) {
+           boughtSellSoul = true; 
+	   soulPactFactor = -Infinity;
+           alert("As the ritual tears your soul from your flesh, your divine power plunges into the infernal abyss... Spells fail, your voltage collapses to negative infinity, and yet your  body feels unbreakable. You are near-immortal, but at a devilish cost.");
+	      alert(
+`Max Health X5
+Voltage Depleted`)
+
+           healButton.style.display = "none"; 
+           charge.style.display = "none";
+           freeze.style.display = "none";
+           adrenaline.style.display = "none";
+           fireballUpgrade.style.display = "none";
+       
+           devilLaugh.play();
+           maxHealth *= 5;
+           currentHealth = maxHealth;
+           presentHealth = maxHealth;
+           voltage = -Infinity;
+           updateHealthValues();
+           updateVoltageValues();
+           sellSoulMagnitude.textContent = "Soul Pact Activated";
+       }
+
+       else{
+           if(luckyDipPressed) {
+   	       alert("You have already Unlocked Soul Pact so instead max health increased by +75!");
+		purchaseSkill.currentTime = 0;
+		purchaseSkill.play();
+	       maxHealth += 75;
+	       currentHealth += 75;
+	       updateHealthValues();
+	       luckyDipPressed = false;
+	   }
+       }
 }
 // ========================================================
 // ⚡UPDATE RESOURCES/STATUS⚡#UPDATE STATS
@@ -2244,8 +2386,7 @@ refillHealthUpgrade.addEventListener("click", function() {
 
 });
 
-
-
+let playerSpeed = 1000;
 // ========================================================
 // 🔊 ENDING / DEATH SOUNDS ARRAY
 // ========================================================										  //DEATH FUNCTION//
@@ -2284,30 +2425,24 @@ Gold Earned: ${goldEarnt.toLocaleString()}
 
                 location.reload();
             }, 5000);
-
         }
- 
         else{
 	    guardianRoll();
             currentHealth -= enemyDamage * guardianFactor;
 	    enemyCurrentHealth -= reflectedDamage
+
 	    if(enemyCurrentHealth <= 0) {
 	        enemyDead();
 	    }
-
 	    updateHealthValues();
 	    updateEnemyHealthValues();
         }
-
-
-    },1000);
-
-
+    },playerSpeed);
 }
-
 enemyAttack();
-
-//ATTACK UPGRADE//														          //ATTACK UPGRADE//
+// ========================================================
+//💥DAMAGE UPGRADE💥 #DAMAGE UPGRADE #SHARPENED #ATTACK 
+// ========================================================
 upgradeDamage.addEventListener("click", function() {
     if(perks >= 1) {
 
@@ -2321,17 +2456,11 @@ upgradeDamage.addEventListener("click", function() {
 	updatePerks();
 	playerDamageLabel.textContent = "|Player Damage: " + playerDamage + "|";
 	upgradeDamageMagnitude.textContent = "- " + playerDamage + " HP";
-        
-   
     }
-
 });
-
-vampirismPercentage = 0;
-vampirismInteger = 0;
-vampirismRequiredPerks = 4;
-
-//VAMPIRISM UPGRADE//														       //VAMPIRISM UPGRADE//
+// ========================================================
+//🩸VAMPIRISM UPGRADE🩸 #VAMPIRISM-UPGRADE
+// ========================================================
 stealHP.addEventListener("click", function() {
     if(perks >= vampirismRequiredPerks) {
         perks-= vampirismRequiredPerks;
@@ -2349,11 +2478,10 @@ stealHP.addEventListener("click", function() {
 	stealHpMagnitude.textContent = "Absorbs: " + (vampirismInteger) + "%" + " HP";
 	console.log(healthFactor);
     }
-
 });
-
-
-//RECHARGE VOLTAGE														        //RECHARGE VOLTAGE//
+// ========================================================
+//⚡CHARGE VOLTAGE BUTTON⚡ #CHARGE-VOLTAGE-BUTTON #BUTTON #VOLTAGE
+// ========================================================
 charge.addEventListener("click", function() {
     voltage += shockwaveFactor;
     enemyCurrentHealth += 1;
@@ -2369,13 +2497,10 @@ charge.addEventListener("click", function() {
     updateEnemyHealthValues();
     if(currentXP <= 0) currentXP = 0;
     updateXPValues();
-
-
 });
-
-let freezeActive = false;
-
-//FREEZE BUTTON																   //FREEZE BUTTON//
+// ========================================================
+//❄️FREEZE BUTTON❄️ #FREEZE-BUTTON #BUTTON #SPELLS #ICE #FROST
+// ========================================================
 freeze.addEventListener("click", function() {
     if(voltage >= maxVoltage/2 && !freezeActive) {
 	freezeActive = true;
@@ -2392,21 +2517,13 @@ freeze.addEventListener("click", function() {
             enemyDamage = previousEnemyDamage;
 	    enemyHealthBar.style.background = "linear-gradient(to top, darkred, orange)";
 	    freezeActive = false;
-	    freeze.style.filter = "brightness(100%) grayscale(0%)";
-
-
-	  
-           
-        
+	    freeze.style.filter = "brightness(100%) grayscale(0%)";        
         }, 10000)
     }
-
 });
-
-
-
-//MR BOXXY WOXXY															  //MR BOXXY WOXXY//
-
+// ========================================================
+//📦MR BOXXY WOXXY📦 #MISC
+// ========================================================
 document.addEventListener("keydown", function(event) {
     key = event.key;
 
@@ -2414,17 +2531,11 @@ document.addEventListener("keydown", function(event) {
     if(key === "ArrowRight") {fromLeft += 5}
 
     mrBox.style.left = fromLeft + "px";
-
-});
-
-
-let checkOpacity;
-//DEV COMMANDS	
-
-														    //DEV COMMANDS//
-
+});													    
+// ========================================================
+//💻DEV CONSOLE💻 #CONSOLE
+// ========================================================
 devConsole.addEventListener("keydown", function(event) {
-
     if(event.key === "Enter") {
         if(devConsole.value === "hack perks") {
 	    electricitySfx.play();
@@ -2445,43 +2556,10 @@ devConsole.addEventListener("keydown", function(event) {
             updateHealthValues();
         }
     }
-    
-
 });
-
-let knightsPerksRequired = 2;
-let knightInterval;
-let armyDamage = 0;
-
-let knightDamage = 0;
-
-// KNIGHT FUNCTION															//KNIGHT FUNCTION//
-function knightAttack() {
-    armyDamage += knightDamage;
-    clearInterval(knightInterval);
-    knightInterval = setInterval(function() {
-	enemyCurrentHealth -= knightDamage;
-	updateEnemyHealthValues();
-
-
-	if(enemyCurrentHealth <= 0) {
-	    enemyCurrentHealth = enemyMaxHealth;
-	    updateEnemyHealthValues();
-	    enemyDead();
-	
-        }
-	
-
-    }, 1000);
-
-
-}
-
-
-let difference = 0;
-// RECRUIT KNIGHT															//RECRUIT KNIGHT//
-let knightIncrementation = 1;
-let index = 0;
+// ========================================================
+//🪖RECRUIT SOLDIER UPGRADE🪖 #RECRUIT-KNIGHT-UPGRADE #KNIGHT #ARMY #SOLDIER
+// ========================================================	
 recruitKnight.addEventListener("click", function() {
     if(perks >= knightsPerksRequired ) {	
         perks -= knightsPerksRequired;
@@ -2491,18 +2569,12 @@ recruitKnight.addEventListener("click", function() {
     	purchaseSkill.currentTime = 0;
     	purchaseSkill.play();
 	
-	
 	previousKnightDamage = knightDamage
 	
-
 	soldier.textContent = "Adds 1 " + soldierName[index] + " to your army dealing " + "+ " + knightIncrementation +  " damage per second";
 	recruitKnight.textContent = soldierName[index];
 	index += 1;
 	
-
-
-
-
         knightsPerksRequired += 2;
 	knightQuantity += 1;
 	armyTextDamage = knightDamage;
@@ -2513,22 +2585,15 @@ recruitKnight.addEventListener("click", function() {
 	knightAttack();
 	knightAttack();
 
-
 	perksRequiredLabel.textContent = knightsPerksRequired;
 	knightsMagnitude.textContent = knightQuantity + " Companions"; 
-        
-	
-	
     }
-
-
-
 });
-
-//BUY PERK UPGRADE		                                                                                                        //BUY PERK UPGRADE//														
+// ========================================================
+//💰BUY SKILL POINTS BUTTON💰 #BUY-PERK-BUTTON #BUTTON #SKILL POINTS #PERK
+// ========================================================	
 buyPerk.addEventListener("click", function() {
     if(goldValue >= perkCost) {
-
     	purchaseSkill.currentTime = 0;
     	purchaseSkill.play();
 
@@ -2540,51 +2605,20 @@ buyPerk.addEventListener("click", function() {
 	buyPerk.textContent = "Buy Skill Point: " + perkCost + " Gold";
         updatePerks();
     }
-    
-
 });
-
-
-drCost = 1;
-
-function damageResistanceFunction() {
-	
-	purchaseSkill.currentTime = 0;
-	purchaseSkill.play();
-	damageResistance += 3;
-	drDecimal = 1 - (damageResistance/100);
-
-	newEnemyDamage = enemyDamage * drDecimal;
-	newEnemyDamage = Math.ceil(newEnemyDamage);
-	enemyDamage = newEnemyDamage;
-	
-	drLabel.textContent = "DR: " + damageResistance + " %";
-	maxDamageLabel.textContent = "|" + "Enemy DPS: " + newEnemyDamage;
-
-
-	drPerks.textContent = drCost	
-	drMagnitude.textContent = damageResistance + " %";
-	
-	updatePerks();
-}
-
-//DAMAGE RESISTANCE UPGRADE												       //DAMAGE RESISTANCE UPGRADE//
+// ========================================================
+//🛡️DAMAGE RESISTANCE UPGRADE🛡️ #DAMAGE-RESISTANCE-UPGRADE #DR 
+// ========================================================	
 drButton.addEventListener("click", function() {
     if(perks >= drCost) {
         perks -= drCost;
 	drCost += 3;
 	damageResistanceFunction();
-	
     }
-
-
 });
-
-const concentrationMagnitude = document.querySelector("#concentration-magnitude")
-const concentrationPerksLabel = document.querySelector("#concentration-perks");
-let concentrationPerks = 1;
-
-//CONCENTRATION UPGRADE														   //CONCENTRATION UPGRADE//
+// ========================================================
+//🧠CONCENTRATION UPGRADE🧠 #CONCENTRATION-UPGRADE #BRAIN #XP
+// ========================================================	
 concentrationButton.addEventListener("click", function() {
     if(perks >= concentrationPerks) {
 	purchaseSkill.currentTime = 0;
@@ -2596,15 +2630,12 @@ concentrationButton.addEventListener("click", function() {
 	concentrationPerksLabel.textContent = concentrationPerks;
 	concentrationMagnitude.textContent = "+" + concentrationFactor + " XP/Hit";
 
-
 	updatePerks();
     }
-
 });
-
-const ghostMagnitude = document.querySelector("#ghost-magnitude");
-
-//GHOST UPGRADE																    GHOST UPGRADE//
+// ========================================================
+//👻GHOST UPGRADE👻 #GHOST-UPGRADE #CORRUPTION
+// ========================================================	
 ghostButton.addEventListener("click", function() {
     if(!ghostPurchased && currentLevel >= 4) {
  
@@ -2618,27 +2649,18 @@ ghostButton.addEventListener("click", function() {
     ghostDamageFactor = 0.5;
     ghostMagnitude.textContent = "Ghost Activated";
     
-
-  
     updateHealthValues();
     playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage + "|";
-
-    
-
     }
-
 });
-
-
-
-
-//MAX VOLTAGE UPGRADE														       MAX VOLTAGE UPGRADE//
+// ========================================================
+//⚡MAX VOLTAGE UPGRADE⚡ #MAX-VOLTAGE-UPGRADE #VOLTAGE
+// ========================================================	
 maxVoltageUpgrade.addEventListener("click", function() {
     if(perks >= maxVoltagePerksCost) {
 	
 	purchaseSkill.currentTime = 0;
 	purchaseSkill.play();
-	
 	
         perks-= maxVoltagePerksCost;
 	maxVoltagePerksCost += 5;
@@ -2648,20 +2670,11 @@ maxVoltageUpgrade.addEventListener("click", function() {
   	maxVoltageMagnitude.textContent = addedVoltage + " V";
 	updateVoltageValues();
 	updatePerks();
-    
     }
-
 });
-
-const cloud1 = document.querySelector("#cloud1");
-const cloud1Style = window.getComputedStyle(cloud1);
-
-let left = parseInt(cloud1Style.left);
-let windowWidth = window.innerWidth;
-
-
-
-//MOVING CLOUD 														                      MOVING CLOUD//
+// ========================================================
+//⏸️PAUSE FUNCTION⏸️ #SETTINGS
+// ========================================================													                      
 function moveCloud1() {
     setInterval(function() {
 	left += 2;
@@ -2684,16 +2697,10 @@ function moveCloud1() {
 
     },1000);
 }
-
 moveCloud1();
-
-
-//PAUSE BUTTON																      PAUSE BUTTON//
-
-const pause = document.querySelector("#pause");
-paused = false;
-
-
+// ========================================================
+//⏸️PAUSE FUNCTION⏸️ #SETTINGS
+// ========================================================
 pause.addEventListener("click", function() {
     if(!paused) {
 	
@@ -2701,6 +2708,7 @@ pause.addEventListener("click", function() {
 	iceSfx.play();
 	displayLabel.textContent = "Game Paused";
 	displayLabel.style.opacity = 1;
+	displayLabel.style.color = "white";
     
 	
 
@@ -2713,6 +2721,7 @@ pause.addEventListener("click", function() {
 	presentRequiredXP = requiredXP;
 	presentCurrentXP = currentXP;
 	presentEnemyHP = enemyCurrentHealth;
+	presentEnemyDamage = enemyDamage;
 
 
 	enemyCurrentHealth = Infinity
@@ -2721,13 +2730,16 @@ pause.addEventListener("click", function() {
 	playerDamage = 0;
 	requiredXP = Infinity;
 	currentXP = -Infinity;
-	currentHealth = Infinity;	
+	currentHealth = Infinity;
+	enemyDamage = 0;	
 
 	updateHealthValues();
 	updateVoltageValues();
 	updateXPValues();
 	updateEnemyHealthValues();
 	playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage + "|";
+	maxDamageLabel.textContent = "|" + "Enemy DPS: " + enemyDamage + "|";
+	
 
     }
     
@@ -2742,6 +2754,7 @@ pause.addEventListener("click", function() {
 	requiredXP = presentRequiredXP;
 	currentXP = presentCurrentXP;
 	enemyCurrentHealth = presentEnemyHP;
+	enemyDamage = presentEnemyDamage;
 
 	if(boughtSellSoul) {
 	    voltage = -Infinity;
@@ -2753,46 +2766,19 @@ pause.addEventListener("click", function() {
 	updateXPValues();
 	updateEnemyHealthValues();
 
-
 	playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage + "|";
-
+	maxDamageLabel.textContent = "|" + "Enemy DPS: " + enemyDamage + "|";
     }
-
-
 });
-
-
-const refresh = document.querySelector("#refresh");
-
+// ========================================================
+//🔄REFRESH FUNCTION🔄 #SETTINGS
+// ========================================================
 refresh.addEventListener("click", function() {
     location.reload();
 });
-
-
-
-
-
-function guardianRoll() {
-    let guardianNumber = Math.floor(Math.random() * 1000 + 1);
-    if(guardianNumber <= guardianChance) {
-        guardianFactor = 0;
-    }
-
-    else{
-        guardianFactor = 1;
-    }
-}
-
-
-function guardianFunction() {
-    purchaseSkill.play();
-    guardianChance += 5;
-    guardianAngelPerksCost.textContent = guardianRequiredPerks;
-    guardianAngelMagnitude.textContent = guardianChance/10 + "%";
-}
-
-
-
+// ========================================================
+//🕊️GUARDIAN ANGEL UPGRADE🕊️ #GUARDIAN-ANGEL-UPGRADE
+// ========================================================
 guardianAngelUpgrade.addEventListener("click", function() {
     if(perks >= guardianRequiredPerks) {
         perks-= guardianRequiredPerks;
@@ -2805,11 +2791,9 @@ guardianAngelUpgrade.addEventListener("click", function() {
 	updatePerks();
     }
 });
-
-let activatedFireball = false;
-
-let fireballDps = 1;
-
+// ========================================================
+//🔥FIREBALL BUTTON🔥 #FIREBALL-BUTTON #BUTTON
+// ========================================================
 fireball.addEventListener("click", function() {
     if(voltage >= 30 && !activatedFireball) {
 
@@ -2842,8 +2826,9 @@ fireball.addEventListener("click", function() {
 
     }
 });
-
-
+// ========================================================
+//MISC FUNCTION 
+// ========================================================
 function fireballFunction() {
 
      if(luckyDipPressed && fireballBought) {
@@ -2858,13 +2843,10 @@ function fireballFunction() {
      perks -= 3;
      fireball.style.display = "inline";
      fireballMagnitude.textContent = "Fireball Unlocked!";
-
-
-
 }
-
-
-
+// ========================================================
+//🔥FIREBALL UPGRADE🔥 #FIREBALL-UPGRADE #UPGRADE
+// ========================================================
 fireballUpgrade.addEventListener("click",function() {
     if(perks >= 3 && !fireballBought) {
 	fireballFunction();
@@ -2872,8 +2854,9 @@ fireballUpgrade.addEventListener("click",function() {
     }
 
 });
-
-let superNovaRequiredPerks = 3
+// ========================================================
+//☄️ SUPERNOVA UPGRADE☄️ #SUPERNOVA-UPGRADE #UPGRADE
+// ========================================================
 superNova.addEventListener("click", function() {
     if(perks >= superNovaRequiredPerks) {
         perks-= superNovaRequiredPerks;
@@ -2888,12 +2871,10 @@ superNova.addEventListener("click", function() {
 
 	updatePerks();      
     }
-
 });
-
-let currentDamage;
-let adrenalineActivated = false;
-
+// ========================================================
+// 😤ADRENALINE BUTTON😤 #ADRENALINE-BUTTON #BUTTON
+// ========================================================
 adrenaline.addEventListener("click", function() {
     if(voltage >= 50 && !adrenalineActivated) {
 	adrenalineActivated = true;
@@ -2918,8 +2899,9 @@ adrenaline.addEventListener("click", function() {
 	}, 10000);    
     }
 });
-
-
+// ========================================================
+// 😤ADRENALINE UPGRADE😤 #ADRENALINE-UPGRADE #UPGRADE
+// ========================================================
 adrenalineUpgrade.addEventListener("click", function() {
     if(perks >= 5) {
         perks -= 5;
@@ -2931,7 +2913,9 @@ adrenalineUpgrade.addEventListener("click", function() {
 
     }
 });
-
+// ========================================================
+// ❄️FREEZE UPGRADE❄️ #FREEZE-UPGRADE
+// ========================================================
 freezeUpgrade.addEventListener("click", function() {
     if(perks >= 5) {
 	purchaseSkill.currentTime = 0;
@@ -2940,9 +2924,9 @@ freezeUpgrade.addEventListener("click", function() {
 	freeze.style.display = "inline";
     }
 });
-
-let noMercyRequiredPerks = 5;
-
+// ========================================================
+// 💀NO MERCY UPGRADE💀 #NO-MERCY-UPGRADE #ADRENALINE #ADRENALINE-BOOSTER
+// ========================================================
 noMercyUpgrade.addEventListener("click", function() {
     if(perks >= noMercyRequiredPerks) {
         perks-= noMercyRequiredPerks;
@@ -2959,9 +2943,9 @@ noMercyUpgrade.addEventListener("click", function() {
 	updatePerks();
     }
 })
-
-let luckyFingersRequiredPerks = 1;
-
+// ========================================================
+// 🍀LUCKY FINGERS UPGRADE🍀 #LUCKY-FINGERS-UPGRADE
+// ========================================================
 luckyFingersUpgrade.addEventListener("click", function() {
     if(perks >= luckyFingersRequiredPerks) {
 	perks-= luckyFingersRequiredPerks;
@@ -2980,10 +2964,9 @@ luckyFingersUpgrade.addEventListener("click", function() {
 	
     }
 });
-
-let shockwaveFactor = 1;
-let shockwaveRequiredPerks = 4;
-
+// ========================================================
+// 🔊SHOCKWAVE UPGRADE🔊 #SHOCKWAVE-UPGRADE
+// ========================================================
 shockwaveUpgrade.addEventListener("click", function() {
     if(perks >= shockwaveRequiredPerks) {
 	electricitySfx.currentTime = 0;
@@ -2998,20 +2981,9 @@ shockwaveUpgrade.addEventListener("click", function() {
     }
 
 });
-
-
-
-function executionFunction() {
-    purchaseSkill.currentTime = 0;
-    purchaseSkill.play();
-    executionFactor += 1;
-    executionPerksRequired.textContent = executionRequiredPerks;
-    executionMagnitude.textContent = executionFactor/4 + " %";
-}
-
-
-executionRequiredPerks = 2;
-
+// ========================================================
+// 💀EXECUTION UPGRADE💀 #EXECUTION-UPGRADE
+// ========================================================
 executionUpgrade.addEventListener("click", function() {
     if(perks >= executionRequiredPerks) {
         perks -= executionRequiredPerks;
@@ -3020,9 +2992,9 @@ executionUpgrade.addEventListener("click", function() {
 	updatePerks();
     }
 });
-
-let antibodiesRequiredPerks = 2;
-
+// ========================================================
+// 🧬ANTIBODIES UPGRADE🧬 #ANTIBODIES-UPGRADE
+// ========================================================
 antibodiesUpgrade.addEventListener("click", function() {
     if(perks >= antibodiesRequiredPerks);
         perks -= antibodiesRequiredPerks;
@@ -3032,62 +3004,20 @@ antibodiesUpgrade.addEventListener("click", function() {
 	antibodiesFactor += 5;
 
 	antibodiesPerksRequired.textContent = antibodiesRequiredPerks;
-	antibodiesMagnitude.textContent = "+" + antibodiesFactor + " HP";
-	
-	
-        
+	antibodiesMagnitude.textContent = "+" + antibodiesFactor + " HP";       
 });
-
-function sellSoulFunction() {
-       if(!boughtSellSoul) {
-           boughtSellSoul = true; 
-	   soulPactFactor = -Infinity;
-           alert("As the ritual tears your soul from your flesh, your divine power plunges into the infernal abyss... Spells fail, your voltage collapses to negative infinity, and yet your  body feels unbreakable. You are near-immortal, but at a devilish cost.");
-	      alert(
-`Max Health X5
-Voltage Depleted`)
-
-           healButton.style.display = "none"; 
-           charge.style.display = "none";
-           freeze.style.display = "none";
-           adrenaline.style.display = "none";
-           fireballUpgrade.style.display = "none";
-       
-           devilLaugh.play();
-           maxHealth *= 5;
-           currentHealth = maxHealth;
-           presentHealth = maxHealth;
-           voltage = -Infinity;
-           updateHealthValues();
-           updateVoltageValues();
-           sellSoulMagnitude.textContent = "Soul Pact Activated";
-       }
-
-       else{
-           if(luckyDipPressed) {
-   	       alert("You have already Unlocked Soul Pact so instead max health increased by +75!");
-		purchaseSkill.currentTime = 0;
-		purchaseSkill.play();
-	       maxHealth += 75;
-	       currentHealth += 75;
-	       updateHealthValues();
-	       luckyDipPressed = false;
-	   }
-       }
-
-}
-
-
+// ========================================================
+// 😈SELL SOUL UPGRADE😈 #SELL-SOUL-UPGRADE #UPGRADE-SOUL
+// ========================================================
 sellSoulUpgrade.addEventListener("click", function() {
     if(currentLevel >= 7 && !boughtSellSoul) {
 	sellSoulFunction();
     }
 })
-
-
-
+// ========================================================
+// 🎁LUCKY DIP BUTTON🎁 #LUCKY-DIP-BUTTON
+// ========================================================
 let randomUpgrades = [sellSoulFunction, executionFunction, fireballFunction, guardianFunction, damageResistanceFunction, voltageRegenerationFunction, healUpgradeFunction]
-
 
 luckyDipButton.addEventListener("click", function(){
     if(perks >= luckyDipPerkCost) {
@@ -3099,14 +3029,13 @@ luckyDipButton.addEventListener("click", function(){
 	
 	let randomUpgradeSelection = Math.floor(Math.random() * randomUpgrades.length);
 
-	if(randomUpgradeSelection === 0 && !boughtSellSoul) alert("😈Initiating Soul Pact!😈");
+if(randomUpgradeSelection === 0 && !boughtSellSoul) alert("😈Initiating Soul Pact!😈");
 
 else if(randomUpgradeSelection === 1) {
     alert(
 `💀Execution Skill Upgraded!💀
 ${(executionFactor+1)/4} % chance of causing an instant death!`
 );
-
 }
 
 else if(randomUpgradeSelection === 2 && !fireballBought){
@@ -3114,7 +3043,6 @@ alert(
 `🔥FireBall Skill Upgraded!🔥
 You can now cast Fireballs, dealing 5 base damage and setting enemies ablaze for 1 HP per second over 10 seconds.`
 );
-
 }
 
 else if(randomUpgradeSelection === 3){
@@ -3146,21 +3074,13 @@ alert(
 
 }
 
-
-	updatePerks();
-
-	console.log(randomUpgradeSelection);
-	
-	randomUpgrades[randomUpgradeSelection]();
-	luckyDipLabel.textContent = "|" + "Lucky Dip Cost: " + luckyDipPerkCost;
-	
-	
+updatePerks();
+randomUpgrades[randomUpgradeSelection]();
+luckyDipLabel.textContent = "|" + "Lucky Dip Cost: " + luckyDipPerkCost;	
     }
 });
-
-
 // ========================================================
-// 🎲LUCKY DIP UPGRADE #LUCKY-DIP-UPGRADE🎲
+// 🎁LUCKY DIP UPGRADE🎁 #LUCKY-DIP-UPGRADE
 // ========================================================
 luckyDipSpellUpgrade.addEventListener("click", function() {
     if(perks >= 1 && !luckyDipBought) {
@@ -3175,7 +3095,9 @@ luckyDipSpellUpgrade.addEventListener("click", function() {
 	updatePerks();
     }
 });
-
+// ========================================================
+// 🔧OPACITY SETTINGS🔧 #OPACITY-SETTINGS
+// ========================================================
 checkHeal = setInterval(function() {
 	if(voltage >= 25) {
 	    healButton.style.filter = "brightness(100%) grayscale(0%)";
@@ -3202,6 +3124,14 @@ checkHeal = setInterval(function() {
         }
 	if(voltage / maxVoltage  < 0.5) {
 	    freeze.style.filter = "brightness(25%) grayscale(100%)";
+        }
+
+	if(voltage >= 50) {
+            stopTimeButton.style.filter = "brightness(100%) grayscale(0%)";
+        }
+	
+	else if(voltage < 50) {
+	    stopTimeButton.style.filter = "brightness(25%) grayscale(100%)";
         }
 
 
@@ -3419,6 +3349,37 @@ realEstateUpgrade.addEventListener("click", function() {
 	realEstateFunction();	
 	updatePerks();
     }
+});
+// ========================================================
+// ⏱️SLOW TIME #SLOW-TIME⏱️
+// ========================================================
+let stopTimeActive = false;
+
+stopTimeButton.addEventListener("click", function() {
+    if(voltage >= 50 && !stopTimeActive) {
+	stoptimeActive = true;
+	voltage -= 50;
+        playerSpeed *= 1.5;
+        enemyAttack();
+
+	displayEnemy.style.filter = "sepia(100%)";
+	stopTimeButton.style.filter = "brightness(0%)";
+	stopTimeButton.textContent = "⏳";
+
+    setTimeout(function() {
+        playerSpeed = 1000;
+        enemyAttack();
+
+	stopTimeButton.style.filter = "brightness(0%)";
+	displayEnemy.style.filter = "sepia(0%)";
+
+	stopTimeButton.textContent = "⏱️";
+
+	
+	stopTimeActive = false;
+
+    }, 5000);
+    } 
 });
 
 

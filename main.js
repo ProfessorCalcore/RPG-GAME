@@ -5,7 +5,6 @@ let goldMultiplier = 1;
 let executionFactor = 0;
 
 let storyLevel = 1;
-storyLevel = currentLevel;
 let mosquitoFactor = 0;
 let enemyDamageSum;
 let enemyDamageNegation;
@@ -190,6 +189,7 @@ let frozenFactor = 2000;
 let classSelected = false;
 let classType;
 let previousEnemyDamage;
+storyLevel = currentLevel;
 
 
 // ========================================================
@@ -3940,6 +3940,7 @@ function deleteData() {
 
 
 knightAttack();
+
 
 
 

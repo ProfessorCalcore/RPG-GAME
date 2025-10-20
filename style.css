@@ -1,618 +1,908 @@
-<!DOCTYPE html>
-<html>
-    <head>
-	<title>⏳Split-Seconds⏳</title>   
-	<meta charset= "UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	   body{
+	       transition: all 5s ease;
+    background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+
+           }   
+		
+
+	   #attack:hover{
+	       transform:scale(1.3);
+	       background-color: white !important;
+	       box-shadow: 0 0 10px 5px orange;
 
 
-        <link rel = "stylesheet" href = "style.css">
-    </head>
+	   }
 
-    <body>
-	<label id="display-label">HEY</label>
-	<label id="cloud1">☁️</label>
-	<label id="moon">🌙</label>
-	<label id="canvas">
-	<img id="canvas" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/pixil-frame-0 (13).png">
-        </label>
-	<label id="house">🏡</label>
-	<label id="factory">🏭</label>
-	<label id="castle">🏰</label>
-	<label id="office">🏬</label>
-	<label id="office2">🏬</label>
-	<label id="bank">🏛️</label>
-	<label id="school">🏪</label>
-	<label id="construction">🏗️</label>
-	<label id="saturn">🪐</label>
+	   #heal:hover{
+	       transform:scale(1.3);
+	       background-color: white !important;
+	       box-shadow: 0 0 10px 5px crimson;
+
+
+
+	   }
+
+	   #charge:hover{
+	       transform:scale(1.3);
+	       background-color: white !important;
+	       box-shadow: 0 0 10px 5px #ffb84d;
+
+
+	   }
+
+	   #freeze:hover{
+	       transform:scale(1.3);
+	       background-color: white !important;
+	       box-shadow: 0 0 10px 5px cyan;
+
+	   }
+
+	   #upgrades:hover{
+ 	   	transform: scale(1.3);
+	        background-color: white !important;
+		box-shadow: 0 0 10px 5px purple;       
+           }
+
+
+	   #display-label{
+	   	position:absolute;
+ 		left: 50%;
+		top:5%;
+		opacity: 0;
+		transition: all 5s ease;
+		font-weight:bold;
+		font-family:arial;	
+		font-size:30px;
+		white-space:pre;
+           }
+	
+
 	
 
 
+	   #health-container{
+                position: relative;
+    		background-color: grey;
+    		width: 200px;
+    		height: 20px;
+		margin-top: 1px;
+                margin-bottom: 1px;
+		border: 2px solid black;
+		border-radius: 10px;
+            }
+
+            #health-bar{
+    		position: relative;
+	        background-size: 400px 100%;
+   		width: 100%;
+    		height: 100%;
+		transition: all 1s ease;
+		border-radius: 10px;
+    		background:linear-gradient(to top, lime);
+	    }
+
+	   #hp{
+                position: absolute;
+                top: 0;
+		left: 0;
+		color: white;
+                width: 100%;
+
+                
+           }
+
+	   #enemy-health-container{
+                position: relative;
+    		background-color: grey;
+    		width: 400px;
+    		height: 20px;
+		margin-top: 1px;
+                margin-bottom: 1px;
+		border: 2px solid black;
+		border-radius: 10px;
+
+
+           }
+
+           #enemy-health-bar{
+    		position: relative;
+		background:linear-gradient(to top, darkred, orange);
+	        background-size: 400px 100%;
+   		width: 100%;
+    		height: 100%;
+		transition: all 0.5s ease;
+		border-radius: 10px;
+
+           }
+
+           #enemy-hp{
+                position: absolute;
+                top: 0;
+		left: 0;
+		color: white;
+                width: 100%;
+           }
 
 
 
 
 
-	<label id="grave">⚰️</label>
-	<label id="player-icon">🤺</label>
-	<label id="tree">🪵</label>
-	<button id="pause">⏸️</button>
-	<button id = "refresh">🔄</refresh>
-
-
-
-	<button id= "flame-animation">🔥</button>
 
 
 
 
 
 
-	<button id="display-enemy">🐀</button>
-
-
-<!--------------HP LABELS------------------------------------------------------------------------------------------------------->
-        <label id="heal-cost" style="margin-right: 10px; background-color: #333; color: white;">|Heal Cost: 25 V| </label>
-	<label id="heal-power" style="margin-right: 10px; background-color: #333; color: white;">|Heal Power: 20 HP|</label>
-	<label id="player-damage" style="margin-right: 10px; background-color: #333; color: white;">|Player Damage: 2| </label>
-	<label id="army-damage" style="margin-right: 10px; background-color: #333; color: white;">|Army DPS: 0| </label>
-
-        <label id="max-damage" style="margin-right: 10px; background-color: #333; color: white;">|Enemy DPS: 1| </label>
-	<label id="lucky-dip-label" style="margin-right:10px; background-color: #333; color: white;">|Lucky Dip Cost: 5|</label>
-
-	<label id="knights-display" style="display: block;font-family:arial; background-color: transparent; color: white;">Army Size:⚔️ x0</label>
-	<label id="gold" style="margin-right:10px; background-color: #333; color: white;">Gold: 0</label>
-
-
-	<label id="dr-label" style="margin-right: 10px; background-color: #333; color: white;">DR: 1% </label>
-	<label id="crit-label" style="margin-right: 10px; background-color: #333; color: white;">Crit Chance: 1% </label>
-
-
-
-<!------------------------------------------------------------------------------------------------------------------------------>
-
-
-<!--------------HEALTH GUI------------------------>
-        <div id="health-container" style="width: 400px;">
-            <div id="health-bar"></div>
-            <span id="hp">HP: 250/250</span>
-        </div>
-<!------------------------------------------------>
-
-<!--------------ENEMY GUI------------------------>
-        <div id="enemy-health-container">
-            <div id="enemy-health-bar"></div>
-            <span id="enemy-hp">RAT HP: 20/20</span>
-        </div>
-<!------------------------------------------------>
-
-
-<!--------------XP LABELS----------------------------------------------------------------------------------->
-	<label id="level" style="margin-right: 10px; background-color: #333; color: white;">|Level: 1|</label>
-        <label id="perk" style="margin-right: 10px; background-color: #333; color: white;">|Skill Points: 0|</label>
-	<button id="buy-perk" style="background-color: #333; color: white;">Buy Skill Point: 100 Gold</button>
-	<button id="level-up-button" style="display: none; background-color: #333; color: white;">Level Up!</button>
-
-
-<!---------------------------------------------------------------------------------------------------------->
-
-
-
-<!----------------XP GUI---------------------->
-       <div id="xp-container">
-           <div id="xp-points"></div>
-           <span id="XP">XP: 0/100</span>
-       </div>
-<!-------------------------------------------->
-
-<!----------------VOLTAGE LABELS----------------->
-<!----------------------------------------------->
-
-<!----------------VOLTAGE GUI------------------>
-       <div id="voltage-container">
-           <div id="voltage-bar"></div>
-           <span id="voltage-text">Voltage: 100/100</span>
-       </div>
-<!-------------------------------------------->
-
+        
+           #attack img{
+           	display: inline-block;
+                vertical-align: middle;
+           }
        
+           #heal img{
+           	display: inline-block;
+                vertical-align: middle;
+                
+           }
 
-<!---------------------ACTION BUTTONS----------------------->
-	<button id="attack" style="background-color: #333; color: white; font-size: 30px; border-radius: 100%">🗡️
-        </button>
+           #xp-container{
+                position: relative;
+           	width: 300px;
+                height: 20px;
+		background-color: grey;
+		margin-top: 1px;
+                margin-bottom: 1px;
+		border: 2px solid black;
+		transition: all 0.5s ease;
+		border-radius: 10px;
 
-	<button id="heal" style="background-color: #333; color: lime; font-size: 30px; border-radius: 50%">❤️‍🩹
-        </button>
+               
+           }
 
-	<button id="charge" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%">⚡</button>
+           #xp-points{
+           	width: 100%;
+                height: 100%;
+		background: linear-gradient(to bottom, yellow, orange);
+		background-size: 300px, 100%;
+		transition: all 0.5s ease;
+		border-radius: 10px;
+		
 
-	<button id="fireball" style="background-color: #333; color: cyan; font-size: 30px; border-radius: 50%; display: none;">🔥</button>
+           }
 
-	<button id="freeze" style="background-color: #333; color: cyan; font-size: 30px; border-radius: 50%; display: none;">❄️</button>
-        <button id="adrenaline" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display: none;">😤</button>
-        <button id="lucky-dip" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">🎁</button>
-        <button id="mage-fury" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">🔮</button>
-        <button id="shield-wall" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">🛡️</button>
-        <button id="marked-for-death" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">🥷</button>
-	<button id="near-death-experience" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">🪓</button>
-	<button id="stop-time" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">⏱️</button>
+	   #XP{
+               position: absolute;
+	       color:black;
+               left: 0;
+               top: 0;
+	   }
+           
+           #upgrades-gui{
+ 	   	display: none;
+           }
 
-        <button id="upgrades" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%">🛠️</button>
+           #voltage-container{
+                position: relative;
+           	width: 200px;
+                height: 20px;
+                background-color: grey;
+		margin-top: 1px;
+		border: 2px solid black;
+		transition: all 0.5s ease;
+		border-radius: 10px;
 
+           }
 
+           #voltage-bar{
+           	width: 100%;
+                height: 100%;
+                background: linear-gradient(to top, blue, cyan);
+  		background-size: 200px, 100%;
+		transition: all 1s ease;
+		border-radius: 10px;
 
-
-
-<!---------------------------------------------------------->
-        <input id="dev-console" style="display:block; background-color: #333; color: white;" placeholder="Enter Command...">
-
-
-
-<!-------------UPGRADE MENU-------------------------------------------------------------------------------->
-            <div id="upgrades-gui" style="display: none;">
-<!--------------------------------------------------------------------------------------------------------->
-
-
-<!--------------------------------------ARMY-UPGRADES---------------------------------------------------->
-<button id="army-upgrades" style="display:block; background-color: black; color: white;">🪖Army Upgrades🪖</button>
-
-<table id="army-table" border=1 style="display:none; border-collapse: collapse; background-color: black; color: white;">
-    <caption>Army Skills</caption>
-    
-         <tr>
-            <th>Skill</th>
-            <th>Description</th>
-            <th>Skill Points Required</th>
-            <th>Magnitude</th>
-        </tr>
-
-    <tr>
-        <td><button id="recruit-knight" style="background-color: black; color: white; ">🟢Slime🟢 </button></td>
-        <td id ="soldier">Adds 1 🟢Slime🟢  to your army dealing +1 damage per second</td>
-        <td id="perks-required">2</td>
-        <td id="knights-magnitude">0x</td>
-    </tr>
-</table>
-<!-------------------------------------------------------------------------------------------------------->
-
-<!--------------------------------CORRUPTION UPGRADES----------------------------------------------------->
-<button id="corruption-upgrades" style="background-color: black; color: white;">🔮Corruption Upgrades🔮</button>
-<table id="corruption-table" border=1 style="display:none; border-collapse: collapse; background-color: black; color: white;">
-    <caption>Corruption Upgrades</caption>
-
-        <tr>
-	    <th>Skill</th>
-	    <th>Description</th>
-	    <th>Requirements</th>
-	    <th>Magnitude</th>
-        </tr>
-
-
-	<tr>
-	    <td><button id="ghost-button" style="background-color: black; color: white;">👻Ghost👻</button></td>
-	    <td>Permenantly Doubles your Health but you deal half as much damage from now on</td>
-	    <td id="ghost-requirements-cost">Lvl 4</td>
-	    <td id="ghost-magnitude">0x</td>
-	</tr>
-
-	<tr>
-	    <td><button id="sell-soul" style="background-color: black; color: white;">😈Soul Pact😈</button></td>
-	    <td>Surrender your arcane and electrical power to the devil. In return, your flesh hardens, your Max Health quintupled, your mortality nearly erased.</td>
-	    <td>Lvl 7</td>
-	    <td id="sell-soul-magnitude">0x</td>
-	</tr>
-
-
-
-
-     
-</table>
-
-<!-------------------------------------------------------------------------------------------------------->
-
-
-
-<!---------------------------DAMAGE UPGRADES---------------------------------------------------------------------->
-<button id="damage-upgrades" style="display: block; background-color: black; color: white;">💥Damage Upgrades💥</button>
-
-<table id="damage-table" border=1 style="border-collapse: collapse; display: none; background-color: black; color: white;">
-    <caption>Damage Skills</caption>
-    
-        <tr>
-            <th>Skill</th>
-            <th>Description</th>
-            <th>Skill Points Required</th>
-            <th>Magnitude</th>
-        </tr>
+           }
  
-        <tr>
-            <td><button id="upgrade-damage" style="background-color: black; color: white;">🗡️Sharpened🗡️</button></td>
-            <td>You deal +1 more damage</td>
-            <td>1</td>
-            <td id="upgrade-damage-magnitude">0x</td>
-        </tr>
-
-	<tr>
-	    <td><button id="critical-hit-upgrade" style="background-color: black; color: white;">🎯Precision Training🎯</button></td>
-	    <td>Critical Hit Chance increased by +1%</td>
-	    <td id="critical-hit-perks-cost">5</td>
-	    <td id="critical-hit-magnitude">1 %</td>	
-	</tr>
-
-	<tr>
-	    <td><button id="critical-damage-upgrade" style="background-color: black; color: white;">💥Armor-Piercing💥</button></td>
-	    <td>Critical Hit Damage increased by +25%</td>
-	    <td id="critical-damage-perks-cost">5</td>
-	    <td id="critical-damage-magnitude">x2.0</td>	
-	</tr>
-
-	<tr>
-	    <td><button id="execution-upgrade" style="background-color: black; color: white;">💀Execution💀</button></td>
-	    <td>Chance to Instantly Kill an enemy!</td>
-	    <td id="execution-perks-required">2</td>
-	    <td id="execution-magnitude">0%</td>	
-	</tr>
-</table>
-<!-------------------------------------------------------------------------------------------------------->
-
-
-<!------------------------------DEFENCE UPGRADES------------------------------------------------------------>
-<button id="defense-upgrades" style="display: block; background-color: black; color: white;">🛡️Defence Upgrades🛡️</button>
-    
-<table id="defense-table" border=1 style="display:none; border-collapse:collapse; background-color: black; color: white;">
-    <caption>Defense Upgrades</caption>
-        <tr>
-            <th>Skill</th>
-            <th>Description</th>
-            <th>Skill Points Required</th>
-            <th>Magnitude</th>
-        </tr>
-
-        <tr>
-            <td><button id="dr-button" style="background-color: black; color: white;">🛡️Damage Resistance🛡️</button></td>
-            <td>Increases Damage Resistance by +3%</td>
-            <td id="dr-perks">1</td>
-            <td id="dr-magnitude">0x</td>
-        </tr>
-
-
-	<tr>
-	    <td><button id="guardian-angel-upgrade" style="background-color: black; color: white;">🕊️Guardian Angel🕊️</button></td>
-	    <td>Chance to avoid all damage from an attack + 0.5%</td>
-	    <td id="guardian-angel-perks-cost">2</td>
-	    <td id="guardian-angel-magnitude">0 %</td>
-	</tr>
-
-
-	<tr>
-	    <td><button id="eye-for-eye-upgrade" style="background-color: black; color: white;">👁️Eye for an Eye👁️</button></td>
-	    <td>Reflects +2% of damage back onto the attacker</td>
-	    <td id="eye-for-eye-perks-cost">1</td>
-	    <td id="eye-for-eye-magnitude">0%</td>
-	</tr>
-
-
-
-</table>
-<!-------------------------------------------------------------------------------------------------------->
-
-
-<!----------------HEALTH UPGRADES-------------------------------------------------------------------------->
-<button id="health-upgrades" style="display: block; background-color: black; color: white;">💖Health Upgrades💖</button>
-
-
-<table id="health-table" border=1 style="border-collapse: collapse; display: none; background-color: black; color: white; z-index: 1000; position: relative;">
-    <caption>Health Skills</caption>
-        <tr>
-            <th>Skill</th>
-            <th>Description</th>
-            <th>Skill Points Required</th>
-            <th>Magnitude</th>
-        </tr>
-
-        <tr>
-          <td><button id="refill-health" style="background-color: black; color: white;">💉Second Chance💉</button></td>
-          <td>Refills your health bar to 100%</td>
-          <td id="required-refill-perks">3</td>
-          <td id="refill-health-magnitude">0x</td>
-        </tr>
-
-<tr>
-    <td><button id="heal-upgrade" style="background-color: black; color: white; z-index: 10;">❤️‍🩹First Aid❤️‍🩹</button></td>
-    <td>Boosts healing by +5 HP</td>
-    <td>1</td>
-    <td id="heal-upgrade-magnitude">0x</td>
-</tr>
-         <tr>
-          <td><button id="max-health-upgrade" style="background-color: black; color: white;">❤️‍🔥Endurance❤️‍🔥</button></td>
-          <td>Increases max health by 25 pts</td>
-          <td>1</td>
-          <td id="max-health-magnitude">0x</td>
-        </tr>
-
-
-         <tr>
-          <td><button id="regenerate-hp" style="background-color: black; color: white;">💚Regeneration💚</button></td>
-          <td>Boosts your natural healing rate by +1 HP/Sec</td>
-          <td id="hp-regen-perks-cost">2</td>
-          <td id="regenerate-hp-magnitude">0x</td>
-        </tr>   
-
-         <tr>
-          <td><button id="steal-hp" style="background-color: black; color: white;">🩸Vampirism🩸</button></td>
-          <td>Siphon +1% of an enemy's lifeforce on death</td>
-          <td id="vampire-perks-required">4</td>
-          <td id="steal-hp-magnitude">0%</td>
-        </tr>   
-
-        <tr>
-          <td><button id="mosquito" style="background-color: black; color: white;">🦟Mosquito🦟</button></td>
-          <td>Gain 1 HP each time you strike an enemy</td>
-          <td id="mosquito-perks-required">15</td>
-          <td id="mosquito-magnitude">0x</td>
-        </tr>   
-
-	<tr>
-  	    <td><button id="antibodies-upgrade" style="background-color: black; color: white;">🧬Antibodies🧬</button></td>
-  	    <td>Gain an extra +5 Max HP per level</td>
-  	    <td id="antibodies-perk-cost">2</td>
-  	    <td id="antibodies-magnitude">0%</td>
-	</tr>
-
-
-         <tr>
-          <td><button id="bloodthirsty-upgrade" style="background-color: black; color: white;">🩸Bloodthirsty🩸</button></td>
-          <td>Each critical strike grants +1 to Max Health</td>
-          <td id="bloodthirsty-perks-required">8</td>
-          <td id="bloodthirsty-magnitude">0x</td>
-        </tr>  
-</table>
-<!--------------------------------------------------------------------------------------------------------->    
-
-<!------------------------INCOME UPGRADES------------------------------------------------------------------------->
-<button id="income-upgrades">💸Income Upgrades💸</button>
-
-<table id="income-table" border=1 style="display:none; border-collapse:collapse; background-color: black; color: white;">
-    <caption>Income Upgrades</caption>
-
-        <tr>
-	    <th>Skill</th>
-	    <th>Description</th>
-	    <th>Skill Points Cost</th>
-	    <th>Magnitude</th>
-	</tr>
-
-	<tr>
-	    <td><button id="lucky-fingers-upgrade" style="background-color: black; color: white;">🍀Lucky Fingers🍀</button></td>
-	    <td>Fill your pockets: Loot +25% more gold!</td>
-	    <td id="lucky-fingers-perks-required">1</td>
-	    <td id="lucky-fingers-magnitude">1x</td>
-	</tr>
-
-	<tr>
-	    <td><button id="real-estate-upgrade" style="background-color: black; color: white;">🕴️Mafia🕴️</button></td>
-	    <td>Take over the world, run your empire, and watch taxes grow!</td>
-	    <td id="real-estate-perks-required">1</td>
-	    <td id="real-estate-magnitude">0x</td>
-	</tr>
-  
-</table>
-
-<!---------------------------------------------------------------------------------------------------------------->
-
-
-<!--------------------VOLTAGE UPGRADES--------------------------------------------------------------------->
-<button id ="voltage-upgrades" style="display: block; background-color: black; color: white;">⚡Voltage Upgrades⚡</button>
-
-<table id="voltage-table" border=1 style="display: none; border-collapse: collapse; background-color: black; color: white;">
-    <caption>Voltage Skills</caption>
-        
-        <tr>
-            <th>Skill</th>
-            <th>Description</th>
-            <th>Skill Points Required</th>
-            <th>Magnitude</th>
-        </tr>
-
-        <tr>
-            <td><button id="voltage-upgrade" style="background-color: black; color: white;">⚡Fluxify⚡</button></td>
-            <td>Regenerates +1 Volts Per Seconds</td>
-            <td id="voltage-regen-perks-required">2</td>
-            <td id="voltage-upgrade-magnitude">0x</td>
-        </tr>
-
-	<tr>
-	    <td><button id="max-voltage-upgrade" style="background-color: black; color: white;">🔋Charging Capacity🔋</button></td>
-	    <td>Increases your max voltage by +5 Pts</td>
-	    <td id="max-voltage-cost">5</td>
-	    <td id="max-voltage-magnitude">0x</td>
-	</tr>
-
-	<tr>
-	    <td><button id="shockwave-upgrade" style="background-color: black; color: white;">🔊Shockwave🔊</button></td>
-	    <td>Increases amount of Voltage recovered per tap + 1</td>
-	    <td id="shockwave-perks-required">4</td>
-	    <td id="shockwave-magnitude">+1 V</td>
-	</tr>
-
-
-
-
-
-</table>
-<!--------------------------------------------------------------------------------------------------------->
-
-<!-------------------------------------------------SPELLS------------------------------------------------>
-<button id="spell-upgrades" style="background-color: black; color: white;">🪄Spell Upgrades🪄</button>
-
-<table id="spell-upgrades-table" border='1' style="display: none; border-collapse: collapse; background-color: black; color: white; position:relative; z-index: 10;">
-    <caption>Spell Upgrades</caption>
-    
-    <tr>
-        <th>Skill</th>
-        <th>Description</th>
-        <th>Skill Points Required</th>
-        <th>Magnitude</th>        
-    </tr>
-
-
-<tr>
-    <td><button id="fireball-upgrade">🔥Fireball🔥</button></td>
-    <td>Unleash a blazing fireball at enemies, causing 5 initial damage and lingering 1 DPS for 10 seconds!</td>
-    <td>3</td>
-    <td id="fireball-magnitude">0x</td>
-</tr>
-
-<tr>
-    <td><button id="super-nova">☄️Super Nova☄️</button></td>
-    <td>Ignites enemies for an extra +1 damage per second</td>
-    <td id="super-nova-perks-required">3</td>
-    <td id="super-nova-magnitude">1 DPS</td>
-</tr>
-
-
-<tr>
-    <td><button id="freeze-upgrade" style="background-color: black; color: white;">❄️Ice Age❄️</button></td>
-    <td>Freezes an enemy for 10 seconds but drains 50% of your voltage!</td>
-    <td>5</td>
-    <td id="freeze-magnitude">0x</td>
-</tr>
-
-<tr>
-    <td><button id="adrenaline-upgrade" style="background-color: black; color: white;">😤Adrenaline😤</button></td>
-    <td>Doubles your damage for 10 seconds!</td>
-    <td>5</td>
-    <td id="adrenaline-magnitude">0x</td>
-</tr>
-
-<tr>
-    <td><button id="no-mercy-upgrade" style="background-color: black; color: white;">😈No Mercy😈</button></td>
-    <td>Increases damage bonus during adrenaline by 50%!</td>
-    <td id="no-mercy-perks-required">5</td>
-    <td id="no-mercy-magnitude">2x</td>
-</tr>
-
-<tr>
-    <td><button id="lucky-dip-spell-upgrade" style="background-color: black; color: white;">🎁Lucky Dip🎁</button></td>
-    <td>Allows you to purchase random upgrades and bonuses!</td>
-    <td>1</td>
-    <td id="lucky-dip-magnitude">0x</td>
-</tr>
-
-<tr>
-    <td><button id="split-seconds" style="background-color: black; color: white;">🕐Split-Seconds🕐</button></td>
-    <td>Time bends for 5 seconds; your strikes hit 50% faster</td>
-    <td id="split-seconds-cost">5</td>
-    <td id="split-seconds-magnitude">0x</td>
-</tr>
-
-<tr>
-    <td><button id="dragged-eternity-upgrade" style="background-color: black; color: white;">⌛Dragged Eternity⌛</button></td>
-    <td>Split-Seconds lasts for an extra 5 seconds!</td>
-    <td id="dragged-eternity-perks-required">5</td>
-    <td id="dragged-eternity-magnitude">5 Secs</td>
-</tr>
-
-<tr>
-    <td><button id="frozen-in-time-upgrade" style="background-color: black; color: white;">🧊Frozen In Time🧊</button></td>
-    <td>Split-Seconds now slows enemies down even more</td>
-    <td id="frozen-in-time-perks-required">5</td>
-    <td id="frozen-in-time-magnitude">2000</td>
-</tr>
-
-
-</table>
-
-<!---------------------------------------------------------------------------------------------------------------->
-
-
-
-
-<!------------------------XP UPGRADES----------------------------------------------------------------------------->
-<button id="xp-upgrades" style="display: block; background-color: black; color: white;">✨XP Upgrades✨</button>
-<table id="xp-table" border=1 style="border-collapse: collapse; display: none; background-color: black; color: white;">
-    <caption>XP Skills</caption>
-        <tr>
-            <th>Skill</th>
-            <th>Description</th>
-            <th id="#xp-perks-cost">Skill Points Required</th>
-            <th>Magnitude</th>
-        </tr>
-        
-        <tr>
-            <td><button id="auto-xp" style="background-color: black; color: white;">⛏️XP Mining⛏️</button></td>
-            <td>Gathers 1 XP per sec</td>
-            <td id="xp-perks-required">2</td>
-            <td id="auto-xp-magnitude">0x</td>
-        </tr>
-
-	<tr>
-	    <td><button id="concentration-button" style="background-color: black; color: white;">🧠Concentration🧠</button></td>
-	    <td>Increases the amount of XP you earn per hit</td>
-	    <td id="concentration-perks">1</td>
-	    <td id="concentration-magnitude">0x</td>
-	</tr>
-
-
-</table>
-<!--------------------------------------------------------------------------------------------------------->
-
-
-
-
-
-
-
-
-
-<!-----------------------EXTRAS--------------------------------------------------------------------------->
-	<div id="box" style="width: 5px; height:5px"></div>
+	   #voltage-text{
+           	color: white;
+                position: absolute;
+                left: 0;
+                top: 0;
+           }
+
+	   #box{
+		position: absolute;
+		background-color: white;
+		width: 5px;
+		height: 5px;
+		top: 500px;
+		left: 500px;
+
+	
+	  }
+
+	  #dev-console{
+		position:absolute;
+	  	width:200px;
+		height:20px;
+		right:0px;
+		bottom:10px;
+		
+          }
+
+	  #display-enemy{
+	  	width: 100px;
+		height: 100px;
+		background: none;
+	        filter: invert(0%);
+		border: 0;
+	 	position:absolute;
+		top: 60%;
+		left: 40%;
+		font-size: 210px;
+		transition: filter 2s ease;
+		z-index: -2;
+		
+	  }
+
+
+	  #display-enemy:hover{
+	  	transform: scale(1.1);
+	  }
+
+	  #buy-perk:hover{
+	  	transform: scale(1.2);
+	  }
+
+	  #cloud1{
+          	position: absolute;
+		left: 5%;
+		top: 0%;
+		font-size: 100px;
+		z-index: -10;
+		transition: all 20s ease;
+ 		white-space: nowrap
+          }
+
+
+	  #moon{	
+	  	position:absolute;
+		left: 90%;
+		top: 0%;
+		z-index: -11;
+		font-size: 100px;
+		filter: grayscale(100%)brightness(300%);
+	
+	  }
+
+
+	  #house{	
+	  	position:absolute;
+		left: 0%;
+		top: 10%;
+		z-index: -4;
+		font-size: 500px;
+		filter:brightness(60%);
+	  }
+
+	  #grave{	
+	  	position:absolute;
+		left: 75%;
+		top: 80%;
+		z-index: -7;
+		font-size: 100px;
+		filter:brightness(16%)	
+	  }
+
+	  #saturn{	
+	  	position:absolute;
+		left: 40%;
+		top: 0%;
+		z-index: -12;
+		font-size: 100px;
+		filter: brightness(120%);
+	  }
+
+	#factory{
+		font-size: 150px;
+		position:absolute;
+		left: 60%;
+		top: 65%;
+		z-index: -7;
+		filter: brightness(16%);
+	}
+
+	#castle{
+		font-size: 100px;
+		position:absolute;
+		left: 50%;
+		top: 70%;
+		z-index: -7;
+		filter: brightness(16%);
+	}
+
+	#office{
+		font-size: 89px;
+		position:absolute;
+		left: 78%;
+		top: 80%;
+		z-index: -7;
+		filter: brightness(16%);
+	}
+
+	#office2{
+		font-size: 89px;
+		position:absolute;
+		left: 83%;
+		top: 80%;
+		z-index: -7;
+		filter: brightness(16%);
+	}
+
+	#bank{
+		font-size: 259px;
+		position:absolute;
+		left: 83%;
+		top: 60%;
+		z-index: -7;
+		filter: brightness(16%);
+	}
+
+	#school{
+		font-size: 100px;
+		position:absolute;
+		left: 01%;
+		top: 68%;
+		z-index: -7;
+		filter: brightness(16%);
+	}
+
+	#construction{
+		font-size: 100px;
+		position:absolute;
+		left: 58%;
+		top: 70%;
+		z-index: -7;
+		filter: brightness(16%);
+	}
+
 	
 
-	<audio id="sword-slash" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/violent-sword-slice-393848 (1).mp3" preload="auto"></audio>
-	<audio id="level-up-sfx" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/army-rank-up-2-84543.mp3" preload="auto"></audio>
-	<audio id="heal-sfx" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/magic-spell-6005.mp3" preload="auto"></audio>
+
+	  #tree{	
+	  	position:absolute;
+		left: 85%;
+		top:70%;
+		z-index: -3;
+		font-size: 200px;
+		filter:brightness(16%);	
+	  }
+
+	  #player-icon{	
+	  	position:absolute;
+		left: 30%;
+		top: 52%;
+		font-size: 200px;
+		z-index: -10;
+		transform: scaleX(-1);	
+	  }
+
+	  #canvas{
+	  	position: absolute;
+		z-index: -6;
+		width: 100%;
+	  }
 
 
-	<audio id="zombie-attack" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/zombie-attack-6419 (1).mp3" preload="auto"></audio>
+	  #army-upgrades:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px green;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
 
-	<audio id="dead-robot" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/dead-robot-01-82175.mp3" preload="auto"></audio>
-	<audio id="dead-walking" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/dead-walking-mp3-14594.mp3" preload="auto"></audio>
-	<audio id="wolf-howling" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/wolf-howling-140235.mp3" preload="auto"></audio>
-	<audio id="dramatic-ending" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/dramatic-synth-echo-43970.mp3" preload="auto"></audio>
-	<audio id="creepy-woman" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/creepy-woman-cry-407580.mp3" preload="auto"></audio>
-	<audio id="beheading" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/beheading-sfx-2-84537.mp3" preload="auto"></audio>
+	  }
 
-	<audio id="purchase-skill" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/purchase-success-384963.mp3" preload="auto"></audio>
+	  #corruption-upgrades:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px purple;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+	  }
 
-	<audio id="ghost-whisper" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/halloween-ghost-whisper-410557.mp3" preload="auto"></audio>
+	  #damage-upgrades:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px red;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+	  }
 
-	<audio id="electricity-sfx" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/electric-whoosh-01-204487.mp3" preload="auto"></audio>
+	  #defense-upgrades:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px blue;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+	  }
 
-	<audio id="knife-sfx" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/taking-out-knife-217793.mp3" preload="auto"></audio>
+	  #health-upgrades:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px red;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+   	  }
 
-	<audio id="revolver-sfx" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/sound-effects-single-gun-shot-247124.mp3" preload="auto"></audio>
+	  #voltage-upgrades:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px orange;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+ 	  }
+
+	  #xp-upgrades:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px yellow;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+ 	  }
 
 
-	<audio id="critical-sfx" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/glass-shatter-impact-93797.mp3" preload="auto"></audio>
-	<audio id="sword-kill" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/ui-6-sound-effect-modern-smooth-fade-out-stereo-332452.mp3" preload="auto"></audio>
+          #buy-perk:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px yellow;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+	  }
 
-	<audio id="rage" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/epic-dragon-roar-364481.mp3" preload="auto"></audio>
-	<audio id="fireball-sfx" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/fireball-impact-351961.mp3" preload="auto"></audio>
-	<audio id="ice-sfx" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/iced-magic-2-378608.mp3" preload="auto"></audio>
-	<audio id="devil-laugh" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/diabolisches-lachen-252777 (1).mp3" preload="auto"></audio>
-	<audio id="armour-powerup" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/swing-whoosh-metal-hit-15-234629.mp3" preload="auto"></audio>
-	<audio id="viking-power" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/elemental-magic-spell-cast-d-228349.mp3" preload="auto"></audio>
-	<audio id="assassin-power" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/explosion-6801.mp3" preload="auto"></audio>
-	<audio id="mage-power" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/electric-90746.mp3" preload="auto"></audio>
+	  #level-up-button:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px yellow;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
 
-	<audio id="unfreeze-time" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/fx-time-unfreeze-107809.mp3" preload="auto"></audio>
-	<audio id="freeze-time" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/time-freeze-tension-327055.mp3" preload="auto"></audio>
-	<audio id="asteroid" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/massive-explosion-2-397983.mp3" preload="auto"></audio>
+	  #pause{
+	  	font-size: 40px !important;
+		position: absolute;
+	 	left: 28%;
+		top:70%;
+		background-color: #333;
+		outline: none;
+		border-radius: 100%;
+		
+          }
 
 
 
-   
-        <script src="main.js"></script>
-    </body>
-</html>
+	  #pause:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px yellow;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #refresh{
+	  	font-size: 40px !important;
+		position: absolute;
+	 	left: 92%;
+		top:75%;
+		background-color: #333;
+		outline: none;
+		border-radius: 100%;
+		
+          }
+
+
+
+	  #refresh:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px cyan;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #recruit-knight:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px green;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #ghost-button:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px purple;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #upgrade-damage:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px crimson;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+	
+	  #critical-hit-upgrade:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px crimson;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+	
+	  #critical-damage-upgrade:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px crimson;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #dr-button:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px blue;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #heal-upgrade:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px purple;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #guardian-angel-upgrade:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px blue;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #refill-health:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px crimson;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #max-health-upgrade:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px crimson;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #regenerate-hp:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px crimson;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #steal-hp:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px crimson;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #voltage-upgrade:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px orange;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #max-voltage-upgrade:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px orange;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #auto-xp:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px yellow;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #concentration-button:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px yellow;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #fireball-upgrade{
+	  	background-color: black;
+		color: white;
+	  }
+
+	  #super-nova{
+	  	background-color: black;
+		color: white;
+	  }
+
+	  #fireball-upgrade:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px purple;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+
+	  #spell-upgrades:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px purple;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #super-nova:hover{
+	      transform: scale(1.1);
+	      box-shadow: 0 0 10px 5px purple;
+	      background-color: white !important;	
+	      color: black !important;
+	      font-weight: bold;
+          }
+
+	  #fireball:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px orange;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);
+          }
+
+	  #no-mercy-upgrade:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px purple;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);
+          }
+
+	  #adrenaline:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px red;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);
+          }
+
+	  #adrenaline-upgrade:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px purple;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);
+          }
+
+	  #freeze-upgrade:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px purple;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);
+          }
+
+
+	  #flame-animation{
+	  	font-size: 300px;
+		position: absolute;
+		top: 40%;
+		left: 37%;
+		background: transparent;
+		border: none;
+		z-index: -3;
+		display: none;
+		animation: flicker 5s infinite alternate;
+	  }
+
+	#income-upgrades:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px lime;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);
+          }
+
+	#income-upgrades{
+		background-color: black;
+		color: white;
+          }
+
+
+	
+	@keyframes flicker {
+  		0%   { transform: translate(0,0) scale(1); opacity: 1; }
+  		25%  { transform: translate(2px,-2px) scale(1.05); opacity: 0.9; }
+  		50%  { transform: translate(-2px,2px) scale(0.95); opacity: 0.8; }
+  		75%  { transform: translate(1px,-1px) scale(1.1); opacity: 0.85; }
+  		100% { transform: translate(0,0) scale(1); opacity: 1; }
+	}
+
+	#lucky-fingers-upgrade:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px lime;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#shockwave-upgrade:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px orange;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#execution-upgrade:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px red;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#antibodies-upgrade:hover{
+	  	background-color:white !important;
+		box-shadow: 0 0 10px 5px red;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#sell-soul:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px purple;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#lucky-dip:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px lime;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+
+	#mage-fury:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px white;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#shield-wall:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px white;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+
+	#marked-for-death:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px white;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+
+	#near-death-experience:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px white;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#mosquito:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px red;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#eye-for-eye-upgrade:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px blue;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#lucky-dip-spell-upgrade:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px purple;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#bloodthirsty-upgrade:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px red;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#real-estate-upgrade:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px lime;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#stop-time:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px white;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#split-seconds:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px purple;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#dragged-eternity-upgrade:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px purple;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#frozen-in-time-upgrade:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px purple;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+
+	

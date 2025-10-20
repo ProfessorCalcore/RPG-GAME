@@ -180,6 +180,7 @@ let vampirismPercentage = 0;
 let vampirismInteger = 0;
 let vampirismRequiredPerks = 4;
 
+
 // ========================================================
 // 🧍 PLAYER / ENEMY UI ELEMENTS
 // ========================================================
@@ -3381,7 +3382,5 @@ stopTimeButton.addEventListener("click", function() {
     }, 5000);
     } 
 });
-
-
 
 

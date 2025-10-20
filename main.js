@@ -5,6 +5,7 @@ let goldMultiplier = 1;
 let executionFactor = 0;
 
 let storyLevel = 1;
+storyLevel = currentLevel;
 let mosquitoFactor = 0;
 let enemyDamageSum;
 let enemyDamageNegation;
@@ -85,7 +86,7 @@ let randomXP;
 let healthFactor = 0;
 let antibodiesFactor = 10;
 let boughtSellSoul = false;
-storyLevel = currentLevel;
+
 
 let currentEnemyDamage;
 let currentDamageResistance;
@@ -3939,6 +3940,7 @@ function deleteData() {
 
 
 knightAttack();
+
 
 
 

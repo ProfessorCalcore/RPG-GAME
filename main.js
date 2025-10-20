@@ -85,7 +85,7 @@ let randomXP;
 let healthFactor = 0;
 let antibodiesFactor = 10;
 let boughtSellSoul = false;
-let storyLevel = currentLevel;
+storyLevel = currentLevel;
 
 let currentEnemyDamage;
 let currentDamageResistance;
@@ -3939,6 +3939,7 @@ function deleteData() {
 
 
 knightAttack();
+
 
 
 

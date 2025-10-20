@@ -55,7 +55,7 @@ let perkCost = 100;
 
 // ------------------- ENEMY STATS ----------------------
 let baseEnemyDamage = 1;
-let enemyDamage = 1 * damageResistance;
+let enemyDamage = 1;
 let enemyCurrentHealth = 20;
 let enemyMaxHealth = 20;
 
@@ -179,77 +179,59 @@ let checkOpacity;
 let vampirismPercentage = 0;
 let vampirismInteger = 0;
 let vampirismRequiredPerks = 4;
+let removePause = false;
+let splitSecondsBought = false;
+let splitSecondsDuration = 5000;
+let draggedEternityRequiredPerks = 5;
+
+let frozenFactor = 2000;
+
+let classSelected = false;
+let classType;
+let previousEnemyDamage;
 
 
 // ========================================================
-// 🧍 PLAYER / ENEMY UI ELEMENTS
+// 🔢 ENEMY LIST ARRAY
 // ========================================================
 
-// Player UI
-const hp = document.querySelector("#hp");
-const healthBar = document.querySelector("#health-bar");
-const healthContainer = document.querySelector("#health-container");
-const playerDamageLabel = document.querySelector("#player-damage");
+// enemyList condensed: remove exact duplicates
+const enemyList = [
+  "RAT","BAT","SPIDER","SNAKE","LIZARD","CAT","DOG","FERALCAT","COUGAR","HYENA",
+  "SCORPION","CRAB","CROW","IMP","KOBOLD","GOBLIN","TROLL","OGRE","STONEGOLEM",
+  "IRONOGRE","SHADOWCAT","FIREBAT","ICEWOLF","VENOMSCORPION","SPIKERAT","RAZORBAT",
+  "SHIVERWOLF","BLOODWYRM","PHOENIX","WYRM","DRAGON","DARKWRAITH","VAMPIRE","REVENANT",
+  "BEHEMOTH","HELLFIRE","NIGHTDEMON","VOIDDRAGON","FROSTLEVIATHAN","BLAZEKRAKEN",
+  "TITAN","COLOSSUS","NIGHTFANG","LEVIATHAN","SPECTER","ABYSS","OMNIS","APEX",
+  "SINGULARITY","EMBERCAT","ICEPYTHON","FIREHYENA","STORMCOUGAR","CRAGCRAB",
+  "SKYFERALCAT","IRONCROW","STONEGOBLIN","HELLKOBOLD","DARKTROLL","VOLCANOOGRE",
+  "FROSTWYRM","BLOODPHOENIX","INFERNODRAGON","NIGHTWRAITH","OMNISPECTER",
+  "APEXLEVIATHAN","SINGULARITYBEHEMOTH","ABYSSKRAKEN","VOIDNIGHTFANG","COSMOSREVENANT",
+  "HELLFANG","FIREBEAST","ICEBEAST","THUNDERBEAST","SHADOWBEAST","VOIDBEAST",
+  "NIGHTBEAST","APEXBEAST","ULTIMABEAST","CELESTIALDRAGON","VOIDTITAN","INFERNOTITAN",
+  "ETHERWYRM","COSMOSTITAN","OBLIVIONBEAST","ETERNALDRAGON","SINGULARITYTITAN",
+  "OMEGA","NULL"
+];
 
-// Enemy UI
-const enemyHP = document.querySelector("#enemy-hp");
-const enemyHealthBar = document.querySelector("#enemy-health-bar");
-const enemyHealthContainer = document.querySelector("#enemy-health-container");
+// soldierName condensed: remove repeated rank variants manually
+const soldierName = [
+  "Peasant 🧍","Drone 🤖","Wolf 🐺","Horse 🐴","Alien 👽","Goblin 🥷","Skeleton 💀",
+  "Zombie 🧟","Bandit 🗡️","Archer 🏹","Swordsman ⚔️","Wizard 🪄","Apprentice Mage 🧙‍♂️",
+  "Commander 🛡️","Prince 🤴","Princess 👸","Queen 👑","King 🤴👑","Demon 😈",
+  "Berserker 🪓","Sniper 🎯","Dragon 🐉","Basilist 🐍","Tank 🛡️","Submarine 🛳️",
+  "Jet-fighter ✈️","Witch 🧙‍♀️","Battleship 🚢","Vampire 🧛‍♂️","Necromancer 🪦",
+  "Warlock 🔮","Phoenix 🔥🦅","Titan 🏋️‍♂️","Mech 🤖🦾","Leviathan 🐋","Archangel 😇"
+];
 
-// XP / Level UI
-const XPPoints = document.querySelector("#xp-points");
-const XPLabel = document.querySelector("#XP");
-const level = document.querySelector("#level");
-const perk = document.querySelector("#perk");
-const requiredXPLabel = document.querySelector("#required-xp");
 
-// ========================================================
-// 🔘 PLAYER ACTION BUTTONS
-// ========================================================
-const attack = document.querySelector("#attack");
-const healButton = document.querySelector("#heal");
 
-// Automation Buttons
-const autoXP = document.querySelector("#auto-xp");
-const autoHP = document.querySelector("#regenerate-hp");
-
-// ========================================================
-// 🛠 UPGRADES / SHOP
-// ========================================================
-
-// General Upgrades
-const upgrades = document.querySelector("#upgrades");
-const upgradesGUI = document.querySelector("#upgrades-gui");
-const upgradeDamage = document.querySelector("#upgrade-damage");
-const maxHealthUpgrade = document.querySelector("#max-health-upgrade");
-const healUpgrade = document.querySelector("#heal-upgrade");
-const refillHealthUpgrade = document.querySelector("#refill-health");
-const voltageUpgrade = document.querySelector("#voltage-upgrade");
-const requiredRefillPerks = document.querySelector("#required-refill-perks");
-const gold = document.querySelector("#gold");
-const buyPerk = document.querySelector("#buy-perk");
-
-// Defense Upgrades
-const defenseUpgrades = document.querySelector("#defense-upgrades");
-const defenseTable = document.querySelector("#defense-table");
-
-// Corruption Upgrades
-const corruptionUpgrades = document.querySelector("#corruption-upgrades");
-const corruptionTable = document.querySelector("#corruption-table");
-
-// Army / Knights
-const recruitKnight = document.querySelector("#recruit-knight");
-const perksRequiredLabel = document.querySelector("#perks-required");
-const knightsMagnitude = document.querySelector("#knights-magnitude");
-const knightsDisplay = document.querySelector("#knights-display");
-const armyTable = document.querySelector("#army-table");
-const armyUpgrades = document.querySelector("#army-upgrades");
-const armyDps = document.querySelector("#army-damage");
-
-// Max Voltage Upgrade UI
-const maxVoltageUpgrade = document.querySelector("#max-voltage-upgrade");
-const maxVoltageCost = document.querySelector("#max-voltage-cost");
-const maxVoltageMagnitude = document.querySelector("#max-voltage-magnitude");
+// enemyEmojis condensed: remove duplicates
+const enemyEmojis = [
+  "🐀","🦇","🕷️","🐍","🦎","🐱","🐶","🐈‍⬛","🐆","🦡",
+  "🦂","🦀","🐦","👹","👺","🗿","🔥🦇","❄️🐺","☠️🦂","🐀🗡️",
+  "🦇🗡️","🐺❄️","🐍🩸","🦅🔥","🐉","👻","🧛","☠️","🐘","🔥💀",
+  "😈","🐉🌌","❄️🐋","🔥🦑","🗿💪","⚫","🐱🔥","❄️🐍","🔥🦁","🌩️🐆"
+];
 
 // DR / Damage Resistance UI
 const drPerks = document.querySelector("#dr-perks");
@@ -323,6 +305,10 @@ const armourPowerUp = document.querySelector("#armour-powerup");
 const vikingPower = document.querySelector("#viking-power")
 const assassinPower = document.querySelector("#assassin-power");
 const magePower = document.querySelector("#mage-power");
+const freezeTime = document.querySelector("#freeze-time");
+const unfreezeTime = document.querySelector("#unfreeze-time");
+const asteroid = document.querySelector("#asteroid");
+
 // ========================================================
 // 🔢 MAGNITUDE ELEMENTS (MOTIVATION BOOSTERS)
 // ========================================================
@@ -428,61 +414,56 @@ const stopTimeButton = document.querySelector("#stop-time");
 const refresh = document.querySelector("#refresh");
 const pause = document.querySelector("#pause");
 const cloud1 = document.querySelector("#cloud1");
-const cloud1Style = window.getComputedStyle(cloud1);
 const concentrationMagnitude = document.querySelector("#concentration-magnitude")
+const cloud1Style = window.getComputedStyle(cloud1);
 const concentrationPerksLabel = document.querySelector("#concentration-perks");
 const ghostMagnitude = document.querySelector("#ghost-magnitude");
+const saturn = document.querySelector("#saturn");
 
+const splitSeconds = document.querySelector("#split-seconds");
+const splitSecondsPerksRequired = document.querySelector("#split-seconds-perks-required");
+const splitSecondsMagnitude = document.querySelector("#split-seconds-magnitude");
+
+const draggedEternityUpgrade = document.querySelector("#dragged-eternity-upgrade");
+const draggedEternityPerksRequired = document.querySelector("#dragged-eternity-perks-required");
+const draggedEternityMagnitude = document.querySelector("#dragged-eternity-magnitude");
+
+const frozenInTimeUpgrade = document.querySelector("#frozen-in-time-upgrade");
+const frozenInTimePerksRequired = document.querySelector("#frozen-in-time-perks-required");
+const frozenInTimeMagnitude = document.querySelector("#frozen-in-time-magnitude");
 
 
 swordKill.volume = 0.5;
 criticalSfx.volume = 0.3;
 
+const save = document.querySelector("#save");
 
-let left = parseInt(cloud1Style.left);
+
+loadData();
+
+playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage + "|";
+displayEnemy.textContent = enemyEmojis[storyLevel-1];
+updatePerks();
+gold.textContent = "Gold: " + goldValue;
+level.textContent = "|"+ "Level: " + currentLevel +"|";
+
+if(classType === "assassin") {
+    markedForDeath.style.display = "inline";   
+}
+if(classType === "mage") {
+    mageFury.style.display = "inline";
+}
+if(classType === "viking") {
+    nearDeathExperience.style.display = "inline";
+}
+if(classType === "knight") {
+    shieldWall.style.display = "inline";
+}
+
 freezeActive = false;
-
-// ========================================================
-// 🔢 ENEMY LIST ARRAY
-// ========================================================
-
-// enemyList condensed: remove exact duplicates
-const enemyList = [
-  "RAT","BAT","SPIDER","SNAKE","LIZARD","CAT","DOG","FERALCAT","COUGAR","HYENA",
-  "SCORPION","CRAB","CROW","IMP","KOBOLD","GOBLIN","TROLL","OGRE","STONEGOLEM",
-  "IRONOGRE","SHADOWCAT","FIREBAT","ICEWOLF","VENOMSCORPION","SPIKERAT","RAZORBAT",
-  "SHIVERWOLF","BLOODWYRM","PHOENIX","WYRM","DRAGON","DARKWRAITH","VAMPIRE","REVENANT",
-  "BEHEMOTH","HELLFIRE","NIGHTDEMON","VOIDDRAGON","FROSTLEVIATHAN","BLAZEKRAKEN",
-  "TITAN","COLOSSUS","NIGHTFANG","LEVIATHAN","SPECTER","ABYSS","OMNIS","APEX",
-  "SINGULARITY","EMBERCAT","ICEPYTHON","FIREHYENA","STORMCOUGAR","CRAGCRAB",
-  "SKYFERALCAT","IRONCROW","STONEGOBLIN","HELLKOBOLD","DARKTROLL","VOLCANOOGRE",
-  "FROSTWYRM","BLOODPHOENIX","INFERNODRAGON","NIGHTWRAITH","OMNISPECTER",
-  "APEXLEVIATHAN","SINGULARITYBEHEMOTH","ABYSSKRAKEN","VOIDNIGHTFANG","COSMOSREVENANT",
-  "HELLFANG","FIREBEAST","ICEBEAST","THUNDERBEAST","SHADOWBEAST","VOIDBEAST",
-  "NIGHTBEAST","APEXBEAST","ULTIMABEAST","CELESTIALDRAGON","VOIDTITAN","INFERNOTITAN",
-  "ETHERWYRM","COSMOSTITAN","OBLIVIONBEAST","ETERNALDRAGON","SINGULARITYTITAN",
-  "OMEGA","NULL"
-];
-
-// soldierName condensed: remove repeated rank variants manually
-const soldierName = [
-  "Peasant 🧍","Drone 🤖","Wolf 🐺","Horse 🐴","Alien 👽","Goblin 🥷","Skeleton 💀",
-  "Zombie 🧟","Bandit 🗡️","Archer 🏹","Swordsman ⚔️","Wizard 🪄","Apprentice Mage 🧙‍♂️",
-  "Commander 🛡️","Prince 🤴","Princess 👸","Queen 👑","King 🤴👑","Demon 😈",
-  "Berserker 🪓","Sniper 🎯","Dragon 🐉","Basilist 🐍","Tank 🛡️","Submarine 🛳️",
-  "Jet-fighter ✈️","Witch 🧙‍♀️","Battleship 🚢","Vampire 🧛‍♂️","Necromancer 🪦",
-  "Warlock 🔮","Phoenix 🔥🦅","Titan 🏋️‍♂️","Mech 🤖🦾","Leviathan 🐋","Archangel 😇"
-];
+let left = parseInt(cloud1Style.left);
 
 
-
-// enemyEmojis condensed: remove duplicates
-const enemyEmojis = [
-  "🐀","🦇","🕷️","🐍","🦎","🐱","🐶","🐈‍⬛","🐆","🦡",
-  "🦂","🦀","🐦","👹","👺","🗿","🔥🦇","❄️🐺","☠️🦂","🐀🗡️",
-  "🦇🗡️","🐺❄️","🐍🩸","🦅🔥","🐉","👻","🧛","☠️","🐘","🔥💀",
-  "😈","🐉🌌","❄️🐋","🔥🦑","🗿💪","⚫","🐱🔥","❄️🐍","🔥🦁","🌩️🐆"
-];
 
 
 
@@ -511,11 +492,26 @@ const xpTable = document.querySelector("#xp-table");
 // ========================================================
 alert(
 `Patch Notes V.1.09
-- Brand New Skill Added - Slow Time that slows down the enemy attack rate
-- Sepia filter added when slow time is applied
-- Pause bug where health didnt remain frozen fixed by removing enemy damage temporarily
-`)
+- 🌀 New Skill Added — Slow Time reduces enemy attack rate
+- 🎨 Sepia filter now activates during Slow Time
+- 🛠️ Fixed pause bug where health didn't stay frozen by disabling enemy damage temporarily
 
+Patch Notes V.1.10
+- 🎵 Added sound effects for the Slow Time spell
+- ☁️ Increased cloud speed from 2 → 3 pixels/sec for better visibility
+- ⏸️ Pause icon now changes to Play when activated
+- 🪐 Added Saturn crashing animation on pause/play
+- 💡 Dynamic lighting effects added for the first time
+- ⚠️ Game pauses at critical health — one-time effect.
+- 👾 Enemies disappear when you press pause for peace of mind
+- ⚡ Time Power removed from base gameplay and added into Upgrades
+- ⏳ Dragged Eternity upgrade added — extends Split-Seconds by +5s
+- ❄️ Frozen in Time upgrade added — boosts the effect of Split-Seconds!
+- 🪐 Saturn crashing sound effect added to the pause menu!
+- 🎁 Renamed 'Gift of Fate' to 'Lucky Dip'!
+- 🎲 Lucky Dip just got juicier — more prizes added!
+- ⚔️ Classes have been fine-tuned for better balance and gameplay harmony
+- 💾 Save feature added. Some adjustments are still in progress`);
 
 introDecision = prompt(`
 Welcome to the Game! Would you like to skip the intro?
@@ -577,7 +573,7 @@ function startIntro() {
 Quick and deadly, but fragile. One wrong move could spell disaster!
 HP: 100
 Voltage: 85
-Damage: 9
+Damage: 6
 
 [2] Mage 🔮
 Masters of the arcane, but frail in close combat. Spells are your lifeline.
@@ -595,28 +591,37 @@ Damage: 5
 The balanced warrior. Reliable in every situation, the default starting class.
 HP: 250
 Voltage: 100
-Damage: 2
-Damage Resistance 5%`)
+Damage: 3
+`)
 
     if(playerClass === "1") {
         alert("Assassin Selected!");
 
+	classType = "assassin";
+	classSelected = true;
 	currentHealth = 100;
 	maxHealth = 100;
 	voltage = 85;
 	maxVoltage = 85;
-	playerDamage = 9;
+	playerDamage = 6;
+	heal = 20;
+	criticalChanceFactor = 7;
+	criticalChanceFunction();
 
 	markedForDeath.style.display = "inline";
 	
 	updateHealthValues();
 	updateVoltageValues();
 	playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage;
+	healPower.textContent = "|" + "Heal Power: " + heal + " HP" + "|";
+
 
 alert(`🥷Assassin Stats🥷
 Health: 100
 Voltage: 85
-Damage: 9 
+Damage: 6
+Healing Potency: 20
+Crit Chance: 7%
 Special Ability: 🥷Marked For Death🥷 - Critical Chance improved by 25% for 15 seconds!`);
 	level1Story();
 
@@ -625,22 +630,29 @@ Special Ability: 🥷Marked For Death🥷 - Critical Chance improved by 25% for 
     else if(playerClass === "2") {
         alert("Mage Selected"); 
 	
+	classType = "mage";
+	classSelected = true;
 	currentHealth = 75;
 	maxHealth = 75;
-	voltage = 200;
-	maxVoltage = 200;
+	voltage = 300;
+	maxVoltage = 300;
 	playerDamage = 1;
+	heal = 30;
 
 	mageFury.style.display = "inline";
 	
 	updateHealthValues();
 	updateVoltageValues();
 	playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage;
+	healPower.textContent = "|" + "Heal Power: " + heal + " HP" + "|";
+
 
 alert(`🔮Mage Stats🔮 
 Health: 75
 Damage: 1
-Voltage: 200
+Voltage: 300
+Healing Potency: 30;
+Crit Chance: 1&
 Special Ability: 🔮Sorceror's Fury🔮 - Rapidly regenerate Voltage for a short period of time.`);
 	level1Story();
     }
@@ -648,12 +660,17 @@ Special Ability: 🔮Sorceror's Fury🔮 - Rapidly regenerate Voltage for a shor
     else if(playerClass === "3") {
 	alert("Viking Selected");
 
+	classType = "viking";
+	classSelected = true;
+
 	currentHealth = 500;
 	maxHealth = 500;
 	voltage = 40;
 	maxVoltage = 40;
 	playerDamage = 5;
+	heal = 15;
 	
+	healPower.textContent = "|" + "Heal Power: " + heal + " HP" + "|";
 	updateHealthValues();
 	updateVoltageValues();
 	playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage;
@@ -662,22 +679,34 @@ Special Ability: 🔮Sorceror's Fury🔮 - Rapidly regenerate Voltage for a shor
 
 alert(`🪓Viking Stats🪓 
 Health: 500
-Voltage: 40
+Voltage: 30
 Damage: 5 
+Healing Potency: 15
+Crit Chance: 1%
 Special Ability: 🪓Near Death Experience🪓 - Completely Restores Health upon use!`);
 	level1Story();
     }
 
 
     else if(playerClass === "4") {
+	playerDamage = 3;
+	maxVoltage = 150;
+	voltage = 150;
+	heal = 25
+	healPower.textContent = "|" + "Heal Power: " + heal + " HP" + "|";
+
         alert("Knight Selected!");
+	classType = "knight";
+	classSelected = true;
 	shieldWall.style.display = "inline";
 	
 alert(`⚔️Knight Stats⚔️ 
 Health: 250
-Damage: 2 
-Voltage: 100
-Special Ability: 🛡️Shield Wall🛡️ - Incoming damage is reduced by 25% for a brief period
+Damage: 3 
+Voltage: 150
+Healing Potency: 25
+Crit Chance: 1%
+Special Ability: 🛡️Shield Wall🛡️ - Incoming damage is reduced by 50% for a brief period
 `)
 	level1Story();
 
@@ -687,7 +716,7 @@ Special Ability: 🛡️Shield Wall🛡️ - Incoming damage is reduced by 25% f
 if(introDecision === "1") {
 }
 
-else if(introDecision === "2") {
+else if(introDecision === "2" && !classSelected) {
     startIntro();
 }
 
@@ -1043,7 +1072,7 @@ incomeUpgrades.addEventListener("click", function() {
 // ========================================================
 // 🛠️FUNCTIONS🛠️ #FUNCTIONS
 // ========================================================
-//🩸BLOODTHIRSTY FUNCTION🩸
+//🩸BLOODTHIRSTY FUNCTION🩸#BLOODTHIRSTY
 function bloodthirstyFunction() {
     purchaseSkill.currentTime = 0;
     purchaseSkill.play();
@@ -1053,41 +1082,24 @@ function bloodthirstyFunction() {
     bloodthirstyMagnitude.textContent = "+ " + bloodthirstyFactor + " HP";
 }
 
-//🎯CRITICAL CHANCE FUNCTION🎯
-criticalHitUpgrade.addEventListener("click", function() {
-    if(perks >= criticalChanceRequiredPerks) {
-	purchaseSkill.currentTime = 0;
-	purchaseSkill.play();
-        perks -= criticalChanceRequiredPerks;
-
-	criticalChanceRequiredPerks += 3;
-	updatePerks();
+//🎯CRITICAL CHANCE FUNCTION🎯 #CHANCE #CRITICAL
+function criticalChanceFunction() {
+    purchaseSkill.currentTime = 0;
+    purchaseSkill.play();
 	
-	criticalChanceFactor += 1;
-	critLabel.textContent = "Crit Chance: " + criticalChanceFactor + " %";
-	
-	criticalHitPerksCost.textContent = criticalChanceRequiredPerks;
-	criticalHitMagnitude.textContent = criticalChanceFactor + " %";
-    }
-});
+    criticalChanceFactor += 1;
+    critLabel.textContent = "Crit Chance: " + criticalChanceFactor + " %";
+    criticalHitMagnitude.textContent = criticalChanceFactor + " %";
 
-//💥CRITICAL DAMAGE FUNCTION💥
-criticalDamageUpgrade.addEventListener("click", function() {
-    if(perks >= criticalDamageRequiredPerks) {
+}
 
-	purchaseSkill.currentTime = 0;
-	purchaseSkill.play();
-
-        perks -= criticalDamageRequiredPerks;
-	criticalDamageRequiredPerks += 8;
-	updatePerks();
-
-	criticalDamageFactor += 0.25;
-
-	criticalDamagePerksCost.textContent = criticalDamageRequiredPerks;
-	criticalDamageMagnitude.textContent = "x" + criticalDamageFactor;
-        }
-});
+//💥CRITICAL DAMAGE FUNCTION💥#CRITICAL
+function criticalDamageFunction() {
+    purchaseSkill.currentTime = 0;
+    purchaseSkill.play();
+    criticalDamageFactor += 0.25;
+    criticalDamageMagnitude.textContent = "x" + criticalDamageFactor;
+}
 
 //🛡️DAMAGE RESISTANCE FUNCTION🛡️
 function damageResistanceFunction() {
@@ -1106,6 +1118,14 @@ function damageResistanceFunction() {
 	drPerks.textContent = drCost	
 	drMagnitude.textContent = damageResistance + " %";
 	updatePerks();
+}
+
+//⌛DRAGGED ETERNITY FUNCTION⌛
+function draggedEternityFunction() {
+    purchaseSkill.currentTime = 0;
+    purchaseSkill.play();
+    splitSecondsDuration += 5000;
+    draggedEternityMagnitude.textContent = (splitSecondsDuration/1000) + " Secs";   
 }
 
 //💀EXECUTION FUNCTION💀
@@ -1169,6 +1189,15 @@ function knightAttack() {
 	    enemyDead();
         }
     }, 1000);
+}
+
+// 🍀LUCKY FINGERS FUNCTION🍀 #LUCKY
+function luckyFingersFunction() {
+    purchaseSkill.currentTime = 0;
+    purchaseSkill.play();
+    goldMultiplier += 0.25;
+    luckyFingersMagnitude.textContent = "x" + goldMultiplier;
+
 }
 
 //💲REAL ESTATE FUNCTION💲
@@ -1748,6 +1777,7 @@ alert("Light swallows you whole. Your consciousness peels apart as time folds in
 alert("You see flashes—forests crawling with lizards… snarling dogs… swirling portals… blood on your hands… a rat torn apart… spiders closing in… voices screaming for help… bodies falling… static… buzzing… reality tearing itself in half…");
     startIntro();  
 	storyLevel = 0;
+	classSelected = false;
 	enemyCurrentHealth = currentLevel * 10;;
 	enemyMaxHealth = currentLevel * 10;
 	enemyDamage = currentLevel;
@@ -1855,7 +1885,6 @@ updateHealthValues();
 	updateXPValues();
 
 	requiredXP += 250;
-
         previousEnemyDamage = enemyDamage
 
         enemyDamage = 0;
@@ -1881,6 +1910,8 @@ updateHealthValues();
         setTimeout(function() {
             displayLabel.style.opacity = 0;
         }, 3000);
+
+	saveData();
 }
 
 
@@ -2401,6 +2432,7 @@ function enemyAttack() {
 
     enemyInterval = setInterval(function() {
         if(currentHealth <= 0) {
+	    localStorage.removeItem("playerData");
 	    randomSfx = Math.floor(Math.random() * endingSounds.length);
 	    currentSound = endingSounds[randomSfx];
 	    currentSound.play();
@@ -2427,6 +2459,14 @@ Gold Earned: ${goldEarnt.toLocaleString()}
                 location.reload();
             }, 5000);
         }
+healthPerc = (currentHealth - enemyDamage)/maxHealth;
+
+if(healthPerc < 0.10 && healthPerc > 0 && !removePause) {
+    pause.click();
+    removePause = true;
+}
+
+
         else{
 	    guardianRoll();
             currentHealth -= enemyDamage * guardianFactor;
@@ -2584,7 +2624,6 @@ recruitKnight.addEventListener("click", function() {
 
 	updatePerks();
 	knightAttack();
-	knightAttack();
 
 	perksRequiredLabel.textContent = knightsPerksRequired;
 	knightsMagnitude.textContent = knightQuantity + " Companions"; 
@@ -2674,11 +2713,12 @@ maxVoltageUpgrade.addEventListener("click", function() {
     }
 });
 // ========================================================
-//⏸️PAUSE FUNCTION⏸️ #SETTINGS
+//Cloud Animation
 // ========================================================													                      
 function moveCloud1() {
     setInterval(function() {
-	left += 2;
+	left += 3;
+	
 
 	if(left >= windowWidth) {
 	    cloud1.style.transition = "none";
@@ -2704,12 +2744,34 @@ moveCloud1();
 // ========================================================
 pause.addEventListener("click", function() {
     if(!paused) {
-	
+	asteroid.currentTime = 0;
+	asteroid.play();
+
+
+	saturn.style.fontSize = "800px";
+	displayEnemy.style.opacity = 0;
+	house.style.filter = "brightness(100%)";
+	factory.style.filter = "brightness(100%)";
+	castle.style.filter = "brightness(100%)";
+	office.style.filter = "brightness(100%)";
+	office2.style.filter = "brightness(100%)";
+	bank.style.filter = "brightness(100%)";
+	school.style.filter = "brightness(100%)";
+	construction.style.filter = "brightness(100%)";
+	grave.style.filter = "brightness(100%)";
+	tree.style.filter = "brightness(100%)";
+
+
+
+	pause.textContent = "▶"
 	iceSfx.currentTime = 0;
 	iceSfx.play();
 	displayLabel.textContent = "Game Paused";
 	displayLabel.style.opacity = 1;
 	displayLabel.style.color = "white";
+
+
+
     
 	
 
@@ -2731,7 +2793,6 @@ pause.addEventListener("click", function() {
 	playerDamage = 0;
 	requiredXP = Infinity;
 	currentXP = -Infinity;
-	currentHealth = Infinity;
 	enemyDamage = 0;	
 
 	updateHealthValues();
@@ -2745,10 +2806,25 @@ pause.addEventListener("click", function() {
     }
     
     else{
+	pause.textContent = "⏸️";
+	saturn.style.fontSize = "100px";
+	displayEnemy.style.opacity = 1;
+	house.style.filter = "brightness(60%)";
+	factory.style.filter = "brightness(16%)";
+	castle.style.filter = "brightness(16%)";
+	office.style.filter = "brightness(16%)";
+	office2.style.filter = "brightness(16%)";
+	bank.style.filter = "brightness(16%)";
+	school.style.filter = "brightness(16%)";
+	construction.style.filter = "brightness(16%)";
+	grave.style.filter = "brightness(16%)";
+	tree.style.filter = "brightness(16%)";
+
+
+
 	displayLabel.textContent = "Game Resumed!";
 	displayLabel.style.opacity = 1;
         paused = false;
-	currentHealth = presentHealth;
 	voltage = presentVoltage;
 	knightDamage = presentKnightDamage;
 	playerDamage = presentPlayerDamage;
@@ -2943,26 +3019,17 @@ noMercyUpgrade.addEventListener("click", function() {
 
 	updatePerks();
     }
-})
+});
 // ========================================================
 // 🍀LUCKY FINGERS UPGRADE🍀 #LUCKY-FINGERS-UPGRADE
 // ========================================================
 luckyFingersUpgrade.addEventListener("click", function() {
     if(perks >= luckyFingersRequiredPerks) {
 	perks-= luckyFingersRequiredPerks;
-
-	purchaseSkill.currentTime = 0;
-	purchaseSkill.play();
-
 	luckyFingersRequiredPerks += 3;
-	
-	goldMultiplier += 0.25;
-
 	luckyFingersPerksRequired.textContent = luckyFingersRequiredPerks;
-	luckyFingersMagnitude.textContent = "x" + goldMultiplier;
-
 	updatePerks();
-	
+	luckyFingersFunction();	
     }
 });
 // ========================================================
@@ -2993,6 +3060,7 @@ executionUpgrade.addEventListener("click", function() {
 	updatePerks();
     }
 });
+
 // ========================================================
 // 🧬ANTIBODIES UPGRADE🧬 #ANTIBODIES-UPGRADE
 // ========================================================
@@ -3018,7 +3086,7 @@ sellSoulUpgrade.addEventListener("click", function() {
 // ========================================================
 // 🎁LUCKY DIP BUTTON🎁 #LUCKY-DIP-BUTTON
 // ========================================================
-let randomUpgrades = [sellSoulFunction, executionFunction, fireballFunction, guardianFunction, damageResistanceFunction, voltageRegenerationFunction, healUpgradeFunction]
+let randomUpgrades = [sellSoulFunction, executionFunction, fireballFunction, guardianFunction, damageResistanceFunction, voltageRegenerationFunction, healUpgradeFunction, criticalDamageFunction, criticalChanceFunction, luckyFingersFunction];
 
 luckyDipButton.addEventListener("click", function(){
     if(perks >= luckyDipPerkCost) {
@@ -3065,14 +3133,30 @@ purchaseSkill.play();
 alert(
 `⚡Voltage Regeneration Upgraded!`
 );
-
 }
 
 else if(randomUpgradeSelection === 6) {
 alert(
 `❤️ Your healing power rises by +5 ❤️`
 );
+}
 
+else if(randomUpgradeSelection === 7) {
+alert(
+`💥Critical Damage Increased!💥`
+);
+}
+
+else if(randomUpgradeSelection === 8) {
+alert(
+`🎯Critical Chance Increased!🎯`
+);
+}
+
+else if(randomUpgradeSelection === 9) {
+alert(
+`🍀 Lucky Fingers upgraded — gold looted increased!🍀`
+);
 }
 
 updatePerks();
@@ -3208,7 +3292,9 @@ shieldWall.addEventListener("click", function() {
     if(!shieldWallActivated && !shieldWallSpecialUsed){
 	shieldWallSpecialUsed = true;
 	armourPowerUp.play();
-
+		
+	presentDR = damageResistance;
+	
 	currentEnemyDamage = enemyDamage;
 	currentDamageResistance = damageResistance;
 
@@ -3217,7 +3303,7 @@ shieldWall.addEventListener("click", function() {
 	displayLabel.style.color = "black";
 	displayLabel.style.opacity  = 1;
 
-        damageResistance += 40;   
+        damageResistance += 50;   
 
 	drDecimal = 1 - (damageResistance/100);
 
@@ -3233,7 +3319,7 @@ shieldWall.addEventListener("click", function() {
 	drMagnitude.textContent = damageResistance + " %";
 
         setTimeout(function() {
-		damageResistance -= 40;
+		damageResistance = presentDR;
 		drDecimal = 1 - (damageResistance/100);
 
 		newEnemyDamage = currentEnemyDamage * drDecimal
@@ -3352,38 +3438,431 @@ realEstateUpgrade.addEventListener("click", function() {
     }
 });
 // ========================================================
-// ⏱️SLOW TIME #SLOW-TIME⏱️
+// ⏱️SLOW TIME BUTTON #SLOW-TIME-BUTTON⏱️
 // ========================================================
 let stopTimeActive = false;
 
 stopTimeButton.addEventListener("click", function() {
     if(voltage >= 50 && !stopTimeActive) {
 	stoptimeActive = true;
+	freezeTime.play();
+	let division = frozenFactor/1000
+	maxDamageLabel.textContent = "|" + "Enemy DPS: " + enemyDamage/division;
+
 	voltage -= 50;
-        playerSpeed *= 1.5;
+        playerSpeed = frozenFactor;
         enemyAttack();
 
 	displayEnemy.style.filter = "sepia(100%)";
+	moon.style.filter = "sepia(100%)";
+	
+
 	stopTimeButton.style.filter = "brightness(0%)";
 	stopTimeButton.textContent = "⏳";
 
     setTimeout(function() {
         playerSpeed = 1000;
         enemyAttack();
+	maxDamageLabel.textContent = "|" + "Enemy DPS: " + enemyDamage;
 
 	stopTimeButton.style.filter = "brightness(0%)";
 	displayEnemy.style.filter = "sepia(0%)";
+	moon.style.filter = "brightness(200%)grayscale(100%)";
+
 
 	stopTimeButton.textContent = "⏱️";
 
 	
 	stopTimeActive = false;
+	unfreezeTime.play();
 
-    }, 5000);
+    }, splitSecondsDuration);
     } 
+});
+// ========================================================
+// ⏱️SPLIT-SECONDS UPGRADE #SPLIT-SECONDS-UPGRADE⏱️
+// ========================================================
+splitSeconds.addEventListener("click", function() {
+    if(perks >= 5 && !splitSecondsBought) {
+	splitSecondsBought = true;
+	purchaseSkill.play();
+        perks -= 5;
+	stopTimeButton.style.display = "inline";
+	updatePerks();
+    }   
+});
+// ========================================================
+// ⏱️DRAGGED ETERNITY UPGRADE⏱️ #DRAGGED-ETERNITY UPGRADE
+// ========================================================
+draggedEternityUpgrade.addEventListener("click", function() {
+    if(perks >= draggedEternityRequiredPerks) {
+        perks -= draggedEternityRequiredPerks;
+	draggedEternityRequiredPerks += 7;
+	draggedEternityPerksRequired.textContent = draggedEternityRequiredPerks;
+	updatePerks();
+	draggedEternityFunction();
+    }
+});
+
+function frozenInTimeFunction() {
+    purchaseSkill.currentTime = 0;
+    purchaseSkill.play();
+    frozenFactor += 500;
+    frozenInTimeMagnitude.textContent = frozenFactor;
+}
+
+
+// ========================================================
+// ⏱️FROZEN IN TIME UPGRADE⏱️ #FROZEN-IN-TIME UPGRADE
+// ========================================================
+frozenInTimeRequiredPerks = 5;
+
+frozenInTimeUpgrade.addEventListener("click", function() {
+    if(perks >= frozenInTimeRequiredPerks) {
+	perks-= frozenInTimeRequiredPerks;
+	frozenInTimeRequiredPerks += 7;
+	frozenInTimePerksRequired.textContent = frozenInTimeRequiredPerks;
+
+	frozenInTimeFunction();
+	updatePerks();
+    }
+});
+
+
+// ========================================================
+// 💥CRITICAL DAMAGE UPGRADE💥 #CRITICAL-DAMAGE-UPGRADE
+// ========================================================
+criticalDamageUpgrade.addEventListener("click", function() {
+    if(perks >= criticalDamageRequiredPerks) {
+	criticalDamageRequiredPerks += 8;
+	criticalDamagePerksCost.textContent = criticalDamageRequiredPerks;
+	criticalDamageFunction();
+	updatePerks();
+    }
+});
+
+// ========================================================
+// 🎯CRITICAL CHANCE UPGRADE🎯 #CRITICAL-CHANCE-UPGRADE #CHANCE
+// ========================================================
+criticalHitUpgrade.addEventListener("click", function() {
+    if(perks >= criticalChanceRequiredPerks) {
+        perks -= criticalChanceRequiredPerks;
+	criticalChanceRequiredPerks += 3;
+	criticalHitPerksCost.textContent = criticalChanceRequiredPerks;
+	updatePerks();
+	criticalChanceFunction();	
+    }
 });
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function myData() {
+    return {
+        active: active,
+        adrenalineActivated: adrenalineActivated,
+        adrenalineFactor: adrenalineFactor,
+        antibodiesFactor: antibodiesFactor,
+        antibodiesRequiredPerks: antibodiesRequiredPerks,
+        armyDamage: armyDamage,
+        baseEnemyDamage: baseEnemyDamage,
+        bloodthirstyFactor: bloodthirstyFactor,
+        bloodthirstyRequiredPerks: bloodthirstyRequiredPerks,
+        checkOpacity: checkOpacity,
+        classSelected: classSelected,
+        classType: classType,
+        concentrationFactor: concentrationFactor,
+        concentrationPerks: concentrationPerks,
+        criticalChanceFactor: criticalChanceFactor,
+        criticalChanceRequiredPerks: criticalChanceRequiredPerks,
+        criticalDamageFactor: criticalDamageFactor,
+        criticalDamageRequiredPerks: criticalDamageRequiredPerks,
+        criticalHit: criticalHit,
+        currentDamage: currentDamage,
+        currentDamageResistance: currentDamageResistance,
+        currentEnemyDamage: currentEnemyDamage,
+        currentHealth: currentHealth,
+        currentLevel: currentLevel,
+        currentXP: currentXP,
+        damageResistance: damageResistance,
+        difference: difference,
+        draggedEternityRequiredPerks: draggedEternityRequiredPerks,
+        enemyCurrentHealth: enemyCurrentHealth,
+        enemyDamage: enemyDamage,
+        enemyDamageNegation: enemyDamageNegation,
+        enemyDamageSum: enemyDamageSum,
+        enemyMaxHealth: enemyMaxHealth,
+        executionFactor: executionFactor,
+        executionRequiredPerks: executionRequiredPerks,
+        fireballBought: fireballBought,
+        fireballDamage: fireballDamage,
+        fireballDps: fireballDps,
+        ghostDamageFactor: ghostDamageFactor,
+        ghostPurchased: ghostPurchased,
+        goldFactor: goldFactor,
+        goldMultiplier: goldMultiplier,
+        goldValue: goldValue,
+        heal: heal,
+        healthFactor: healthFactor,
+        index: index,
+        eyeForEyeFactor: eyeForEyeFactor,
+        eyeForEyePercentage: eyeForEyePercentage,
+        eyeForEyeRequiredPerks: eyeForEyeRequiredPerks,
+        luckyDipBought: luckyDipBought,
+        luckyDipPerkCost: luckyDipPerkCost,
+        luckyDipPressed: luckyDipPressed,
+        luckyFingersRequiredPerks: luckyFingersRequiredPerks,
+        mageFuryActivated: mageFuryActivated,
+        mageInterval: mageInterval,
+        markedForDeathActive: markedForDeathActive,
+        markedForDeathSpecialUsed: markedForDeathSpecialUsed,
+        maxDamage: maxDamage,
+        maxHealth: maxHealth,
+        maxVoltage: maxVoltage,
+        maxVoltagePerksCost: maxVoltagePerksCost,
+        minDamage: minDamage,
+        mosquitoFactor: mosquitoFactor,
+        mosquitoRequiredPerks: mosquitoRequiredPerks,
+        nearDeathActive: nearDeathActive,
+        nearDeathExperienceSpecialUsed: nearDeathExperienceSpecialUsed,
+        noMercyRequiredPerks: noMercyRequiredPerks,
+        perks: perks,
+        perksEarnt: perksEarnt,
+        playerDamage: playerDamage,
+        playerName: playerName,
+        presentPlayerDamage: presentPlayerDamage,
+        previousEnemyDamage: previousEnemyDamage,
+        purchasedHP: purchasedHP,
+        purchasedXP: purchasedXP,
+        randomXP: randomXP,
+        requiredXP: requiredXP,
+        shieldWallActivated: shieldWallActivated,
+        shieldWallSpecialUsed: shieldWallSpecialUsed,
+        soulPactFactor: soulPactFactor,
+        splitSecondsBought: splitSecondsBought,
+        splitSecondsDuration: splitSecondsDuration,
+        superNovaRequiredPerks: superNovaRequiredPerks,
+        timesAttacked: timesAttacked,
+        totalHealth: totalHealth,
+        vampirismInteger: vampirismInteger,
+        vampirismPercentage: vampirismPercentage,
+        vampirismRequiredPerks: vampirismRequiredPerks,
+        voltage: voltage,
+        voltageLevel: voltageLevel,
+        voltageSpeed: voltageSpeed,
+        windowWidth: windowWidth,
+        knightDamage: knightDamage,
+        knightIncrementation: knightIncrementation,
+        knightInterval: knightInterval,
+        knightQuantity: knightQuantity,
+        guardianFactor: guardianFactor,
+        guardianChance: guardianChance,
+        guardianRequiredPerks: guardianRequiredPerks,
+        addedVoltage: addedVoltage,
+        drCost: drCost,
+        reflectedDamage: reflectedDamage,
+        mosquitoRequiredPerks: mosquitoRequiredPerks,
+        executionRequiredPerks: executionRequiredPerks,
+        incomeFactor: incomeFactor,
+        activatedFireball: activatedFireball,
+        paused: paused,
+        splitSecondsDuration: splitSecondsDuration,
+        frozenFactor: frozenFactor,
+   storyLevel: storyLevel,
+
+    }
+}
+
+function saveData() {
+    let snapshot = myData();
+    let snapshotString = JSON.stringify(snapshot);
+    localStorage.setItem("playerData", snapshotString);
+}
+
+function loadData() {
+    let savedData = localStorage.getItem("playerData");
+    if(savedData) {
+        savedData = JSON.parse(savedData);
+
+        currentHealth = savedData.currentHealth;
+        maxHealth = savedData.maxHealth;
+        voltage = savedData.voltage;
+        maxVoltage = savedData.maxVoltage;
+        storyLevel = savedData.storyLevel;
+        currentLevel = savedData.currentLevel;
+        goldValue = savedData.goldValue;
+        perks = savedData.perks;
+        currentXP = savedData.currentXP;
+        requiredXP = savedData.requiredXP;
+        damageResistance = savedData.damageResistance;
+        playerDamage = savedData.playerDamage;
+        enemyCurrentHealth = savedData.enemyCurrentHealth;
+        enemyMaxHealth = savedData.enemyMaxHealth;
+        enemyDamage = savedData.enemyDamage;
+        classSelected = savedData.classSelected;
+        classType = savedData.classType;
+        guardianFactor = savedData.guardianFactor;
+        voltageLevel = savedData.voltageLevel;
+        goldFactor = savedData.goldFactor;
+        goldMultiplier = savedData.goldMultiplier;
+        previousEnemyDamage = savedData.previousEnemyDamage;
+        knightQuantity = savedData.knightQuantity;
+        concentrationFactor = savedData.concentrationFactor;
+        knightInterval = savedData.knightInterval;
+        armyDamage = savedData.armyDamage;
+        incomeFactor = savedData.incomeFactor;
+        executionFactor = savedData.executionFactor;
+        mosquitoFactor = savedData.mosquitoFactor;
+        enemyDamageSum = savedData.enemyDamageSum;
+        enemyDamageNegation = savedData.enemyDamageNegation;
+        minDamage = savedData.minDamage;
+        maxDamage = savedData.maxDamage;
+        heal = savedData.heal;
+        active = savedData.active;
+        adrenalineFactor = savedData.adrenalineFactor;
+        timesAttacked = savedData.timesAttacked;
+        enemiesKilled = savedData.enemiesKilled;
+        perksEarnt = savedData.perksEarnt;
+        goldEarnt = savedData.goldEarnt;
+        xpEarnt = savedData.xpEarnt;
+        ghostDamageFactor = savedData.ghostDamageFactor;
+        ghostPurchased = savedData.ghostPurchased;
+        drCost = savedData.drCost;
+        reflectedDamage = savedData.reflectedDamage;
+        perkCost = savedData.perkCost;
+        baseEnemyDamage = savedData.baseEnemyDamage;
+        voltageSpeed = savedData.voltageSpeed;
+        fireballBought = savedData.fireballBought;
+        fireballDamage = savedData.fireballDamage;
+        soulPactFactor = savedData.soulPactFactor;
+        maxVoltagePerksCost = savedData.maxVoltagePerksCost;
+        addedVoltage = savedData.addedVoltage;
+        xpIntervalFactor = savedData.xpIntervalFactor;
+        xpFactor = savedData.xpFactor;
+        randomXP = savedData.randomXP;
+        healthFactor = savedData.healthFactor;
+        antibodiesFactor = savedData.antibodiesFactor;
+        boughtSellSoul = savedData.boughtSellSoul;
+        currentEnemyDamage = savedData.currentEnemyDamage;
+        currentDamageResistance = savedData.currentDamageResistance;
+        luckyDipPerkCost = savedData.luckyDipPerkCost;
+        luckyDipPressed = savedData.luckyDipPressed;
+        purchasedXP = savedData.purchasedXP;
+        purchasedHP = savedData.purchasedHP;
+        XPPercentage = savedData.XPPercentage;
+        HPPercentage = savedData.HPPercentage;
+        EnemyHPPercentage = savedData.EnemyHPPercentage;
+        guardianRequiredPerks = savedData.guardianRequiredPerks;
+        guardianChance = savedData.guardianChance;
+        presentPlayerDamage = savedData.presentPlayerDamage;
+        mageInterval = savedData.mageInterval;
+        mageFuryActivated = savedData.mageFuryActivated;
+        nearDeathExperienceSpecialUsed = savedData.nearDeathExperienceSpecialUsed;
+        shieldWallSpecialUsed = savedData.shieldWallSpecialUsed;
+        markedForDeathSpecialUsed = savedData.markedForDeathSpecialUsed;
+        mageFurySpecialUsed = savedData.mageFurySpecialUsed;
+        bloodthirstyRequiredPerks = savedData.bloodthirstyRequiredPerks;
+        bloodthirstyFactor = savedData.bloodthirstyFactor;
+        criticalDamageRequiredPerks = savedData.criticalDamageRequiredPerks;
+        criticalDamageFactor = savedData.criticalDamageFactor;
+        criticalChanceRequiredPerks = savedData.criticalChanceRequiredPerks;
+        criticalChanceFactor = savedData.criticalChanceFactor;
+        criticalHit = savedData.criticalHit;
+        playerName = savedData.playerName;
+        upgradesOpen = savedData.upgradesOpen;
+        totalHealth = savedData.totalHealth;
+        eyeForEyeRequiredPerks = savedData.eyeForEyeRequiredPerks;
+        eyeForEyeFactor = savedData.eyeForEyeFactor;
+        eyeForEyePercentage = savedData.eyeForEyePercentage;
+        mosquitoRequiredPerks = savedData.mosquitoRequiredPerks;
+        nearDeathActive = savedData.nearDeathActive;
+        markedForDeathActive = savedData.markedForDeathActive;
+        shieldWallActivated = savedData.shieldWallActivated;
+        luckyDipBought = savedData.luckyDipBought;
+        realEstateRequiredPerks = savedData.realEstateRequiredPerks;
+        realEstateInterval = savedData.realEstateInterval;
+        antibodiesRequiredPerks = savedData.antibodiesRequiredPerks;
+        executionRequiredPerks = savedData.executionRequiredPerks;
+        shockwaveFactor = savedData.shockwaveFactor;
+        shockwaveRequiredPerks = savedData.shockwaveRequiredPerks;
+        luckyFingersRequiredPerks = savedData.luckyFingersRequiredPerks;
+        noMercyRequiredPerks = savedData.noMercyRequiredPerks;
+        currentDamage = savedData.currentDamage;
+        adrenalineActivated = savedData.adrenalineActivated;
+        superNovaRequiredPerks = savedData.superNovaRequiredPerks;
+        activatedFireball = savedData.activatedFireball;
+        fireballDps = savedData.fireballDps;
+        paused = savedData.paused;
+        windowWidth = savedData.windowWidth;
+        concentrationPerks = savedData.concentrationPerks;
+        knightIncrementation = savedData.knightIncrementation;
+        index = savedData.index;
+        difference = savedData.difference;
+        knightDamage = savedData.knightDamage;
+        checkOpacity = savedData.checkOpacity;
+        vampirismPercentage = savedData.vampirismPercentage;
+        vampirismInteger = savedData.vampirismInteger;
+        vampirismRequiredPerks = savedData.vampirismRequiredPerks;
+        removePause = savedData.removePause;
+        splitSecondsBought = savedData.splitSecondsBought;
+        splitSecondsDuration = savedData.splitSecondsDuration;
+        draggedEternityRequiredPerks = savedData.draggedEternityRequiredPerks;
+        frozenFactor = savedData.frozenFactor;
+   enemyDamage = previousEnemyDamage;
+    }
+}
+
+function deleteData() {
+    localStorage.removeItem("playerData");
+}
+
+
+knightAttack();

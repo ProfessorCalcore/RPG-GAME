@@ -233,6 +233,76 @@ const enemyEmojis = [
   "😈","🐉🌌","❄️🐋","🔥🦑","🗿💪","⚫","🐱🔥","❄️🐍","🔥🦁","🌩️🐆"
 ];
 
+// ========================================================
+// 🧍 PLAYER / ENEMY UI ELEMENTS
+// ========================================================
+
+// Player UI
+const hp = document.querySelector("#hp");
+const healthBar = document.querySelector("#health-bar");
+const healthContainer = document.querySelector("#health-container");
+const playerDamageLabel = document.querySelector("#player-damage");
+
+// Enemy UI
+const enemyHP = document.querySelector("#enemy-hp");
+const enemyHealthBar = document.querySelector("#enemy-health-bar");
+const enemyHealthContainer = document.querySelector("#enemy-health-container");
+
+// XP / Level UI
+const XPPoints = document.querySelector("#xp-points");
+const XPLabel = document.querySelector("#XP");
+const level = document.querySelector("#level");
+const perk = document.querySelector("#perk");
+const requiredXPLabel = document.querySelector("#required-xp");
+
+// ========================================================
+// 🔘 PLAYER ACTION BUTTONS
+// ========================================================
+const attack = document.querySelector("#attack");
+const healButton = document.querySelector("#heal");
+
+// Automation Buttons
+const autoXP = document.querySelector("#auto-xp");
+const autoHP = document.querySelector("#regenerate-hp");
+
+// ========================================================
+// 🛠 UPGRADES / SHOP
+// ========================================================
+
+// General Upgrades
+const upgrades = document.querySelector("#upgrades");
+const upgradesGUI = document.querySelector("#upgrades-gui");
+const upgradeDamage = document.querySelector("#upgrade-damage");
+const maxHealthUpgrade = document.querySelector("#max-health-upgrade");
+const healUpgrade = document.querySelector("#heal-upgrade");
+const refillHealthUpgrade = document.querySelector("#refill-health");
+const voltageUpgrade = document.querySelector("#voltage-upgrade");
+const requiredRefillPerks = document.querySelector("#required-refill-perks");
+const gold = document.querySelector("#gold");
+const buyPerk = document.querySelector("#buy-perk");
+
+// Defense Upgrades
+const defenseUpgrades = document.querySelector("#defense-upgrades");
+const defenseTable = document.querySelector("#defense-table");
+
+// Corruption Upgrades
+const corruptionUpgrades = document.querySelector("#corruption-upgrades");
+const corruptionTable = document.querySelector("#corruption-table");
+
+// Army / Knights
+const recruitKnight = document.querySelector("#recruit-knight");
+const perksRequiredLabel = document.querySelector("#perks-required");
+const knightsMagnitude = document.querySelector("#knights-magnitude");
+const knightsDisplay = document.querySelector("#knights-display");
+const armyTable = document.querySelector("#army-table");
+const armyUpgrades = document.querySelector("#army-upgrades");
+const armyDps = document.querySelector("#army-damage");
+
+// Max Voltage Upgrade UI
+const maxVoltageUpgrade = document.querySelector("#max-voltage-upgrade");
+const maxVoltageCost = document.querySelector("#max-voltage-cost");
+const maxVoltageMagnitude = document.querySelector("#max-voltage-magnitude");
+
 // DR / Damage Resistance UI
 const drPerks = document.querySelector("#dr-perks");
 const drMagnitude = document.querySelector("#dr-magnitude");
@@ -435,6 +505,10 @@ const frozenInTimeMagnitude = document.querySelector("#frozen-in-time-magnitude"
 
 swordKill.volume = 0.5;
 criticalSfx.volume = 0.3;
+
+const save = document.querySelector("#save");
+
+
 
 
 
@@ -3865,5 +3939,6 @@ function deleteData() {
 
 
 knightAttack();
+
 
 

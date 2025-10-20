@@ -25,6 +25,7 @@
 	<label id="school">🏪</label>
 	<label id="construction">🏗️</label>
 	<label id="saturn">🪐</label>
+	
 
 
 
@@ -134,10 +135,7 @@
         <button id="shield-wall" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">🛡️</button>
         <button id="marked-for-death" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">🥷</button>
 	<button id="near-death-experience" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">🪓</button>
-	<button id="stop-time" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:inline;">⏱️</button>
-
-
-
+	<button id="stop-time" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">⏱️</button>
 
         <button id="upgrades" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%">🛠️</button>
 
@@ -447,7 +445,7 @@
 <!-------------------------------------------------SPELLS------------------------------------------------>
 <button id="spell-upgrades" style="background-color: black; color: white;">🪄Spell Upgrades🪄</button>
 
-<table id="spell-upgrades-table" border='1' style="display: none; border-collapse: collapse; background-color: black; color: white;">
+<table id="spell-upgrades-table" border='1' style="display: none; border-collapse: collapse; background-color: black; color: white; position:relative; z-index: 10;">
     <caption>Spell Upgrades</caption>
     
     <tr>
@@ -495,10 +493,31 @@
 </tr>
 
 <tr>
-    <td><button id="lucky-dip-spell-upgrade" style="background-color: black; color: white;">🎁Gift of Fate🎁</button></td>
-    <td>Allows you to purchase random upgrades!</td>
+    <td><button id="lucky-dip-spell-upgrade" style="background-color: black; color: white;">🎁Lucky Dip🎁</button></td>
+    <td>Allows you to purchase random upgrades and bonuses!</td>
     <td>1</td>
     <td id="lucky-dip-magnitude">0x</td>
+</tr>
+
+<tr>
+    <td><button id="split-seconds" style="background-color: black; color: white;">🕐Split-Seconds🕐</button></td>
+    <td>Time bends for 5 seconds; your strikes hit 50% faster</td>
+    <td id="split-seconds-cost">5</td>
+    <td id="split-seconds-magnitude">0x</td>
+</tr>
+
+<tr>
+    <td><button id="dragged-eternity-upgrade" style="background-color: black; color: white;">⌛Dragged Eternity⌛</button></td>
+    <td>Split-Seconds lasts for an extra 5 seconds!</td>
+    <td id="dragged-eternity-perks-required">5</td>
+    <td id="dragged-eternity-magnitude">5 Secs</td>
+</tr>
+
+<tr>
+    <td><button id="frozen-in-time-upgrade" style="background-color: black; color: white;">🧊Frozen In Time🧊</button></td>
+    <td>Split-Seconds now slows enemies down even more</td>
+    <td id="frozen-in-time-perks-required">5</td>
+    <td id="frozen-in-time-magnitude">2000</td>
 </tr>
 
 
@@ -587,11 +606,13 @@
 	<audio id="assassin-power" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/explosion-6801.mp3" preload="auto"></audio>
 	<audio id="mage-power" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/electric-90746.mp3" preload="auto"></audio>
 
+	<audio id="unfreeze-time" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/fx-time-unfreeze-107809.mp3" preload="auto"></audio>
+	<audio id="freeze-time" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/time-freeze-tension-327055.mp3" preload="auto"></audio>
+	<audio id="asteroid" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/massive-explosion-2-397983.mp3" preload="auto"></audio>
 
 
 
-        <script src = "main.js"></script>
+   
+        <script src="main.js"></script>
     </body>
 </html>
-
-

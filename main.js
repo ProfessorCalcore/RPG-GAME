@@ -192,7 +192,12 @@ let classSelected = false;
 let classType;
 let previousEnemyDamage;
 let accessGranted = false;
+let size = 100;
+let saturnSize = 10;
+let saturnDeg = 0;
 
+let timeTravelActivated = false;
+let freezeUnlocked = false;
 // ========================================================
 // 🔢 ENEMY LIST ARRAY
 // ========================================================
@@ -505,6 +510,14 @@ const frozenInTimePerksRequired = document.querySelector("#frozen-in-time-perks-
 const frozenInTimeMagnitude = document.querySelector("#frozen-in-time-magnitude");
 const playerIcon = document.querySelector("#player-icon");
 
+const rewind = document.querySelector("#rewind");
+
+const timeTravelUpgrade = document.querySelector("#time-travel-upgrade");
+const timeTravelMagnitude = document.querySelector("#time-travel-magnitude");
+
+
+
+
 swordKill.volume = 0.5;
 criticalSfx.volume = 0.3;
 
@@ -514,10 +527,10 @@ restoreUpdatedValues();
 
 function restoreUpdatedValues() {
 
-    bloodthirstyMagnitude.textContent = "+ " + bloodthirstyFactor + " HP";
+    if(bloodthirstyFactor >= 1) bloodthirstyMagnitude.textContent = "+ " + bloodthirstyFactor + " HP";
     bloodthirstyPerksRequired.textContent = bloodthirstyRequiredPerks;
     buyPerk.textContent = "Buy Skill Point: " + perkCost + " Gold";
-    concentrationMagnitude.textContent = "+" + concentrationFactor + " XP/Hit";
+    if(concentrationFactor >= 2) concentrationMagnitude.textContent = "+" + concentrationFactor + " XP/Hit";
     concentrationPerksLabel.textContent = concentrationPerks;
     criticalHitPerksCost.textContent = criticalChanceRequiredPerks;
     displayEnemy.textContent = enemyEmojis[storyLevel - 1];
@@ -529,6 +542,15 @@ function restoreUpdatedValues() {
     recruitKnight.textContent = soldierName[index];
     armyDps.textContent = "|Army DPS: " + presentKnightDamage + "|";
     maxDamageLabel.textContent = "|Enemy DPS: " + enemyDamage + "|";
+    drLabel.textContent = "DR: " + damageResistance + " %";
+    critLabel.textContent = "Crit Chance: " + criticalChanceFactor + " %";
+
+    if(fireballBought) fireball.style.display = "inline";
+    if(timeTravelActivated) rewind.style.display = "inline";
+    if(freezeUnlocked) freeze.style.display = "inline";
+    if(freezeUnlocked) freezeMagnitude.textContent = "Ice Age Unlocked!";
+    saturn.style.fontSize = saturnSize + "px";
+    saturn.style.filter = `hue-rotate(${saturnDeg}deg)`;
 
 
 
@@ -596,7 +618,15 @@ Chapter III — Save Feature Fixes🛡️ (v1.11)
 - 🛑 Added alert label when lacking enough Skill Points
 - 🔌 Fixed infinite voltage bug with Shockwave
 - 🛡️ Fixed Damage Resistance bug when paused
-- 🐛 Fixed multiple load-data issues when restoring saves`)
+- 🐛 Fixed multiple load-data issues when restoring saves
+- 🌙 Added visual effects to the moon
+- ⏳ Fireball button now shows hourglass while active
+- 🔧 Upgrades icon changes when in upgrade mode
+- 🖼️ Upgrades GUI updated for easier scanning (work in progress)
+- 🐞 Miscellaneous bug fixes
+- 🌌 Saturn animation polished
+- ⏪ Added Time Travel upgrade
+- 📌 Moved miscellaneous buttons to the bottom-right corner`);
 
 introDecision = prompt(`
 Welcome to the Game! Would you like to skip the intro?
@@ -1209,6 +1239,25 @@ function damageResistanceFunction() {
 	drDecimal = 1 - (damageResistance/100);
 
 	newEnemyDamage = presentEnemyDamage * drDecimal;
+	newEnemyDamage = Math.ceil(newEnemyDamage);
+	enemyDamage = newEnemyDamage;
+	presentEnemyDamage = enemyDamage;
+	
+	drLabel.textContent = "DR: " + damageResistance + " %";
+	maxDamageLabel.textContent = "|" + "Enemy DPS: " + newEnemyDamage;
+	drPerks.textContent = drCost	
+	drMagnitude.textContent = damageResistance + " %";
+	l(presentEnemyDamage)
+	updatePerks();
+}
+
+function damageResistanceFunction2() {
+	purchaseSkill.currentTime = 0;
+	purchaseSkill.play();
+
+	drDecimal = 1 - (damageResistance/100);
+
+	newEnemyDamage = enemyDamage * drDecimal;
 	newEnemyDamage = Math.ceil(newEnemyDamage);
 	enemyDamage = newEnemyDamage;
 	presentEnemyDamage = enemyDamage;
@@ -1945,6 +1994,10 @@ updateHealthValues();
 	shieldWallSpecialUsed = false;
 	markedForDeathSpecialUsed = false;
 	mageFurySpecialUsed = false;
+	saturnSize += 25;
+	saturnDeg -= 15;
+	saturn.style.fontSize = saturnSize + "px";
+	saturn.style.filter = `hue-rotate(${saturnDeg}deg)`;
 
 	
 	timelines[storyLevel-1]();
@@ -1961,6 +2014,9 @@ updateHealthValues();
 	maxHealth += antibodiesFactor;
 	voltage = maxVoltage += soulPactFactor;
 	currentHealth = maxHealth;  
+
+	damageResistanceFunction2();
+	enemyDamage = presentEnemyDamage;
 
 	
 	updateHealthValues();
@@ -2646,12 +2702,14 @@ charge.addEventListener("click", function() {
 //❄️FREEZE BUTTON❄️ #FREEZE-BUTTON #BUTTON #SPELLS #ICE #FROST
 // ========================================================
 freeze.addEventListener("click", function() {
-    if(voltage >= maxVoltage/2 && !freezeActive) {
+    if(voltage >= maxVoltage/2 && !freezeActive && !freezeUnlocked) {
+	let freezeUnlocked = true;
 	freezeActive = true;
+	freeze.textContent = "⌛";
 	voltage -= Math.floor(maxVoltage/2);
 	iceSfx.play();
         previousEnemyDamage = enemyDamage
-	freeze.style.filter = "brightness(25%) grayscale(100%)";
+	freezeMagnitude.textContent = "Ice Age Unlocked";
 	
 	setText("Enemy frozen for 10 seconds!", "white", 1);
         enemyDamage = 0;
@@ -2662,7 +2720,8 @@ freeze.addEventListener("click", function() {
             enemyDamage = previousEnemyDamage;
 	    enemyHealthBar.style.background = "linear-gradient(to top, darkred, orange)";
 	    freezeActive = false;
-	    freeze.style.filter = "brightness(100%) grayscale(0%)";        
+	    freeze.textContent = "❄️";
+
         }, 10000)
     }
 });
@@ -2940,7 +2999,7 @@ pause.addEventListener("click", function() {
     
     else{
 	pause.textContent = "⏸️";
-	saturn.style.fontSize = "100px";
+	saturn.style.fontSize = saturnSize + "px";
 	displayEnemy.style.opacity = 1;
 	house.style.filter = "brightness(60%)";
 	factory.style.filter = "brightness(16%)";
@@ -2988,7 +3047,11 @@ pause.addEventListener("click", function() {
 //🔄REFRESH FUNCTION🔄 #SETTINGS
 // ========================================================
 refresh.addEventListener("click", function() {
-    location.reload();
+    if(confirm("This deletes your data and starts afresh, are you sure you want to proceed?")) {
+        deleteData();
+        location.reload();	
+    }
+
 });
 // ========================================================
 //🕊️GUARDIAN ANGEL UPGRADE🕊️ #GUARDIAN-ANGEL-UPGRADE
@@ -3649,6 +3712,7 @@ splitSeconds.addEventListener("click", function() {
         perks -= 5;
 	stopTimeButton.style.display = "inline";
 	updatePerks();
+	splitSecondsMagnitude.textContent = "Split Seconds Unlocked!";
     }   
 });
 // ========================================================
@@ -3668,7 +3732,7 @@ function frozenInTimeFunction() {
     purchaseSkill.currentTime = 0;
     purchaseSkill.play();
     frozenFactor += 500;
-    frozenInTimeMagnitude.textContent = frozenFactor;
+    frozenInTimeMagnitude.textContent = "x" + frozenFactor/1000;
 }
 
 
@@ -3713,6 +3777,58 @@ criticalHitUpgrade.addEventListener("click", function() {
 	criticalChanceFunction();	
     }
 });
+
+// ========================================================
+// ⏪REWIND TIME #REWIND⏪
+// ========================================================
+rewind.addEventListener("click", function() {
+    if(confirm("You are about to go moments back in time! This costs 5 perks. Do you wish to proceed?") && perks >= 5) {
+	perks -= 5;
+        loadData();
+        saturnSize -= 10;
+        saturn.style.fontSize = saturnSize + "px";
+        restoreUpdatedValues();
+        unfreezeTime.play();
+        rewind.textContent = "⏳";
+        setTimeout(function() {
+            rewind.textContent = "⏪";
+            unfreezeTime.play();
+        }, 2000);
+    }
+
+});
+// ========================================================
+// ⏪TIME TRAVEL UPGRADE⏪
+// ========================================================
+timeTravelUpgrade.addEventListener("click", function() {
+    if(perks >= 10 && !timeTravelActivated) {
+	purchaseSkill.play();
+	timeTravelActivated = true;
+	rewind.style.display = "inline";
+	perks -= 10;
+	timeTravelMagnitude.textContent = "Time Travel Unlocked!";
+	
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function myData() {
@@ -3833,7 +3949,11 @@ function myData() {
 	presentKnightDamage: presentKnightDamage,
 	xpFactor: xpFactor,
 	xpIntervalFactor: xpIntervalFactor,
-
+	size: size,
+	saturnSize: saturnSize,
+	saturnDeg: saturnDeg,
+	timeTravelActivated: timeTravelActivated,
+	freezeUnlocked: freezeUnlocked,
     }
 }
 
@@ -3979,6 +4099,11 @@ function loadData() {
 	presentKnightDamage = savedData.presentKnightDamage;
 	xpFactor = savedData.xpFactor;
 	xpIntervalFactor = savedData.xpIntervalFactor;
+	size = savedData.size;
+	saturnSize = savedData.saturnSize;
+	saturnDeg = savedData.saturnDeg;
+	timeTravelActivated = savedData.timeTravelActivated;
+	freezeUnlocked = savedData.freezeUnlocked;
 	
     }
 }
@@ -3996,9 +4121,6 @@ function l(text){
         return "log success";
     }
 }
-
-
-
 
 
 

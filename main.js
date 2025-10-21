@@ -599,7 +599,10 @@ Chapter III — Save Feature Fixes🛡️ (v1.11)
 - 🛑 Added alert label when lacking enough Skill Points
 - 🔌 Fixed infinite voltage bug with Shockwave
 - 🛡️ Fixed Damage Resistance bug when paused
-- 🐛 Fixed multiple load-data issues when restoring saves`)
+- 🐛 Fixed multiple load-data issues when restoring saves
+- 🌙 Added visual effects to the moon
+- ⏳ Fireball button now shows hourglass while active
+- 🔧 Upgrades icon changes when in upgrade mode`)
 
 introDecision = prompt(`
 Welcome to the Game! Would you like to skip the intro?
@@ -3990,6 +3993,7 @@ function l(text){
         return "log success";
     }
 }
+
 
 
 

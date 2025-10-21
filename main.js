@@ -626,7 +626,8 @@ Chapter III — Save Feature Fixes🛡️ (v1.11)
 - 🐞 Miscellaneous bug fixes
 - 🌌 Saturn animation polished
 - ⏪ Added Time Travel upgrade
-- 📌 Moved miscellaneous buttons to the bottom-right corner`);
+- 📌 Moved miscellaneous buttons to the bottom-right corner
+- 🔄 Refresh button now clears all saved data`);
 
 introDecision = prompt(`
 Welcome to the Game! Would you like to skip the intro?
@@ -4121,6 +4122,7 @@ function l(text){
         return "log success";
     }
 }
+
 
 
 

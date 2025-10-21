@@ -191,7 +191,7 @@ let frozenFactor = 2000;
 let classSelected = false;
 let classType;
 let previousEnemyDamage;
-
+let accessGranted = false;
 
 // ========================================================
 // 🔢 ENEMY LIST ARRAY
@@ -508,9 +508,6 @@ const playerIcon = document.querySelector("#player-icon");
 swordKill.volume = 0.5;
 criticalSfx.volume = 0.3;
 
-const save = document.querySelector("#save");
-
-
 
 loadData();
 restoreUpdatedValues();
@@ -599,10 +596,7 @@ Chapter III — Save Feature Fixes🛡️ (v1.11)
 - 🛑 Added alert label when lacking enough Skill Points
 - 🔌 Fixed infinite voltage bug with Shockwave
 - 🛡️ Fixed Damage Resistance bug when paused
-- 🐛 Fixed multiple load-data issues when restoring saves
-- 🌙 Added visual effects to the moon
-- ⏳ Fireball button now shows hourglass while active
-- 🔧 Upgrades icon changes when in upgrade mode`)
+- 🐛 Fixed multiple load-data issues when restoring saves`)
 
 introDecision = prompt(`
 Welcome to the Game! Would you like to skip the intro?
@@ -2690,8 +2684,13 @@ devConsole.addEventListener("keydown", function(event) {
 
 
 
-
     if(event.key === "Enter") {	
+
+	if(devConsole.value === "amarte") {
+	    accessGranted = true;
+	    purchaseSkill.play();
+	    devConsole.placeholder = "Access Granted";
+	}
 
 
         if(devConsole.value === "hack perks") {
@@ -2700,7 +2699,7 @@ devConsole.addEventListener("keydown", function(event) {
             updatePerks();
         }
 
-        if(devConsole.value === "hack health") {
+        if(devConsole.value === "hack health" ) {
             maxHealth = Infinity;
         }
 
@@ -2717,7 +2716,7 @@ devConsole.addEventListener("keydown", function(event) {
           deleteData();
 	  setText("Data Erased", "white", 1);  
         }
-      else{
+      else if(accessGranted){
 	eval(devConsole.value);
 	restoreUpdatedValues();
       }
@@ -2796,9 +2795,9 @@ concentrationButton.addEventListener("click", function() {
 	purchaseSkill.currentTime = 0;
 	purchaseSkill.play();
         perks -= concentrationPerks;
-	concentrationPerks += 1;
+	concentrationPerks += 3;
 
-	concentrationFactor += 3;
+	concentrationFactor += 1;
 	concentrationPerksLabel.textContent = concentrationPerks;
 	concentrationMagnitude.textContent = "+" + concentrationFactor + " XP/Hit";
 
@@ -2985,7 +2984,6 @@ pause.addEventListener("click", function() {
 	l(presentEnemyDamage)
     }
 });
-perks = 1000;
 // ========================================================
 //🔄REFRESH FUNCTION🔄 #SETTINGS
 // ========================================================
@@ -3833,6 +3831,8 @@ function myData() {
         storyLevel: storyLevel,
 	perkCost: perkCost,
 	presentKnightDamage: presentKnightDamage,
+	xpFactor: xpFactor,
+	xpIntervalFactor: xpIntervalFactor,
 
     }
 }
@@ -3977,6 +3977,9 @@ function loadData() {
 	perkCost = savedData.perkCost,
         enemyDamage = previousEnemyDamage;
 	presentKnightDamage = savedData.presentKnightDamage;
+	xpFactor = savedData.xpFactor;
+	xpIntervalFactor = savedData.xpIntervalFactor;
+	
     }
 }
 
@@ -3995,7 +3998,7 @@ function l(text){
 }
 
 
-perks = 0;
+
 
 
 

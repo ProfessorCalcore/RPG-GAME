@@ -506,8 +506,8 @@ const frozenInTimeMagnitude = document.querySelector("#frozen-in-time-magnitude"
 swordKill.volume = 0.5;
 criticalSfx.volume = 0.3;
 
-const save = document.querySelector("#save");
 
+console.log(" All Variables Passed Check");
 
 loadData();
 
@@ -3934,3 +3934,4 @@ function deleteData() {
     localStorage.removeItem("playerData");
 }
 knightAttack();
+

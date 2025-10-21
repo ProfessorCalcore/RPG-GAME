@@ -86,9 +86,11 @@ let healthFactor = 0;
 let antibodiesFactor = 10;
 let boughtSellSoul = false;
 storyLevel = currentLevel;
+let degrees = 0;
 
 let currentEnemyDamage;
 let currentDamageResistance;
+let presentKnightDamage = 0;
 
 
 let luckyDipPerkCost = 5;
@@ -215,7 +217,7 @@ const enemyList = [
 
 // soldierName condensed: remove repeated rank variants manually
 const soldierName = [
-  "Peasant 🧍","Drone 🤖","Wolf 🐺","Horse 🐴","Alien 👽","Goblin 🥷","Skeleton 💀",
+  "Mage 🔮", "Knight 🛡️", "Viking 🪓", "Assasin 🥷", "Slime 🟩", "Drone 🤖", "Wolf 🐺","Horse 🐴","Alien 👽","Goblin 🥷","Skeleton 💀",
   "Zombie 🧟","Bandit 🗡️","Archer 🏹","Swordsman ⚔️","Wizard 🪄","Apprentice Mage 🧙‍♂️",
   "Commander 🛡️","Prince 🤴","Princess 👸","Queen 👑","King 🤴👑","Demon 😈",
   "Berserker 🪓","Sniper 🎯","Dragon 🐉","Basilist 🐍","Tank 🛡️","Submarine 🛳️",
@@ -501,21 +503,45 @@ const draggedEternityMagnitude = document.querySelector("#dragged-eternity-magni
 const frozenInTimeUpgrade = document.querySelector("#frozen-in-time-upgrade");
 const frozenInTimePerksRequired = document.querySelector("#frozen-in-time-perks-required");
 const frozenInTimeMagnitude = document.querySelector("#frozen-in-time-magnitude");
-
+const playerIcon = document.querySelector("#player-icon");
 
 swordKill.volume = 0.5;
 criticalSfx.volume = 0.3;
 
+const save = document.querySelector("#save");
 
-console.log(" All Variables Passed Check");
+
 
 loadData();
+restoreUpdatedValues();
 
-playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage + "|";
-displayEnemy.textContent = enemyEmojis[storyLevel-1];
-updatePerks();
-gold.textContent = "Gold: " + goldValue;
-level.textContent = "|"+ "Level: " + currentLevel +"|";
+function restoreUpdatedValues() {
+
+    bloodthirstyMagnitude.textContent = "+ " + bloodthirstyFactor + " HP";
+    bloodthirstyPerksRequired.textContent = bloodthirstyRequiredPerks;
+    buyPerk.textContent = "Buy Skill Point: " + perkCost + " Gold";
+    concentrationMagnitude.textContent = "+" + concentrationFactor + " XP/Hit";
+    concentrationPerksLabel.textContent = concentrationPerks;
+    criticalHitPerksCost.textContent = criticalChanceRequiredPerks;
+    displayEnemy.textContent = enemyEmojis[storyLevel - 1];
+    gold.textContent = "Gold: " + goldValue;
+    healPower.textContent = "|" + "Heal Power: " + heal + " HP" + "|";
+    level.textContent = "|" + "Level: " + currentLevel + "|";
+    playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage + "|";
+    soldier.textContent = "Adds 1 " + soldierName[index] + " to your army dealing " + "+ " + knightIncrementation +  " damage per second";
+    recruitKnight.textContent = soldierName[index];
+    armyDps.textContent = "|Army DPS: " + presentKnightDamage + "|";
+    maxDamageLabel.textContent = "|Enemy DPS: " + enemyDamage + "|";
+
+
+
+    
+    updateHealthValues();
+    updatePerks();
+    updateVoltageValues();
+}
+
+restoreUpdatedValues();
 
 if(classType === "assassin") {
     markedForDeath.style.display = "inline";   
@@ -534,9 +560,12 @@ freezeActive = false;
 let left = parseInt(cloud1Style.left);
 
 
-
-
-
+function setText(text, color, opacity) {
+    displayLabel.textContent = text;
+    displayLabel.style.color = color;
+    displayLabel.style.opacity = opacity;
+}
+	
 
 
 
@@ -560,28 +589,17 @@ const xpTable = document.querySelector("#xp-table");
 // ========================================================
 // 🎬INTRO🎬 #INTRO
 // ========================================================
-alert(
-`Patch Notes V.1.09
-- 🌀 New Skill Added — Slow Time reduces enemy attack rate
-- 🎨 Sepia filter now activates during Slow Time
-- 🛠️ Fixed pause bug where health didn't stay frozen by disabling enemy damage temporarily
-
-Patch Notes V.1.10
-- 🎵 Added sound effects for the Slow Time spell
-- ☁️ Increased cloud speed from 2 → 3 pixels/sec for better visibility
-- ⏸️ Pause icon now changes to Play when activated
-- 🪐 Added Saturn crashing animation on pause/play
-- 💡 Dynamic lighting effects added for the first time
-- ⚠️ Game pauses at critical health — one-time effect.
-- 👾 Enemies disappear when you press pause for peace of mind
-- ⚡ Time Power removed from base gameplay and added into Upgrades
-- ⏳ Dragged Eternity upgrade added — extends Split-Seconds by +5s
-- ❄️ Frozen in Time upgrade added — boosts the effect of Split-Seconds!
-- 🪐 Saturn crashing sound effect added to the pause menu!
-- 🎁 Renamed 'Gift of Fate' to 'Lucky Dip'!
-- 🎲 Lucky Dip just got juicier — more prizes added!
-- ⚔️ Classes have been fine-tuned for better balance and gameplay harmony
-- 💾 Save feature added. Some adjustments are still in progress`);
+alert(`
+Chapter III — Save Feature Fixes🛡️ (v1.11)
+- ⏸️ Game now pauses when the Upgrade Menu is opened
+- 💰 Refactored perk costs — now doubling with each purchase
+- 🛡️ Refactored class stats to increase challenge
+- 💓 Enemy health scaling improved
+- ⚡ Fixed Skill Point bug when purchasing Shockwave
+- 🛑 Added alert label when lacking enough Skill Points
+- 🔌 Fixed infinite voltage bug with Shockwave
+- 🛡️ Fixed Damage Resistance bug when paused
+- 🐛 Fixed multiple load-data issues when restoring saves`)
 
 introDecision = prompt(`
 Welcome to the Game! Would you like to skip the intro?
@@ -644,24 +662,25 @@ Quick and deadly, but fragile. One wrong move could spell disaster!
 HP: 100
 Voltage: 85
 Damage: 6
+High Critical Chance!
 
 [2] Mage 🔮
 Masters of the arcane, but frail in close combat. Spells are your lifeline.
 HP: 75
-Voltage: 300
+Voltage: 200
 Damage: 1
 
 [3] Viking 🪓
 Armoured juggernauts with decent damage, but magic isn’t their strong suit.
-HP: 500
+HP: 400
 Voltage: 40
-Damage: 5
+Damage: 3
 
 [4] Knight 🛡️
 The balanced warrior. Reliable in every situation, the default starting class.
 HP: 250
-Voltage: 100
-Damage: 3
+Voltage: 125
+Damage: 2
 `)
 
     if(playerClass === "1") {
@@ -704,8 +723,8 @@ Special Ability: 🥷Marked For Death🥷 - Critical Chance improved by 25% for 
 	classSelected = true;
 	currentHealth = 75;
 	maxHealth = 75;
-	voltage = 300;
-	maxVoltage = 300;
+	voltage = 200;
+	maxVoltage = 200;
 	playerDamage = 1;
 	heal = 30;
 
@@ -720,9 +739,9 @@ Special Ability: 🥷Marked For Death🥷 - Critical Chance improved by 25% for 
 alert(`🔮Mage Stats🔮 
 Health: 75
 Damage: 1
-Voltage: 300
+Voltage: 200
 Healing Potency: 30;
-Crit Chance: 1&
+Crit Chance: 1%
 Special Ability: 🔮Sorceror's Fury🔮 - Rapidly regenerate Voltage for a short period of time.`);
 	level1Story();
     }
@@ -734,10 +753,10 @@ Special Ability: 🔮Sorceror's Fury🔮 - Rapidly regenerate Voltage for a shor
 	classSelected = true;
 
 	currentHealth = 500;
-	maxHealth = 500;
+	maxHealth = 400;
 	voltage = 40;
 	maxVoltage = 40;
-	playerDamage = 5;
+	playerDamage = 3;
 	heal = 15;
 	
 	healPower.textContent = "|" + "Heal Power: " + heal + " HP" + "|";
@@ -748,9 +767,9 @@ Special Ability: 🔮Sorceror's Fury🔮 - Rapidly regenerate Voltage for a shor
 	nearDeathExperience.style.display = "inline";
 
 alert(`🪓Viking Stats🪓 
-Health: 500
+Health: 400
 Voltage: 30
-Damage: 5 
+Damage: 3 
 Healing Potency: 15
 Crit Chance: 1%
 Special Ability: 🪓Near Death Experience🪓 - Completely Restores Health upon use!`);
@@ -759,9 +778,9 @@ Special Ability: 🪓Near Death Experience🪓 - Completely Restores Health upon
 
 
     else if(playerClass === "4") {
-	playerDamage = 3;
-	maxVoltage = 150;
-	voltage = 150;
+	playerDamage = 2;
+	maxVoltage = 125;
+	voltage = 125;
 	heal = 25
 	healPower.textContent = "|" + "Heal Power: " + heal + " HP" + "|";
 
@@ -772,8 +791,8 @@ Special Ability: 🪓Near Death Experience🪓 - Completely Restores Health upon
 	
 alert(`⚔️Knight Stats⚔️ 
 Health: 250
-Damage: 3 
-Voltage: 150
+Damage: 2
+Voltage: 125
 Healing Potency: 25
 Crit Chance: 1%
 Special Ability: 🛡️Shield Wall🛡️ - Incoming damage is reduced by 50% for a brief period
@@ -818,6 +837,8 @@ function enemyDead() {
 	swordKill.currentTime = 0;
     	swordKill.play();
 	enemiesKilled += 1;
+	degrees += 3;
+	moon.style.filter = `brightness(100%) hue-rotate(${degrees}deg)`;
 
 
 	setTimeout(function() {
@@ -843,8 +864,8 @@ function enemyDead() {
 	currentHealth += healthFactor;
 	updateEnemyHealthValues();
 
-	currentXP += randomXP * active; 
-	xpEarnt += randomXP * active;
+	currentXP += randomXP * active + (10 * currentLevel); 
+	xpEarnt += randomXP * active + (10 * currentLevel);
 
 
 
@@ -860,7 +881,7 @@ function enemyDead() {
         displayLabel.style.color = "black";
         displayLabel.style.opacity = 1;
 	displayLabel.style.background = "linear-gradient(to bottom, yellow, orange)";
-	displayLabel.textContent = "+ " + randomXP + " XP";
+	displayLabel.textContent = "+ " + (randomXP * active + 10 * currentLevel) + " XP";
 	updateXPValues();
 	
        setTimeout(function() {
@@ -873,8 +894,19 @@ function enemyDead() {
 // ========================================================								                //UPGRADE TABLES//
 //🛠️UPGRADES BUTTON🛠️ - OPENS SKILL CLASSES
 upgrades.addEventListener("click", function() {
-    if(upgradesGui.style.display === "none") {upgradesGui.style.display = "block"}
-    else if(upgradesGui.style.display === "block") {upgradesGui.style.display = "none"}
+    pause.click();
+    if(upgradesGui.style.display === "none") {
+    upgradesGui.style.display = "block"
+    upgrades.textContent = "🔧";
+
+    }
+
+    else if(upgradesGui.style.display === "block") {
+    upgradesGui.style.display = "none"
+    upgrades.textContent = "🛠️";
+
+
+    }
 });
 
 //💖HEALTH TABLE💖
@@ -1179,14 +1211,16 @@ function damageResistanceFunction() {
 	damageResistance += 3;
 	drDecimal = 1 - (damageResistance/100);
 
-	newEnemyDamage = enemyDamage * drDecimal;
+	newEnemyDamage = presentEnemyDamage * drDecimal;
 	newEnemyDamage = Math.ceil(newEnemyDamage);
 	enemyDamage = newEnemyDamage;
+	presentEnemyDamage = enemyDamage;
 	
 	drLabel.textContent = "DR: " + damageResistance + " %";
 	maxDamageLabel.textContent = "|" + "Enemy DPS: " + newEnemyDamage;
 	drPerks.textContent = drCost	
 	drMagnitude.textContent = damageResistance + " %";
+	l(presentEnemyDamage)
 	updatePerks();
 }
 
@@ -1922,7 +1956,7 @@ updateHealthValues();
         levelUpButton.style.display = "none";
         levelUpSfx.play();
 
-	enemyMaxHealth += (storyLevel * storyLevel );
+	enemyMaxHealth += (storyLevel * storyLevel + 10 );
 	console.log("Enemy Current Health = currentLevel * currentLevel = " + enemyCurrentHealth);
 	enemyDamage += (storyLevel);
 	baseEnemyDamage += (storyLevel);
@@ -1954,7 +1988,7 @@ updateHealthValues();
 
 	updateXPValues();
 
-	requiredXP += 250;
+	requiredXP += 250 + (currentLevel * 5);
         previousEnemyDamage = enemyDamage
 
         enemyDamage = 0;
@@ -2065,7 +2099,7 @@ updateHealthValues;
 	    levelUpButton.style.display = "none";
         }
 
-        if(currentXP + randomXP * currentLevel > requiredXP) {
+        if(currentXP + randomXP  > requiredXP) {
             currentXP = requiredXP;
 	    updateXPValues;
 	    active = 0;
@@ -2080,6 +2114,7 @@ updateHealthValues;
 attack.addEventListener("click", function() {
 currentHealth += mosquitoFactor;
 updateHealthValues;
+	
 	
 	executionRoll();
     	timesAttacked += 1;
@@ -2141,12 +2176,13 @@ updateHealthValues;
         }
 	
 
-        if(currentXP + randomXP * currentLevel > requiredXP) {
+        if(currentXP + randomXP > requiredXP) {
             currentXP = requiredXP;
 	    updateXPValues;
 	    active = 0;
 	    levelUpButton.style.display = "inline";
         }
+
 });
 
 
@@ -2377,7 +2413,7 @@ autoHP.addEventListener("click", function() {
     if(perks >= hpRegenRequiredPerks) {
         purchasedXP = true;
         perks -= hpRegenRequiredPerks;
-	hpRegenRequiredPerks += 1;
+	hpRegenRequiredPerks;
 
     	purchaseSkill.currentTime = 0;
     	purchaseSkill.play();
@@ -2619,7 +2655,8 @@ freeze.addEventListener("click", function() {
 	iceSfx.play();
         previousEnemyDamage = enemyDamage
 	freeze.style.filter = "brightness(25%) grayscale(100%)";
-
+	
+	setText("Enemy frozen for 10 seconds!", "white", 1);
         enemyDamage = 0;
 	
 	enemyHealthBar.style.background = "linear-gradient(to right, #a0e9ff, #70d6ff, #ccefff, #ffffff)";
@@ -2647,7 +2684,13 @@ document.addEventListener("keydown", function(event) {
 //💻DEV CONSOLE💻 #CONSOLE
 // ========================================================
 devConsole.addEventListener("keydown", function(event) {
-    if(event.key === "Enter") {
+
+
+
+
+    if(event.key === "Enter") {	
+
+
         if(devConsole.value === "hack perks") {
 	    electricitySfx.play();
             perks += 10000;
@@ -2666,6 +2709,15 @@ devConsole.addEventListener("keydown", function(event) {
 	    currentHealth = -Infinity;
             updateHealthValues();
         }
+
+      if(devConsole.value === "erase") {
+          deleteData();
+	  setText("Data Erased", "white", 1);  
+        }
+      else{
+	eval(devConsole.value);
+	restoreUpdatedValues();
+      }
     }
 });
 // ========================================================
@@ -2675,6 +2727,8 @@ recruitKnight.addEventListener("click", function() {
     if(perks >= knightsPerksRequired ) {	
         perks -= knightsPerksRequired;
 	knightDamage += knightIncrementation;
+	presentKnightDamage = knightIncrementation;
+
 	knightIncrementation += 1;
 
     	purchaseSkill.currentTime = 0;
@@ -2697,6 +2751,11 @@ recruitKnight.addEventListener("click", function() {
 
 	perksRequiredLabel.textContent = knightsPerksRequired;
 	knightsMagnitude.textContent = knightQuantity + " Companions"; 
+	soldier.textContent = "Adds 1 " + soldierName[index] + " to your army dealing " + "+ " + knightIncrementation +  " damage per second";
+	recruitKnight.textContent = soldierName[index];
+	armyDps.textContent = "|Army DPS: " + presentKnightDamage + "|";
+	
+
     }
 });
 // ========================================================
@@ -2709,7 +2768,7 @@ buyPerk.addEventListener("click", function() {
 
         goldValue -= perkCost;
         perks += 1;
-	perkCost += Math.floor((requiredXP/2) + (playerDamage * 25));
+	perkCost *= 2;
         
         gold.textContent = "Gold: " + goldValue.toLocaleString();
 	buyPerk.textContent = "Buy Skill Point: " + perkCost + " Gold";
@@ -2817,7 +2876,7 @@ pause.addEventListener("click", function() {
 	asteroid.currentTime = 0;
 	asteroid.play();
 
-
+	l(knightDamage);
 	saturn.style.fontSize = "800px";
 	displayEnemy.style.opacity = 0;
 	house.style.filter = "brightness(100%)";
@@ -2855,11 +2914,13 @@ pause.addEventListener("click", function() {
 	presentCurrentXP = currentXP;
 	presentEnemyHP = enemyCurrentHealth;
 	presentEnemyDamage = enemyDamage;
+	presentDR = damageResistance;
 
 
 	enemyCurrentHealth = Infinity
 	voltage = -Infinity;
-	knightDamage = -Infinity;
+	knightDamage = 0;
+	presentKnightDamage = 0;
 	playerDamage = 0;
 	requiredXP = Infinity;
 	currentXP = -Infinity;
@@ -2872,7 +2933,7 @@ pause.addEventListener("click", function() {
 	playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage + "|";
 	maxDamageLabel.textContent = "|" + "Enemy DPS: " + enemyDamage + "|";
 	
-
+	l(presentEnemyDamage);
     }
     
     else{
@@ -2896,12 +2957,12 @@ pause.addEventListener("click", function() {
 	displayLabel.style.opacity = 1;
         paused = false;
 	voltage = presentVoltage;
-	knightDamage = presentKnightDamage;
 	playerDamage = presentPlayerDamage;
 	requiredXP = presentRequiredXP;
 	currentXP = presentCurrentXP;
 	enemyCurrentHealth = presentEnemyHP;
 	enemyDamage = presentEnemyDamage;
+	knightDamage = presentKnightDamage;
 
 	if(boughtSellSoul) {
 	    voltage = -Infinity;
@@ -2915,8 +2976,13 @@ pause.addEventListener("click", function() {
 
 	playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage + "|";
 	maxDamageLabel.textContent = "|" + "Enemy DPS: " + enemyDamage + "|";
+	armyDps.textContent = "|Army DPS: " + knightDamage + "|";
+
+
+	l(presentEnemyDamage)
     }
 });
+perks = 1000;
 // ========================================================
 //🔄REFRESH FUNCTION🔄 #SETTINGS
 // ========================================================
@@ -2943,7 +3009,7 @@ guardianAngelUpgrade.addEventListener("click", function() {
 // ========================================================
 fireball.addEventListener("click", function() {
     if(voltage >= 30 && !activatedFireball) {
-
+	fireball.textContent = "⏳";
 	activatedFireball = true;
 	fireballSfx.currentTime = 0;
 	fireballSfx.play();
@@ -2969,6 +3035,8 @@ fireball.addEventListener("click", function() {
 	    clearInterval(fireActive);   
 	    activatedFireball = false;
 	    flameAnimation.style.display = "none";
+	    fireball.textContent = "🔥";
+
 	}, 10000);
 
     }
@@ -2999,7 +3067,6 @@ fireballUpgrade.addEventListener("click",function() {
 	fireballFunction();
 	updatePerks();
     }
-
 });
 // ========================================================
 //☄️ SUPERNOVA UPGRADE☄️ #SUPERNOVA-UPGRADE #UPGRADE
@@ -3017,6 +3084,9 @@ superNova.addEventListener("click", function() {
         superNovaMagnitude.textContent = fireballDps + " DPS";
 
 	updatePerks();      
+    }
+    else{
+        displayLabel.textContent = "Not Enough Skill Points!";
     }
 });
 // ========================================================
@@ -3045,6 +3115,9 @@ adrenaline.addEventListener("click", function() {
 	    
 	}, 10000);    
     }
+    else{
+        displayLabel.textContent = "Not Enough Voltage!";
+    }
 });
 // ========================================================
 // 😤ADRENALINE UPGRADE😤 #ADRENALINE-UPGRADE #UPGRADE
@@ -3059,6 +3132,9 @@ adrenalineUpgrade.addEventListener("click", function() {
 	updatePerks();
 
     }
+    else{
+        displayLabel.textContent = "Not Enough Skill Points!";
+    }
 });
 // ========================================================
 // ❄️FREEZE UPGRADE❄️ #FREEZE-UPGRADE
@@ -3069,6 +3145,9 @@ freezeUpgrade.addEventListener("click", function() {
         purchaseSkill.play();
 	perks -= 5;
 	freeze.style.display = "inline";
+    }
+    else{
+        displayLabel.textContent = "Not Enough Skill Points!";
     }
 });
 // ========================================================
@@ -3089,6 +3168,9 @@ noMercyUpgrade.addEventListener("click", function() {
 
 	updatePerks();
     }
+    else{
+        displayLabel.textContent = "Not Enough Skill Points!";
+    }
 });
 // ========================================================
 // 🍀LUCKY FINGERS UPGRADE🍀 #LUCKY-FINGERS-UPGRADE
@@ -3101,6 +3183,9 @@ luckyFingersUpgrade.addEventListener("click", function() {
 	updatePerks();
 	luckyFingersFunction();	
     }
+    else{
+        displayLabel.textContent = "Not Enough Skill Points!";
+    }
 });
 // ========================================================
 // 🔊SHOCKWAVE UPGRADE🔊 #SHOCKWAVE-UPGRADE
@@ -3111,11 +3196,15 @@ shockwaveUpgrade.addEventListener("click", function() {
 	electricitySfx.play();
 
 	perks -= shockwaveRequiredPerks;
-	shockwaveRequiredPerks *= 2;
+	shockwaveRequiredPerks += 9;
 	shockwaveFactor += 1;
 
 	shockwavePerksRequired.textContent = shockwaveRequiredPerks;
 	shockwaveMagnitude.textContent = "+" + shockwaveFactor + " V";
+    	updatePerks();
+    }
+    else{
+        displayLabel.textContent = "Not Enough Skill Points!";
     }
 
 });
@@ -3537,7 +3626,7 @@ stopTimeButton.addEventListener("click", function() {
 
 	stopTimeButton.style.filter = "brightness(0%)";
 	displayEnemy.style.filter = "sepia(0%)";
-	moon.style.filter = "brightness(200%)grayscale(100%)";
+	moon.style.filter = "brightness(100%)grayscale(0%)";
 
 
 	stopTimeButton.textContent = "⏱️";
@@ -3625,56 +3714,6 @@ criticalHitUpgrade.addEventListener("click", function() {
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function myData() {
     return {
         active: active,
@@ -3757,6 +3796,8 @@ function myData() {
         shieldWallActivated: shieldWallActivated,
         shieldWallSpecialUsed: shieldWallSpecialUsed,
         soulPactFactor: soulPactFactor,
+	shockwaveRequiredPerks: shockwaveRequiredPerks,
+	shockwaveFactor: shockwaveFactor,
         splitSecondsBought: splitSecondsBought,
         splitSecondsDuration: splitSecondsDuration,
         superNovaRequiredPerks: superNovaRequiredPerks,
@@ -3786,7 +3827,9 @@ function myData() {
         paused: paused,
         splitSecondsDuration: splitSecondsDuration,
         frozenFactor: frozenFactor,
-   storyLevel: storyLevel,
+        storyLevel: storyLevel,
+	perkCost: perkCost,
+	presentKnightDamage: presentKnightDamage,
 
     }
 }
@@ -3795,12 +3838,14 @@ function saveData() {
     let snapshot = myData();
     let snapshotString = JSON.stringify(snapshot);
     localStorage.setItem("playerData", snapshotString);
+    setText("Save Success", "white", 1);
 }
 
 function loadData() {
     let savedData = localStorage.getItem("playerData");
     if(savedData) {
         savedData = JSON.parse(savedData);
+	setText("Load Success", "white", 1);
 
         currentHealth = savedData.currentHealth;
         maxHealth = savedData.maxHealth;
@@ -3926,12 +3971,30 @@ function loadData() {
         splitSecondsDuration = savedData.splitSecondsDuration;
         draggedEternityRequiredPerks = savedData.draggedEternityRequiredPerks;
         frozenFactor = savedData.frozenFactor;
-   enemyDamage = previousEnemyDamage;
+	perkCost = savedData.perkCost,
+        enemyDamage = previousEnemyDamage;
+	presentKnightDamage = savedData.presentKnightDamage;
     }
 }
 
 function deleteData() {
     localStorage.removeItem("playerData");
 }
+
+
 knightAttack();
+
+function l(text){
+    console.log(text);
+    if(!undefined) {
+        return "log success";
+    }
+}
+
+
+
+
+
+
+
 

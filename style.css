@@ -271,7 +271,8 @@
 		top: 0%;
 		z-index: -11;
 		font-size: 100px;
-		filter: grayscale(100%)brightness(300%);
+		filter: brightness(100%);
+		transition: all 1s ease;
 	
 	  }
 
@@ -385,6 +386,7 @@
 		font-size: 200px;
 		z-index: -10;
 		transform: scaleX(-1);	
+		transition: all 0.1s ease;
 	  }
 
 	  #canvas{
@@ -902,6 +904,21 @@
 		font-weight: bold;
 		color: black !important;
 		transform: scale(1.1);		
+	}
+
+	#death:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px red;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#death{
+		font-size: 100%;
+		background: transparent;
+		outline: none;
+		border: 0;
 	}
 
 

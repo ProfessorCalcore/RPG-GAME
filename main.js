@@ -3995,6 +3995,7 @@ function l(text){
 }
 
 
+perks = 0;
 
 
 

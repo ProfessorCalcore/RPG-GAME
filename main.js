@@ -1012,6 +1012,7 @@ function saturnSetUpFunction() {
 // ========================================================
 function openUpgradesFunction() {
     if(upgradesGui.style.display === "none") {
+	pause.click();
     upgradesGui.style.display = "block"
     upgrades.textContent = "🔧";
     }
@@ -2691,12 +2692,8 @@ Gold Earned: ${goldEarnt.toLocaleString()}
                 location.reload();
             }, 5000);
         }
-healthPerc = (currentHealth - enemyDamage)/maxHealth;
 
-if(healthPerc < 0.10 && healthPerc > 0 && !removePause) {
-    pause.click();
-    removePause = true;
-}
+
 
 
         else{
@@ -4250,6 +4247,7 @@ document.addEventListener("keyup", function(event) {
     
  
 });
+
 
 
 

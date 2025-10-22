@@ -610,6 +610,7 @@ const xpTable = document.querySelector("#xp-table");
 // ========================================================
 alert(`
 Chapter III — Save Feature Fixes🛡️ (v1.11)
+- ENDING COMING SOON! CAN U BEAT THE GAME AND WIN THE PRIZE?
 - ⏸️ Game now pauses when the Upgrade Menu is opened
 - 💰 Refactored perk costs — now doubling with each purchase
 - 🛡️ Refactored class stats to increase challenge
@@ -4122,6 +4123,7 @@ function l(text){
         return "log success";
     }
 }
+
 
 
 

@@ -936,5 +936,12 @@
 		border-radius: 50%;
 	}
 
+	#saturn-lives{
+		background-color: #333;
+		color: white;
+		font-size: 150%;
+		display: none;
+			
+	}
 
 	

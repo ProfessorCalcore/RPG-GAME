@@ -1011,7 +1011,6 @@ function saturnSetUpFunction() {
 // 🛠️UPGRADE FUNCTION🛠️ #UPGRADE-FUNCTION
 // ========================================================
 function openUpgradesFunction() {
-    pause.click();
     if(upgradesGui.style.display === "none") {
     upgradesGui.style.display = "block"
     upgrades.textContent = "🔧";
@@ -4251,6 +4250,7 @@ document.addEventListener("keyup", function(event) {
     
  
 });
+
 
 
 

@@ -195,9 +195,15 @@ let accessGranted = false;
 let size = 100;
 let saturnSize = 10;
 let saturnDeg = 0;
+let finale = false;
 
 let timeTravelActivated = false;
 let freezeUnlocked = false;
+
+let saturnLivesLeft = 3;
+let attackReady = true;
+let perkFactor = 0;
+let hardcoreMode = false;
 // ========================================================
 // 🔢 ENEMY LIST ARRAY
 // ========================================================
@@ -385,6 +391,7 @@ const magePower = document.querySelector("#mage-power");
 const freezeTime = document.querySelector("#freeze-time");
 const unfreezeTime = document.querySelector("#unfreeze-time");
 const asteroid = document.querySelector("#asteroid");
+const rockSmash = document.querySelector("#rock-smash");
 
 // ========================================================
 // 🔢 MAGNITUDE ELEMENTS (MOTIVATION BOOSTERS)
@@ -514,12 +521,14 @@ const rewind = document.querySelector("#rewind");
 
 const timeTravelUpgrade = document.querySelector("#time-travel-upgrade");
 const timeTravelMagnitude = document.querySelector("#time-travel-magnitude");
-
+const saturnLives = document.querySelector("#saturn-lives");
 
 
 
 swordKill.volume = 0.5;
 criticalSfx.volume = 0.3;
+
+
 
 
 loadData();
@@ -551,6 +560,7 @@ function restoreUpdatedValues() {
     if(freezeUnlocked) freezeMagnitude.textContent = "Ice Age Unlocked!";
     saturn.style.fontSize = saturnSize + "px";
     saturn.style.filter = `hue-rotate(${saturnDeg}deg)`;
+    if(finale) saturnSetUpFunction();
 
 
 
@@ -608,34 +618,20 @@ const xpTable = document.querySelector("#xp-table");
 // ========================================================
 // 🎬INTRO🎬 #INTRO
 // ========================================================
-alert(`
-Chapter III — Save Feature Fixes🛡️ (v1.11)
-- ENDING COMING SOON! CAN U BEAT THE GAME AND WIN THE PRIZE?
-- ⏸️ Game now pauses when the Upgrade Menu is opened
-- 💰 Refactored perk costs — now doubling with each purchase
-- 🛡️ Refactored class stats to increase challenge
-- 💓 Enemy health scaling improved
-- ⚡ Fixed Skill Point bug when purchasing Shockwave
-- 🛑 Added alert label when lacking enough Skill Points
-- 🔌 Fixed infinite voltage bug with Shockwave
-- 🛡️ Fixed Damage Resistance bug when paused
-- 🐛 Fixed multiple load-data issues when restoring saves
-- 🌙 Added visual effects to the moon
-- ⏳ Fireball button now shows hourglass while active
-- 🔧 Upgrades icon changes when in upgrade mode
-- 🖼️ Upgrades GUI updated for easier scanning (work in progress)
-- 🐞 Miscellaneous bug fixes
-- 🌌 Saturn animation polished
-- ⏪ Added Time Travel upgrade
-- 📌 Moved miscellaneous buttons to the bottom-right corner
-- 🔄 Refresh button now clears all saved data`);
+alert
+(`CHAPTER IV – The end is near (v1.12)
+- 🌌 Added the epic story finale - reward for defeating the boss
+- ⌨️ Added keyboard shortcuts for faster gameplay
+- 🖱️ Switched mouse input from click to mouseup to prevent exploits — pressing Enter can no longer spam clicks.
+- 🔥 Added Hardcore Mode — start with punishingly low stats, but earn extra skill points per level
+- 🐞 Fixed various bugs for smoother gameplay`)
 
 introDecision = prompt(`
 Welcome to the Game! Would you like to skip the intro?
 [1] ⚡ Skip the lame intro — let's get to the action!
 [2] 🖊️ No way — I'm naming my legend!
 [3] 🎲 Fate's call — roll the dice!
-[4] 😏 A 'game'? Please… this is amateur hour.
+[4] 😏 A 'game'? Please… this is amateur hour[HARDCORE MODE]
 `)
 
 function level1Story() {
@@ -781,7 +777,7 @@ Special Ability: 🔮Sorceror's Fury🔮 - Rapidly regenerate Voltage for a shor
 	classType = "viking";
 	classSelected = true;
 
-	currentHealth = 500;
+	currentHealth = 400;
 	maxHealth = 400;
 	voltage = 40;
 	maxVoltage = 40;
@@ -853,22 +849,74 @@ else if(introDecision === "3") {
     }
 }
 
-else if(introDecision === "4") {
-    alert("Hmmm..that wasn't very nice. You know...I am god of this game! You can't just expect me to sit back in this comfy bed and watch people say how trash this game is. Do you really think you could get away with it! Huh. Well guess what. I got a trick up my sleeve!");
-    alert("I summon you...to death!");
-    alert("-999,999,999,999,999,999,999,999 HP");
-    currentHealth = -Infinity; 
+else if(introDecision === "4" && !hardcoreMode) {
+    alert("Very well, mortal. You crave pain and glory — the game will show you both in ways you cannot imagine!");
+    alert("😈🔥Max Health decreased to 20😈🔥");
+        maxHealth = 20;
+        currentHealth = 20;
+    alert("😈🔥Max Voltage decreased to 50!😈🔥");
+        maxVoltage = 50;
+        voltage = 50;
+    alert("😈🔥Skill Points decreased to -5😈🔥");
+        perks -= 5;
+    alert("😈🔥Required XP increased to 500😈🔥");
+        requiredXP = 500;
+    alert("😈🔥Enemy Health Increased to 100😈🔥");
+        enemyCurrentHealth = 100;
+        enemyMaxHealth = 100;
+        hardcoreMode = true;
+
+    updateHealthValues();
+    updateVoltageValues();
+    updateXPValues();
+    updateEnemyHealthValues();
+    updatePerks();
+
+alert("😈💀Welcome to Hardcore Mode!😈💀");
+alert(
+`The challenge is brutal… but your rewards are greater!
+You now gain an extra 2 Skill Points Per Level!`);
+
+    perkFactor += 2;
 }
+
+
+
+
 // ========================================================
 // ☠️ Enemy Dies ☠️ #ENEMY-DEATH
 // ========================================================
 function enemyDead() {
 	swordKill.currentTime = 0;
-    	swordKill.play();
+    	if(!finale) swordKill.play();
 	enemiesKilled += 1;
 	degrees += 3;
 	moon.style.filter = `brightness(100%) hue-rotate(${degrees}deg)`;
 
+
+	if(finale){
+	    saturnLivesLeft -= 1;
+	    rockSmash.play();
+	    enemyCurrentHealth -= 2500;
+	    enemyMaxHealth -= 2500;
+	
+	    if(saturnLivesLeft === 2) {
+	        saturnLives.textContent = "Saturn Lives: 🪐🪐";
+	    }
+	
+	    else if(saturnLivesLeft === 1) {
+	        saturnLives.textContent = "Saturn Lives: 🪐";
+	    }
+	
+	    else if(saturnLivesLeft === 0) {
+		saturnLives.textContent = "Saturn Lives: None! Kill Him!";
+	    }
+	
+	    else if(saturnLivesLeft === -1) {
+	        saturnDead(); 
+	    }
+	}
+	   
 
 	setTimeout(function() {
                 displayEnemy.style.filter = "invert(0%)";
@@ -918,24 +966,68 @@ function enemyDead() {
 	     
        }, 2000);
 }
+
+
+
+function saturnDead() {
+alert(
+  "After hours of battling Saturn, you shed blood, sweat, and tears, tearing away its rocky crust piece by piece. " +
+  "The flying core was relentless, but you finally pierced it, and Saturn exploded into nothingness. " +
+  "Phew… it’s finally over. Time to take a well-earned break. Thanks for getting this far!");
+
+   alert("After Saturn's core shattered into oblivion, you were granted the legendary Halo Ring — a cosmic artifact that multiplies all your skill points by x10!");
+   alert(`+ ${perks * 10}Skill Pts added!`);
+   perks *= 10;
+   updatePerks();
+   finale = false;
+   storyLevel = 1;
+   levelUpFunction();
+   finale = false;
+   saturnLivesLeft = 3;
+   enemyCurrentHealth = 100;
+   enemyMaxHealth = 100; 
+   enemyDamage = 10;
+
+}
+function saturnSetUpFunction() {
+    alert("You chose 1, there's no turning back now...");
+	    displayEnemy.textContent = "🪐";
+	    displayEnemy.style.fontSize = "450px";
+	    displayEnemy.style.top = "20%";
+	    enemyCurrentHealth
+	    enemyCurrentHealth = 10000;
+	    enemyMaxHealth = enemyCurrentHealth;
+	    enemyDamage = 25;
+	    enemyHP.textContent = "Saturn: The God of Time".toUpperCase() + " HP" + ": " + enemyCurrentHealth + "/" + enemyMaxHealth;
+	    saturn.style.opacity = 0;
+	    saturnLives.style.display = "inline";
+	    displayEnemy.style.filter = `hue-rotate(${saturnDeg}deg)`;
+
+     }
+
+
+
 // ========================================================
-// 🛠️SHOW UPGRADE TABLES🛠️ #UPGRADE-TABLES
-// ========================================================								                //UPGRADE TABLES//
-//🛠️UPGRADES BUTTON🛠️ - OPENS SKILL CLASSES
-upgrades.addEventListener("click", function() {
+// 🛠️UPGRADE FUNCTION🛠️ #UPGRADE-FUNCTION
+// ========================================================
+function openUpgradesFunction() {
     pause.click();
     if(upgradesGui.style.display === "none") {
     upgradesGui.style.display = "block"
     upgrades.textContent = "🔧";
-
     }
 
     else if(upgradesGui.style.display === "block") {
     upgradesGui.style.display = "none"
     upgrades.textContent = "🛠️";
-
-
     }
+}
+// ========================================================
+// 🛠️SHOW UPGRADE TABLES🛠️ #UPGRADE-TABLES
+// ========================================================								                //UPGRADE TABLES//
+//🛠️UPGRADES BUTTON🛠️ - OPENS SKILL CLASSES
+upgrades.addEventListener("click", function() {
+    openUpgradesFunction();
 });
 
 //💖HEALTH TABLE💖
@@ -1457,8 +1549,9 @@ function updateEnemyHealthValues() {
 	    enemyHP.textContent = enemyList[storyLevel-1] + " HP: " + "∞";
 	}
 	else{
-	    enemyHP.textContent = enemyList[storyLevel-1] + " HP: " + Math.floor(enemyCurrentHealth.toLocaleString()) + "/" + enemyMaxHealth.toLocaleString();
-	}
+	    if(!finale) enemyHP.textContent = enemyList[storyLevel-1] + " HP: " + Math.floor(enemyCurrentHealth.toLocaleString()) + "/" + enemyMaxHealth.toLocaleString();
+	}   if(finale) enemyHP.textContent = "Saturn: The God of Time".toUpperCase() + " HP" + ": " + enemyCurrentHealth + "/" + enemyMaxHealth;
+
 }
 
 //✨XP UPDATES✨
@@ -1835,7 +1928,7 @@ let chamber = Math.floor(Math.random() * 6 + 1);
 }
 
 // ========================================================
-// 📖LEVEL 7 STORY📖 #LEVEL-7-STORY
+// 📖LEVEL 7 STORY📖 #LEVEL7-STORY
 // ========================================================
 function level7Story() {
     alert("You arrive at a small town in chaos—flames burn, steel clashes, and in the center stands a giant, shimmering portal. Guarding it is a massive, menacing " + enemyList[storyLevel].toLowerCase() + " , swatting down anyone who dares approach. Townsfolk try to reach the portal, but all fall before its fearsome presence");
@@ -1915,6 +2008,7 @@ function level7Story() {
 // 📖LEVEL 8 STORY📖 #LEVEL-8-STORY
 // ========================================================
 function level8Story() {
+	
     alert("After annihalting the vincinity with your deadly strikes, the portal guardian is now dead and you are free to enter another dimension! This is the next step to figuring out why you are in this timeline and why time is collapsing on itself...")
 
     let level8StoryPrompt = prompt
@@ -1928,11 +2022,12 @@ alert("...");
 alert("Light swallows you whole. Your consciousness peels apart as time folds in on itself, dragging your mind backward through everything you’ve ever been.");
 alert("You see flashes—forests crawling with lizards… snarling dogs… swirling portals… blood on your hands… a rat torn apart… spiders closing in… voices screaming for help… bodies falling… static… buzzing… reality tearing itself in half…");
     startIntro();  
-	storyLevel = 0;
+	storyLevel = 1;
 	classSelected = false;
-	enemyCurrentHealth = currentLevel * 10;;
-	enemyMaxHealth = currentLevel * 10;
-	enemyDamage = currentLevel;
+	enemyCurrentHealth = 20 + currentLevel;
+	enemyMaxHealth = 20 + currentLevel;
+	enemyDamage = 1;
+	
 
     }
 
@@ -1970,9 +2065,48 @@ else if(level8StoryPrompt2 === "2") {
 }
 
 // ========================================================
+// 📖FINALE STORY📖 #FINALE-STORY
+// ========================================================
+function finaleStory() {
+alert(
+  "Time trembles around you. Ever since waking in this eerie mansion, reality has felt fractured. " +
+  "Saturn has been pulling your strings, bending time, shaping your destiny, and dragging you out of your era. " +
+  "Portals to all of eternity swirl around you, each level another step in Saturn’s plan. " +
+  "Now Saturn is closer than ever, its presence overwhelming, ready to confront you. " +
+  "Will you let Saturn control your fate, or will you fight to reclaim your time and destiny?");
+   
+let finalePrompt = prompt (`
+You stand at the edge of the final battle — the most dangerous foe in all existence awaits. 
+The fight will be brutal, and once it begins, there’s no turning back.
+
+Are you sure you wish to proceed?
+[1] Yes bring it on! Let's take out that little rock.
+[2] No! Take me back in time!
+`);
+
+if(finalePrompt === "1") {
+    finale = true;
+    saturnSetUpFunction();
+}
+
+if(finalePrompt === "2") {
+alert(
+  "Before Saturn can tear the world apart, you dive into the time void — a desperate leap through fractured eternity. " +
+  "When the chaos fades, you find yourself back in the mansion, its halls crawling with the same rats that once tried to devour you. " +
+  "But this time, you’re different. The fear is gone, replaced by raw determination. " +
+  "You’ll grow stronger... and one day, that glowing yellow ball of cosmic arrogance will fall by your hand."
+);
+finale = false;
+storyLevel = 1;
+level1Story();
+}
+
+}
+
+// ========================================================
 // 📖TIMELINES LIST📖 #TIMELINES-LIST
 // ========================================================
-timelines = [level2Story, level3Story, level4Story, level5Story, level6Story, level7Story, level8Story,
+timelines = [level2Story, level3Story, level4Story, level5Story, level6Story, level7Story, level8Story,finaleStory,
 level2Story, level3Story, level4Story, level5Story, level6Story,
 level2Story, level3Story, level4Story, level5Story, level6Story,
 level2Story, level3Story, level4Story, level5Story, level6Story,
@@ -1990,7 +2124,11 @@ level2Story, level3Story, level4Story, level5Story, level6Story,
 // ========================================================
 function levelUpFunction() {
 updateHealthValues();
+
+	timelines[storyLevel-1]();
 	displayEnemy.textContent = enemyEmojis[storyLevel];
+	if(!finale) enemyHP.textContent = enemyList[storyLevel-1].toUpperCase() + " HP" + ": " + enemyCurrentHealth + "/" + enemyMaxHealth;
+
 
 	nearDeathExperienceSpecialUsed = false;
 	shieldWallSpecialUsed = false;
@@ -2001,16 +2139,14 @@ updateHealthValues();
 	saturn.style.fontSize = saturnSize + "px";
 	saturn.style.filter = `hue-rotate(${saturnDeg}deg)`;
 
-	
-	timelines[storyLevel-1]();
-	
+		
 	active = 1;
         levelUpButton.style.display = "none";
         levelUpSfx.play();
 
 	enemyMaxHealth += (storyLevel * storyLevel + 10 );
 	console.log("Enemy Current Health = currentLevel * currentLevel = " + enemyCurrentHealth);
-	enemyDamage += (storyLevel);
+	if(!finale) enemyDamage += (storyLevel);
 	baseEnemyDamage += (storyLevel);
 	console.log(enemyDamage);
 	maxHealth += antibodiesFactor;
@@ -2033,12 +2169,11 @@ updateHealthValues();
         currentLevel += 1;
 	storyLevel += 1;
         maxDamage += 3;
-	perks += storyLevel ;
+	perks += storyLevel + perkFactor;
 	perksEarnt += storyLevel;
 	perk.textContent = "|Skill Points: " + perks + "|";
         level.textContent = "|Level: " + currentLevel + "|";
 
-	enemyHP.textContent = enemyList[storyLevel-1].toUpperCase() + " HP" + ": " + enemyCurrentHealth + "/" + enemyMaxHealth;
 	console.log("Story Level: " + storyLevel);
 
 	updateXPValues();
@@ -2049,8 +2184,6 @@ updateHealthValues();
         enemyDamage = 0;
 	
 	enemyHealthBar.style.background = "linear-gradient(to right, #a0e9ff, #70d6ff, #ccefff, #ffffff)";
-	displayEnemy.textContent = enemyEmojis[storyLevel-1];
-
 
         setTimeout(function() {
             enemyDamage = previousEnemyDamage;
@@ -2070,6 +2203,9 @@ updateHealthValues();
             displayLabel.style.opacity = 0;
         }, 3000);
 
+	
+	if(finale) displayEnemy.textContent = "🪐";
+
 	saveData();
 }
 
@@ -2082,91 +2218,10 @@ levelUpButton.addEventListener("click", function() {
     }
 });
 
-
-
-
 // ========================================================
-// 🗡️ATTACK BUTTON🗡️ #ATTACK-BUTTON
+// 🗡️ATTACK ENEMY FUNCTION🗡️ #ATTACK-ENEMY #BUTTON 
 // ========================================================
-//LOSES HEALTH  BUT GAINS XP WHEN U PRESS ATTACK//											//ATTACK BUTTON//
-displayEnemy.addEventListener("click", function() {
-
-currentHealth += mosquitoFactor;
-updateHealthValues;
-
-	executionRoll();
-        timesAttacked += 1;
-
-	criticalWheel = Math.floor(Math.random() * 100 + 1);
-
-	if(criticalWheel <= criticalChanceFactor) {
-	    criticalSfx.currentTime = 0;
-	    criticalSfx.play();
-
-	    maxHealth += bloodthirstyFactor;
-	    updateHealthValues();
-
-	    
-	    enemyHealthBar.style.background = "linear-gradient(to right, orange, silver, white)";
-	    setTimeout(function() {
-	        enemyHealthBar.style.background = "linear-gradient(to top, darkred, orange)";
-	    },200)
-	    criticalHit = criticalDamageFactor;
-
-	    displayLabel.textContent = "Critical Hit!";
-	    displayLabel.style.background = "linear-gradient(to right, orange, silver, white)";
-	    displayLabel.style.opacity = 1;
-	
-	    setTimeout(function() {
-	        displayLabel.style.opacity = 0;
-
-	    },2000);
-    	}
-
-	else{
-    	    criticalHit = 1;
-	}
-
-
-    currentXP += concentrationFactor * active;
-    xpEarnt += concentrationFactor * active;
-
-    if(currentXP <= requiredXP) updateXPValues();
-
-    if(currentXP > requiredXP) {
-        currentXP = requiredXP;
-	updateXPValues();
-    }
-
-
-    if(enemyCurrentHealth - playerDamage * criticalHit > 0) {
-        enemyCurrentHealth -= playerDamage * criticalHit;
-	updateEnemyHealthValues();
-    }
-
-    else{
-        if(currentHealth >= maxHealth) currentHealth = maxHealth;
-	enemyDead();
-    }
-        if(currentXP <= requiredXP) {
-            active = 1;
-	    updateXPValues();
-	    levelUpButton.style.display = "none";
-        }
-
-        if(currentXP + randomXP  > requiredXP) {
-            currentXP = requiredXP;
-	    updateXPValues;
-	    active = 0;
-	    levelUpButton.style.display = "block";
-        }
-});
-
-// ========================================================
-// 🗡️ATTACK BUTTON🗡️ #ATTACK-BUTTON
-// ========================================================
-//ATTACK BUTTON//														       	//ATTACK BUTTON//
-attack.addEventListener("click", function() {
+function attackEnemyFunction() {
 currentHealth += mosquitoFactor;
 updateHealthValues;
 	
@@ -2238,16 +2293,28 @@ updateHealthValues;
 	    levelUpButton.style.display = "inline";
         }
 
-});
-
-
-
+}
 
 
 // ========================================================
+// 🗡️ATTACK BUTTON🗡️ #ATTACK-BUTTON
+// ========================================================
+//LOSES HEALTH  BUT GAINS XP WHEN U PRESS ATTACK//											//ATTACK BUTTON//
+displayEnemy.addEventListener("mouseup", function() {
+    attackEnemyFunction();
+});
+
+// ========================================================
+// 🗡️ATTACK BUTTON🗡️ #ATTACK-BUTTON
+// ========================================================
+//ATTACK BUTTON//														       	//ATTACK BUTTON//
+attack.addEventListener("mouseup", function() {
+    attackEnemyFunction();
+});
+// ========================================================
 // ❤️‍🩹HEAL BUTTON❤️‍🩹 #HEAL-BUTTON
-// ========================================================														     //HEAL BUTTON//
-healButton.addEventListener("click", function() {
+// ========================================================
+function healPlayerFunction() {
     if(heal + currentHealth <= maxHealth && voltage >= 25) {
         currentHealth += heal;
 
@@ -2301,6 +2368,12 @@ healButton.addEventListener("click", function() {
         healthBar.style.width = currentHealth + "%";
         hp.textContent = playerName.toUpperCase() + " HP: " + currentHealth + "/" + maxHealth;
     }
+}
+// ========================================================
+// ❤️‍🩹HEAL BUTTON❤️‍🩹 #HEAL-BUTTON
+// ========================================================														     //HEAL BUTTON//
+healButton.addEventListener("mouseup", function() {
+    healPlayerFunction();
 });
 
 
@@ -2337,8 +2410,8 @@ maxHealthUpgrade.addEventListener("click", function() {
     HPPercentage = (currentHealth/maxHealth) * 100;
     hp.textContent = "HP: " + currentHealth + "/" + maxHealth;
     healthBar.style.width = HPPercentage + "%";
+    updatePerks();
 
-    perk.textContent = "Perks: " + perks;
     maxHealthMagnitude.textContent = "+ " + totalHealth + " HP";
 
    
@@ -2357,7 +2430,8 @@ function healUpgradeFunction() {
 
 
     healPower.textContent = "|Heal Power: " + heal + " HP " + "|";
-    perk.textContent = "Perks: " + perks;
+    updatePerks();
+
     healUpgradeMagnitude.textContent = "+ " + totalHeal + " HP";
 
 }
@@ -2474,12 +2548,10 @@ autoHP.addEventListener("click", function() {
     	purchaseSkill.play();
 
     autoMineHP();
+    updatePerks();
     hpRegenPerksRequired.textContent = hpRegenRequiredPerks;
 
 	
-
-    perk.textContent = "Perks: " + perks;
-
    
     }
 
@@ -2526,7 +2598,7 @@ function voltageRegenerationFunction() {
 	purchaseSkill.play();  
 	voltageLevel += 1;
         runVoltageLoop();
-	perk.textContent = "Perks: " + perks;
+	updatePerks();
 	voltageRegenPerksRequired.textContent = voltageRequiredPerks;
 	voltageUpgradeMagnitude.textContent = "+ " + voltageLevel + " v/s";
 	if(voltage >= maxVoltage) voltage = maxVoltage;
@@ -2568,9 +2640,9 @@ refillHealthUpgrade.addEventListener("click", function() {
 	healthRestored = maxHealth - currentHealth;
 	totalHealthRestored += healthRestored;
 	
-        currentHealth = maxHealth;
-        perk.textContent = "Perks: " + perks;
+         currentHealth = maxHealth;
 	updateHealthValues();
+	updatePerks();
 	usedRefill += 1;
 	refillHealthMagnitude.textContent = totalHealthRestored + " HP";
 
@@ -2674,17 +2746,19 @@ stealHP.addEventListener("click", function() {
     	purchaseSkill.currentTime = 0;
     	purchaseSkill.play();
 
-        perk.textContent = "Perks: " + perks;
+         updatePerks();
 
 	vampirismPerksRequired.textContent = vampirismRequiredPerks;
 	stealHpMagnitude.textContent = "Absorbs: " + (vampirismInteger) + "%" + " HP";
 	console.log(healthFactor);
     }
 });
+
+
 // ========================================================
-//⚡CHARGE VOLTAGE BUTTON⚡ #CHARGE-VOLTAGE-BUTTON #BUTTON #VOLTAGE
+//⚡CHARGE VOLTAGE FUNCTION⚡ #CHARGE-VOLTAGE-FUNCTION
 // ========================================================
-charge.addEventListener("click", function() {
+function chargeVoltageFunction() {
     voltage += shockwaveFactor;
     enemyCurrentHealth += 1;
     currentXP -= 1;
@@ -2699,6 +2773,12 @@ charge.addEventListener("click", function() {
     updateEnemyHealthValues();
     if(currentXP <= 0) currentXP = 0;
     updateXPValues();
+}
+// ========================================================
+//⚡CHARGE VOLTAGE BUTTON⚡ #CHARGE-VOLTAGE-BUTTON #BUTTON #VOLTAGE
+// ========================================================
+charge.addEventListener("mousedown", function() {
+    chargeVoltageFunction();
 });
 // ========================================================
 //❄️FREEZE BUTTON❄️ #FREEZE-BUTTON #BUTTON #SPELLS #ICE #FROST
@@ -2726,17 +2806,6 @@ freeze.addEventListener("click", function() {
 
         }, 10000)
     }
-});
-// ========================================================
-//📦MR BOXXY WOXXY📦 #MISC
-// ========================================================
-document.addEventListener("keydown", function(event) {
-    key = event.key;
-
-    if(key === "ArrowLeft") {fromLeft -= 5}
-    if(key === "ArrowRight") {fromLeft += 5}
-
-    mrBox.style.left = fromLeft + "px";
 });													    
 // ========================================================
 //💻DEV CONSOLE💻 #CONSOLE
@@ -3211,6 +3280,9 @@ freezeUpgrade.addEventListener("click", function() {
         purchaseSkill.play();
 	perks -= 5;
 	freeze.style.display = "inline";
+	freezeMagnitude.textContent = "Ice Age Unlocked";
+	updatePerks();
+
     }
     else{
         displayLabel.textContent = "Not Enough Skill Points!";
@@ -3258,8 +3330,8 @@ luckyFingersUpgrade.addEventListener("click", function() {
 // ========================================================
 shockwaveUpgrade.addEventListener("click", function() {
     if(perks >= shockwaveRequiredPerks) {
-	electricitySfx.currentTime = 0;
-	electricitySfx.play();
+	purchaseSkill.currentTime = 0;
+	purchaseSkill.play();
 
 	perks -= shockwaveRequiredPerks;
 	shockwaveRequiredPerks += 9;
@@ -3290,15 +3362,18 @@ executionUpgrade.addEventListener("click", function() {
 // 🧬ANTIBODIES UPGRADE🧬 #ANTIBODIES-UPGRADE
 // ========================================================
 antibodiesUpgrade.addEventListener("click", function() {
-    if(perks >= antibodiesRequiredPerks);
-        perks -= antibodiesRequiredPerks;
+    if(perks >= antibodiesRequiredPerks){
+      perks -= antibodiesRequiredPerks;
 	purchaseSkill.currentTime = 0;
 	purchaseSkill.play();
 	antibodiesRequiredPerks += 6;
 	antibodiesFactor += 5;
+	updatePerks();
 
 	antibodiesPerksRequired.textContent = antibodiesRequiredPerks;
-	antibodiesMagnitude.textContent = "+" + antibodiesFactor + " HP";       
+	antibodiesMagnitude.textContent = "+" + antibodiesFactor + " HP";   
+    }
+      
 });
 // ========================================================
 // 😈SELL SOUL UPGRADE😈 #SELL-SOUL-UPGRADE #UPGRADE-SOUL
@@ -3619,6 +3694,7 @@ mosquitoUpgrade.addEventListener("click", function() {
 
 	mosquitoPerksRequired.textContent = mosquitoRequiredPerks;
 	mosquitoMagnitude.textContent = "+ " + mosquitoFactor + " HP";
+	updatePerks();
 
 	
     }
@@ -3640,6 +3716,7 @@ eyeForEyeUpgrade.addEventListener("click", function() {
 	       
 	eyeForEyePerksRequired.textContent = eyeForEyeRequiredPerks;
 	eyeForEyeMagnitude.textContent = eyeForEyePercentage + " %";
+	updatePerks();
 	
     }
 });
@@ -3647,10 +3724,12 @@ eyeForEyeUpgrade.addEventListener("click", function() {
 // 🩸BLOODTHIRSTY UPGRADE🩸 #BLOODTHIRSTY-UPGRADE
 // ========================================================
 bloodthirstyUpgrade.addEventListener("click", function() {
-    if(perks >= bloodthirstyRequiredPerks);
-        perks -= bloodthirstyRequiredPerks;
+    if(perks >= bloodthirstyRequiredPerks){
+         perks -= bloodthirstyRequiredPerks;
 	bloodthirstyRequiredPerks += 8;
 	bloodthirstyFunction();
+	updatePerks();
+    }
 });
 // ========================================================
 // 💲REAL ESTATE UPGRADE #REAL-ESTATE-UPGRADE💲
@@ -3714,7 +3793,7 @@ splitSeconds.addEventListener("click", function() {
         perks -= 5;
 	stopTimeButton.style.display = "inline";
 	updatePerks();
-	splitSecondsMagnitude.textContent = "Split Seconds Unlocked!";
+	splitSecondsMagnitude.textContent = 2;
     }   
 });
 // ========================================================
@@ -3734,7 +3813,7 @@ function frozenInTimeFunction() {
     purchaseSkill.currentTime = 0;
     purchaseSkill.play();
     frozenFactor += 500;
-    frozenInTimeMagnitude.textContent = "x" + frozenFactor/1000;
+    frozenInTimeMagnitude.textContent = frozenFactor;
 }
 
 
@@ -3760,6 +3839,7 @@ frozenInTimeUpgrade.addEventListener("click", function() {
 // ========================================================
 criticalDamageUpgrade.addEventListener("click", function() {
     if(perks >= criticalDamageRequiredPerks) {
+	perks -= criticalDamageRequiredPerks;
 	criticalDamageRequiredPerks += 8;
 	criticalDamagePerksCost.textContent = criticalDamageRequiredPerks;
 	criticalDamageFunction();
@@ -3804,10 +3884,12 @@ rewind.addEventListener("click", function() {
 // ========================================================
 timeTravelUpgrade.addEventListener("click", function() {
     if(perks >= 10 && !timeTravelActivated) {
+	purchaseSkill.currentTime = 0;
 	purchaseSkill.play();
 	timeTravelActivated = true;
 	rewind.style.display = "inline";
 	perks -= 10;
+	updatePerks();
 	timeTravelMagnitude.textContent = "Time Travel Unlocked!";
 	
     }
@@ -3956,6 +4038,13 @@ function myData() {
 	saturnDeg: saturnDeg,
 	timeTravelActivated: timeTravelActivated,
 	freezeUnlocked: freezeUnlocked,
+	xpEarnt: xpEarnt,
+	perksEarnt: perksEarnt,
+	enemiesKilled: enemiesKilled,
+	goldEarnt: goldEarnt,
+	finale: finale,
+	perkFactor: perkFactor,
+	hardcoreMode: hardcoreMode,
     }
 }
 
@@ -4106,6 +4195,13 @@ function loadData() {
 	saturnDeg = savedData.saturnDeg;
 	timeTravelActivated = savedData.timeTravelActivated;
 	freezeUnlocked = savedData.freezeUnlocked;
+	xpEarnt = savedData.xpEarnt;
+	perksEarnt = savedData.perksEarnt;
+	enemiesKilled = savedData.enemiesKilled;
+	goldEarnt = savedData.goldEarnt;
+	finale = savedData.finale;
+	perkFactor = savedData.perkFactor;
+	hardcoreMode = savedData.perkFactor;
 	
     }
 }
@@ -4125,9 +4221,36 @@ function l(text){
 }
 
 
+document.addEventListener("keyup", function(event) {
+    if(event.key === "a" && attackReady === true) {
+	attackReady = false;
+        attackEnemyFunction();	
+	setTimeout(function() {
+	    attackReady = true;    
+	},100);
+    }
 
+    else if(event.key === "h" && attackReady === true) {
+	healPlayerFunction();
+    }
 
+    else if(event.key === "l") {
+	if(currentXP >= requiredXP) {
+	    levelUpFunction();
+	}
+    }
 
+    else if(event.key === "c" && attackReady === true) {
+        chargeVoltageFunction();   
+    }
+
+    else if(event.key === "u") {
+        openUpgradesFunction();  
+    }
+    
+    
+ 
+});
 
 
 

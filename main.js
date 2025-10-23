@@ -163,6 +163,7 @@ let activatedFireball = false;
 
 let fireballDps = 1;
 let paused = false;
+let spawnProtection = true;
 
 let windowWidth = window.innerWidth;
 let concentrationPerks = 1;
@@ -619,12 +620,10 @@ const xpTable = document.querySelector("#xp-table");
 // 🎬INTRO🎬 #INTRO
 // ========================================================
 alert
-(`CHAPTER IV – The end is near (v1.12)
-- 🌌 Added the epic story finale - reward for defeating the boss
-- ⌨️ Added keyboard shortcuts for faster gameplay
-- 🖱️ Switched mouse input from click to mouseup to prevent exploits — pressing Enter can no longer spam clicks.
-- 🔥 Added Hardcore Mode — start with punishingly low stats, but earn extra skill points per level
-- 🐞 Fixed various bugs for smoother gameplay`)
+(`CHAPTER IV – The end is near (v1.12.01)
+- Added failsafe for anti-exploitation (since my friend cloudy wont tell me how she hacked lol!)
+- Removed autopause
+- Busy day today didnt get much done sorry guys`)
 
 introDecision = prompt(`
 Welcome to the Game! Would you like to skip the intro?
@@ -1011,13 +1010,17 @@ function saturnSetUpFunction() {
 // 🛠️UPGRADE FUNCTION🛠️ #UPGRADE-FUNCTION
 // ========================================================
 function openUpgradesFunction() {
+    pause.click();
+
+
     if(upgradesGui.style.display === "none") {
-	pause.click();
     upgradesGui.style.display = "block"
     upgrades.textContent = "🔧";
-    }
+    
+    
 
-    else if(upgradesGui.style.display === "block") {
+    }
+   else if(upgradesGui.style.display === "block") {
     upgradesGui.style.display = "none"
     upgrades.textContent = "🛠️";
     }
@@ -2182,16 +2185,14 @@ updateHealthValues();
         previousEnemyDamage = enemyDamage
 
         enemyDamage = 0;
+	spawnProtection = true;
 	
 	enemyHealthBar.style.background = "linear-gradient(to right, #a0e9ff, #70d6ff, #ccefff, #ffffff)";
 
         setTimeout(function() {
             enemyDamage = previousEnemyDamage;
 	    enemyHealthBar.style.background = "linear-gradient(to top, darkred, orange)";
-
-	  
-        
-        
+	    spawnProtection = false;
         }, 5000)
 
         displayLabel.style.opacity = 1;
@@ -2692,11 +2693,22 @@ Gold Earned: ${goldEarnt.toLocaleString()}
                 location.reload();
             }, 5000);
         }
+healthPerc = (currentHealth - enemyDamage)/maxHealth;
 
-
+if(healthPerc < 0.10 && healthPerc > 0 && !removePause) {
+    pause.click();
+    removePause = true;
+}
 
 
         else{
+
+           if(enemyDamage <= 0 && enemyCurrentHealth < Infinity && !spawnProtection && damageResistance < 90 && !freezeActive ) {
+	       console.log("Function fired");
+       	       enemyDamage = storyLevel;
+               devilLaugh.play();
+	       alert("Whoa! Bug alert—enemy damage recalculated.");
+            }
 	    guardianRoll();
             currentHealth -= enemyDamage * guardianFactor;
 	    enemyCurrentHealth -= reflectedDamage
@@ -4041,6 +4053,7 @@ function myData() {
 	finale: finale,
 	perkFactor: perkFactor,
 	hardcoreMode: hardcoreMode,
+	spanwProtection: spawnProtection,
     }
 }
 
@@ -4198,6 +4211,7 @@ function loadData() {
 	finale = savedData.finale;
 	perkFactor = savedData.perkFactor;
 	hardcoreMode = savedData.perkFactor;
+	spawnProtection = savedData.spawnProtection;
 	
     }
 }
@@ -4247,7 +4261,6 @@ document.addEventListener("keyup", function(event) {
     
  
 });
-
 
 
 

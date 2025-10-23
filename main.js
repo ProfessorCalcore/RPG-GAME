@@ -974,9 +974,9 @@ alert(
   "The flying core was relentless, but you finally pierced it, and Saturn exploded into nothingness. " +
   "Phew… it’s finally over. Time to take a well-earned break. Thanks for getting this far!");
 
-   alert("After Saturn's core shattered into oblivion, you were granted the legendary Halo Ring — a cosmic artifact that multiplies all your skill points by x10!");
-   alert(`+ ${perks * 10}Skill Pts added!`);
-   perks *= 10;
+   alert("After Saturn's core shattered into oblivion, you were granted the legendary Halo Ring — a cosmic artifact that grants 20 skill points!");
+   alert(`+ ${perks += 20}Skill Pts added!`);
+   perks += 20;
    updatePerks();
    finale = false;
    storyLevel = 1;
@@ -4256,6 +4256,7 @@ document.addEventListener("keyup", function(event) {
     
  
 });
+
 
 
 

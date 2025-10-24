@@ -54,10 +54,10 @@ let reflectedDamage = 0;
 let perkCost = 100;
 
 // ------------------- ENEMY STATS ----------------------
-let baseEnemyDamage = 1;
-let enemyDamage = 1;
-let enemyCurrentHealth = 20;
-let enemyMaxHealth = 20;
+let baseEnemyDamage = 3;
+let enemyDamage = 3;
+let enemyCurrentHealth = 100;
+let enemyMaxHealth = 100;
 
 // ------------------- VOLTAGE SYSTEM -------------------
 let voltage = 100;
@@ -66,7 +66,7 @@ let voltageSpeed = 1000;
 let voltageLevel = 1;
 
 let fireballBought = false;
-let fireballDamage = 5;
+let fireballDamage = 15;
 
 let soulPactFactor = 0;
 
@@ -205,6 +205,9 @@ let saturnLivesLeft = 3;
 let attackReady = true;
 let perkFactor = 0;
 let hardcoreMode = false;
+
+let bossFactor = 1;
+let mageFactor = false;
 // ========================================================
 // 🔢 ENEMY LIST ARRAY
 // ========================================================
@@ -239,12 +242,16 @@ const soldierName = [
 
 
 
-// enemyEmojis condensed: remove duplicates
 const enemyEmojis = [
-  "🐀","🦇","🕷️","🐍","🦎","🐱","🐶","🐈‍⬛","🐆","🦡",
-  "🦂","🦀","🐦","👹","👺","🗿","🔥🦇","❄️🐺","☠️🦂","🐀🗡️",
-  "🦇🗡️","🐺❄️","🐍🩸","🦅🔥","🐉","👻","🧛","☠️","🐘","🔥💀",
-  "😈","🐉🌌","❄️🐋","🔥🦑","🗿💪","⚫","🐱🔥","❄️🐍","🔥🦁","🌩️🐆"
+  "🐀","🦇","🕷️","🐍","🦎","🐱","🐶","🐈‍⬛","🐆","🦝",
+  "🦂","🦀","🐦","👹","👺","🧌","🗿","👹","🪨","🛡️",
+  "🐈","🔥","❄️","☠️","🐀","🦇","🐺","🐉","🔥","🐉",
+  "🐲","👻","🧛","👻","🐘","🔥","😈","🌌","🐋","🦑",
+  "💪","⚫","🦁","🐋","👻","🌌","⚡","🏔️","🌀","🐱",
+  "🐍","🦡","🐆","🦀","🐈‍⬛","🐦","🧌","👺","🗿","👹",
+  "🐉","🔥","🐲","👻","👻","🐋","🐘","🦑","🦁","👻",
+  "🦁","🔥","❄️","⚡","🌑","🌌","🌙","🏔️","💥","🐉",
+  "💪","🔥","⚡","💪","☠️","🐉","💪","Ω","∅"
 ];
 
 // ========================================================
@@ -619,11 +626,23 @@ const xpTable = document.querySelector("#xp-table");
 // ========================================================
 // 🎬INTRO🎬 #INTRO
 // ========================================================
-alert
-(`CHAPTER IV – The end is near (v1.12.01)
-- Added failsafe for anti-exploitation (since my friend cloudy wont tell me how she hacked lol!)
-- Removed autopause
-- Busy day today didnt get much done sorry guys`)
+alert(
+`CHAPTER V – Death Wars: harder, faster, stronger! (v1.13)
+🔥 Challenge ramped up significantly
+💪 Boss stats boosted — prepare for a tougher fight
+⏱️ Spawn protection removed on level-up (health refill balances this)
+📈 Enemy health & DPS formulas revamped: now scale ×1.35 per level
+🐛 Various bug fixes implemented
+🛡️ Viking: critical damage bonus; special ability nerfed — heals only 50% of max health
+🔥 Mage: improved healing powers + equipped with fireball; starts off with better defense against enemy dps
+🤺 Knight: starts with a companion from the beginning
+🏆 Defeating a boss now doubles your skill points! But beware — bosses are stronger than ever.
+💰 Skill Point cost reworked — each purchase now costs 1.75× than the previous cost!
+⚠️ Hardcore Mode is now impossible and skill bonuses increased to +3 additional per level
+🛡️ Damage Resistance capped at 85%
+🔥 Fireball damage increased`);
+
+
 
 introDecision = prompt(`
 Welcome to the Game! Would you like to skip the intro?
@@ -696,13 +715,13 @@ Damage: 1
 
 [3] Viking 🪓
 Armoured juggernauts with decent damage, but magic isn’t their strong suit.
-HP: 400
-Voltage: 40
+HP: 300
+Voltage: 30
 Damage: 3
 
 [4] Knight 🛡️
 The balanced warrior. Reliable in every situation, the default starting class.
-HP: 250
+HP: 200
 Voltage: 125
 Damage: 2
 `)
@@ -718,7 +737,8 @@ Damage: 2
 	maxVoltage = 85;
 	playerDamage = 6;
 	heal = 20;
-	criticalChanceFactor = 7;
+	criticalChanceFactor = 5;
+	goldMultiplier += 0.25;
 	criticalChanceFunction();
 
 	markedForDeath.style.display = "inline";
@@ -732,9 +752,9 @@ Damage: 2
 alert(`🥷Assassin Stats🥷
 Health: 100
 Voltage: 85
-Damage: 6
+Damage: 5
 Healing Potency: 20
-Crit Chance: 7%
+Bonus: 5% Critical Chance + more gold looted!
 Special Ability: 🥷Marked For Death🥷 - Critical Chance improved by 25% for 15 seconds!`);
 	level1Story();
 
@@ -747,10 +767,13 @@ Special Ability: 🥷Marked For Death🥷 - Critical Chance improved by 25% for 
 	classSelected = true;
 	currentHealth = 75;
 	maxHealth = 75;
-	voltage = 200;
-	maxVoltage = 200;
+	voltage = 300;
+	maxVoltage = 300;
 	playerDamage = 1;
-	heal = 30;
+	heal = 40;
+	enemyDamage = 2;
+	fireballFunction();
+	mageFactor = true;
 
 	mageFury.style.display = "inline";
 	
@@ -758,14 +781,15 @@ Special Ability: 🥷Marked For Death🥷 - Critical Chance improved by 25% for 
 	updateVoltageValues();
 	playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage;
 	healPower.textContent = "|" + "Heal Power: " + heal + " HP" + "|";
+	maxDamageLabel.textContent = "|" + "Enemy DPS: " + enemyDamage + "|";
 
 
 alert(`🔮Mage Stats🔮 
 Health: 75
 Damage: 1
-Voltage: 200
-Healing Potency: 30;
-Crit Chance: 1%
+Voltage: 300
+Healing Potency: 40
+Bonus: 🔥 Fireball | 💖 High Healing | 🛡️ Decreased Enemy DPS | ⚔️ Initial Strikes -15 HP
 Special Ability: 🔮Sorceror's Fury🔮 - Rapidly regenerate Voltage for a short period of time.`);
 	level1Story();
     }
@@ -776,18 +800,18 @@ Special Ability: 🔮Sorceror's Fury🔮 - Rapidly regenerate Voltage for a shor
 	classType = "viking";
 	classSelected = true;
 
-	currentHealth = 400;
-	maxHealth = 400;
-	voltage = 40;
-	maxVoltage = 40;
+	currentHealth = 300;
+	maxHealth = 300;
+	voltage = 30;
+	maxVoltage = 30;
 	playerDamage = 3;
 	heal = 15;
+	criticalDamageFactor += 1;
 	
 	healPower.textContent = "|" + "Heal Power: " + heal + " HP" + "|";
 	updateHealthValues();
 	updateVoltageValues();
 	playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage;
-
 	nearDeathExperience.style.display = "inline";
 
 alert(`🪓Viking Stats🪓 
@@ -795,8 +819,8 @@ Health: 400
 Voltage: 30
 Damage: 3 
 Healing Potency: 15
-Crit Chance: 1%
-Special Ability: 🪓Near Death Experience🪓 - Completely Restores Health upon use!`);
+Bonus: 🪓🪓🪓Triple Critical Damage instead of double!🪓🪓🪓
+Special Ability: 🪓Near Death Experience🪓 - Restores half of your health upon use!`);
 	level1Story();
     }
 
@@ -807,10 +831,11 @@ Special Ability: 🪓Near Death Experience🪓 - Completely Restores Health upon
 	voltage = 125;
 	heal = 25
 	healPower.textContent = "|" + "Heal Power: " + heal + " HP" + "|";
-
+	recruitKnightFunction();
         alert("Knight Selected!");
 	classType = "knight";
 	classSelected = true;
+	
 	shieldWall.style.display = "inline";
 	
 alert(`⚔️Knight Stats⚔️ 
@@ -819,6 +844,7 @@ Damage: 2
 Voltage: 125
 Healing Potency: 25
 Crit Chance: 1%
+Bonus: Starts off with a mage companion!
 Special Ability: 🛡️Shield Wall🛡️ - Incoming damage is reduced by 50% for a brief period
 `)
 	level1Story();
@@ -850,19 +876,19 @@ else if(introDecision === "3") {
 
 else if(introDecision === "4" && !hardcoreMode) {
     alert("Very well, mortal. You crave pain and glory — the game will show you both in ways you cannot imagine!");
-    alert("😈🔥Max Health decreased to 20😈🔥");
-        maxHealth = 20;
-        currentHealth = 20;
+    alert("😈🔥Max Health decreased to 100😈🔥");
+        maxHealth = 100;
+        currentHealth = 100;
     alert("😈🔥Max Voltage decreased to 50!😈🔥");
         maxVoltage = 50;
         voltage = 50;
     alert("😈🔥Skill Points decreased to -5😈🔥");
         perks -= 5;
-    alert("😈🔥Required XP increased to 500😈🔥");
-        requiredXP = 500;
-    alert("😈🔥Enemy Health Increased to 100😈🔥");
-        enemyCurrentHealth = 100;
-        enemyMaxHealth = 100;
+    alert("😈🔥Required XP increased to 300😈🔥");
+        requiredXP = 300;
+    alert("😈🔥Enemy Health Increased to 250😈🔥");
+        enemyCurrentHealth = 250;
+        enemyMaxHealth = 250;
         hardcoreMode = true;
 
     updateHealthValues();
@@ -874,9 +900,9 @@ else if(introDecision === "4" && !hardcoreMode) {
 alert("😈💀Welcome to Hardcore Mode!😈💀");
 alert(
 `The challenge is brutal… but your rewards are greater!
-You now gain an extra 2 Skill Points Per Level!`);
+You now gain an extra 3 Skill Points Per Level!`);
 
-    perkFactor += 2;
+    perkFactor += 3;
 }
 
 
@@ -913,6 +939,10 @@ function enemyDead() {
 	
 	    else if(saturnLivesLeft === -1) {
 	        saturnDead(); 
+		bossFactor += 5;
+	        saturnLives.textContent = "Saturn Lives: 🪐🪐🪐";
+		saturnLives.style.display = "none";
+
 	    }
 	}
 	   
@@ -935,7 +965,6 @@ function enemyDead() {
         enemyCurrentHealth = enemyMaxHealth;
 
         healthFactor = Math.ceil((enemyMaxHealth * vampirismPercentage));
-	console.log(healthFactor);
 
 	currentHealth += healthFactor;
 	updateEnemyHealthValues();
@@ -974,18 +1003,21 @@ alert(
   "The flying core was relentless, but you finally pierced it, and Saturn exploded into nothingness. " +
   "Phew… it’s finally over. Time to take a well-earned break. Thanks for getting this far!");
 
-   alert("After Saturn's core shattered into oblivion, you were granted the legendary Halo Ring — a cosmic artifact that grants 20 skill points!");
-   alert(`+ ${perks += 20}Skill Pts added!`);
-   perks += 20;
+   alert("After Saturn's core shattered into oblivion, you were granted the legendary Halo Ring — a cosmic artifact that doubles your skill points");
+   perks *= 2;
    updatePerks();
    finale = false;
    storyLevel = 1;
-   levelUpFunction();
    finale = false;
    saturnLivesLeft = 3;
-   enemyCurrentHealth = 100;
-   enemyMaxHealth = 100; 
-   enemyDamage = 10;
+   enemyDamage = saturnEnemyDamage;
+   enemyCurrentHealth = saturnCurrentHealth;
+   enemyMaxHealth = saturnCurrentHealth;
+   updateEnemyHealthValues();
+   maxDamageLabel.textContent = "|" + "Enemy DPS: " + newEnemyDamage;
+   levelUpFunction();
+
+
 
 }
 function saturnSetUpFunction() {
@@ -993,14 +1025,18 @@ function saturnSetUpFunction() {
 	    displayEnemy.textContent = "🪐";
 	    displayEnemy.style.fontSize = "450px";
 	    displayEnemy.style.top = "20%";
-	    enemyCurrentHealth
-	    enemyCurrentHealth = 10000;
-	    enemyMaxHealth = enemyCurrentHealth;
-	    enemyDamage = 25;
+	    saturnEnemyDamage = enemyDamage;
+	    saturnCurrentHealth = enemyCurrentHealth;
+	    enemyCurrentHealth = 10000 * (bossFactor);
+	    enemyMaxHealth = enemyCurrentHealth; 
+	    enemyDamage *= 3;
 	    enemyHP.textContent = "Saturn: The God of Time".toUpperCase() + " HP" + ": " + enemyCurrentHealth + "/" + enemyMaxHealth;
 	    saturn.style.opacity = 0;
 	    saturnLives.style.display = "inline";
 	    displayEnemy.style.filter = `hue-rotate(${saturnDeg}deg)`;
+	    updateEnemyHealthValues();
+ 	    maxDamageLabel.textContent = "|" + "Enemy DPS: " + newEnemyDamage;
+
 
      }
 
@@ -1332,7 +1368,7 @@ function damageResistanceFunction() {
 	purchaseSkill.currentTime = 0;
 	purchaseSkill.play();
 
-	damageResistance += 3;
+	if(damageResistance < 85) damageResistance += 3;
 	drDecimal = 1 - (damageResistance/100);
 
 	newEnemyDamage = presentEnemyDamage * drDecimal;
@@ -1344,7 +1380,6 @@ function damageResistanceFunction() {
 	maxDamageLabel.textContent = "|" + "Enemy DPS: " + newEnemyDamage;
 	drPerks.textContent = drCost	
 	drMagnitude.textContent = damageResistance + " %";
-	l(presentEnemyDamage)
 	updatePerks();
 }
 
@@ -1363,7 +1398,6 @@ function damageResistanceFunction2() {
 	maxDamageLabel.textContent = "|" + "Enemy DPS: " + newEnemyDamage;
 	drPerks.textContent = drCost	
 	drMagnitude.textContent = damageResistance + " %";
-	l(presentEnemyDamage)
 	updatePerks();
 }
 
@@ -1546,13 +1580,16 @@ else if (HPPercentage > 0 && HPPercentage <= 15){
 
 //🧟ENEMY HEALTH UPDATES🧟
 function updateEnemyHealthValues() {
+	enemyCurrentHealth = Math.floor(enemyCurrentHealth);
+	enemyMaxHealth = Math.floor(enemyMaxHealth);
+
     	enemyHPPercentage = (enemyCurrentHealth/enemyMaxHealth) * 100;
     	enemyHealthBar.style.width = enemyHPPercentage + "%";
 	if(enemyCurrentHealth === Infinity) {
 	    enemyHP.textContent = enemyList[storyLevel-1] + " HP: " + "∞";
 	}
 	else{
-	    if(!finale) enemyHP.textContent = enemyList[storyLevel-1] + " HP: " + Math.floor(enemyCurrentHealth.toLocaleString()) + "/" + enemyMaxHealth.toLocaleString();
+	    if(!finale) enemyHP.textContent = enemyList[storyLevel-1] + " HP: " + enemyCurrentHealth.toLocaleString() + "/" + enemyMaxHealth.toLocaleString();
 	}   if(finale) enemyHP.textContent = "Saturn: The God of Time".toUpperCase() + " HP" + ": " + enemyCurrentHealth + "/" + enemyMaxHealth;
 
 }
@@ -1834,7 +1871,7 @@ function level6Story() {
 [4] 🩸 Make a blood offering to spare yourself.
 `)
 
-let chamber = Math.floor(Math.random() * 6 + 1);
+let chamber = Math.floor(Math.random()  + 1);
 
 	if(decision6 === "1") {
 	    if(chamber === 1) {
@@ -1842,8 +1879,6 @@ let chamber = Math.floor(Math.random() * 6 + 1);
 	        revolverSfx.play();
 	        revolverSfx.play();
 	        revolverSfx.play();
-
-
 		currentHealth = 0;
 	    }
 	
@@ -2027,9 +2062,9 @@ alert("You see flashes—forests crawling with lizards… snarling dogs… swirl
     startIntro();  
 	storyLevel = 1;
 	classSelected = false;
-	enemyCurrentHealth = 20 + currentLevel;
-	enemyMaxHealth = 20 + currentLevel;
-	enemyDamage = 1;
+	enemyCurrentHealth = currentLevel * 10 + 50;
+	enemyMaxHealth = currentLevel * 10 + 50;
+	enemyDamage = bossFactor * 3 + 3;
 	
 
     }
@@ -2110,16 +2145,22 @@ level1Story();
 // 📖TIMELINES LIST📖 #TIMELINES-LIST
 // ========================================================
 timelines = [level2Story, level3Story, level4Story, level5Story, level6Story, level7Story, level8Story,finaleStory,
-level2Story, level3Story, level4Story, level5Story, level6Story,
-level2Story, level3Story, level4Story, level5Story, level6Story,
-level2Story, level3Story, level4Story, level5Story, level6Story,
-level2Story, level3Story, level4Story, level5Story, level6Story,
-level2Story, level3Story, level4Story, level5Story, level6Story,
-level2Story, level3Story, level4Story, level5Story, level6Story,
-level2Story, level3Story, level4Story, level5Story, level6Story,
-level2Story, level3Story, level4Story, level5Story, level6Story,
-level2Story, level3Story, level4Story, level5Story, level6Story,
-level2Story, level3Story, level4Story, level5Story, level6Story,
+  level5Story, level2Story, level7Story, level3Story, level6Story, level8Story, level4Story, finaleStory,
+  level3Story, level6Story, level2Story, level5Story, level4Story, level7Story, level8Story, finaleStory,
+  level4Story, level3Story, level5Story, level2Story, level6Story, level7Story, level8Story, finaleStory,
+  level2Story, level5Story, level6Story, level3Story, level4Story, level7Story, level8Story, finaleStory,
+  level6Story, level3Story, level2Story, level5Story, level7Story, level4Story, level8Story, finaleStory,
+  level5Story, level6Story, level3Story, level2Story, level4Story, level7Story, level8Story, finaleStory,
+  level2Story, level4Story, level5Story, level6Story, level3Story, level7Story, level8Story, finaleStory,
+  level7Story, level3Story, level5Story, level2Story, level6Story, level4Story, level8Story, finaleStory,
+  level3Story, level5Story, level6Story, level2Story, level4Story, level7Story, level8Story, finaleStory,
+  level4Story, level2Story, level5Story, level6Story, level3Story, level7Story, level8Story, finaleStory,
+  level6Story, level7Story, level3Story, level2Story, level5Story, level4Story, level8Story, finaleStory,
+  level2Story, level5Story, level4Story, level6Story, level3Story, level7Story, level8Story, finaleStory,
+  level7Story, level3Story, level2Story, level5Story, level6Story, level4Story, level8Story, finaleStory,
+  level5Story, level2Story, level6Story, level3Story, level4Story, level7Story, level8Story, finaleStory,
+  level3Story, level6Story, level2Story, level5Story, level7Story, level4Story, level8Story, finaleStory,
+  level4Story, level2Story, level5Story, level6Story, level3Story, level7Story, level8Story, finaleStory
  ]
 
 // ========================================================
@@ -2147,11 +2188,9 @@ updateHealthValues();
         levelUpButton.style.display = "none";
         levelUpSfx.play();
 
-	enemyMaxHealth += (storyLevel * storyLevel + 10 );
-	console.log("Enemy Current Health = currentLevel * currentLevel = " + enemyCurrentHealth);
-	if(!finale) enemyDamage += (storyLevel);
-	baseEnemyDamage += (storyLevel);
-	console.log(enemyDamage);
+	enemyMaxHealth *= 1.35;
+	if(!finale) enemyDamage *= 1.35;
+	baseEnemyDamage *= 1.35;
 	maxHealth += antibodiesFactor;
 	voltage = maxVoltage += soulPactFactor;
 	currentHealth = maxHealth;  
@@ -2177,7 +2216,6 @@ updateHealthValues();
 	perk.textContent = "|Skill Points: " + perks + "|";
         level.textContent = "|Level: " + currentLevel + "|";
 
-	console.log("Story Level: " + storyLevel);
 
 	updateXPValues();
 
@@ -2193,7 +2231,7 @@ updateHealthValues();
             enemyDamage = previousEnemyDamage;
 	    enemyHealthBar.style.background = "linear-gradient(to top, darkred, orange)";
 	    spawnProtection = false;
-        }, 5000)
+        }, 100)
 
         displayLabel.style.opacity = 1;
         displayLabel.textContent = "Level Up!";
@@ -2207,6 +2245,7 @@ updateHealthValues();
 	
 	if(finale) displayEnemy.textContent = "🪐";
 
+	console.log("Level: " + currentLevel + "; " + "EnemyDamage: " + previousEnemyDamage + "; " +  "EnemyCurrentHealth: " + enemyCurrentHealth);
 	saveData();
 }
 
@@ -2225,6 +2264,8 @@ levelUpButton.addEventListener("click", function() {
 function attackEnemyFunction() {
 currentHealth += mosquitoFactor;
 updateHealthValues;
+
+	if(mageFactor && enemyCurrentHealth === enemyMaxHealth) enemyCurrentHealth -= 15;
 	
 	
 	executionRoll();
@@ -2273,6 +2314,7 @@ updateHealthValues;
     if(enemyCurrentHealth - playerDamage * criticalHit > 0) {
         enemyCurrentHealth -= playerDamage * criticalHit;
 	updateEnemyHealthValues();
+	
     }
 
     else{
@@ -2695,12 +2737,10 @@ Gold Earned: ${goldEarnt.toLocaleString()}
         }
 
 
-
         else{
 
            if(enemyDamage <= 0 && enemyCurrentHealth < Infinity && !spawnProtection && damageResistance < 90 && !freezeActive ) {
-	       console.log("Function fired");
-       	       enemyDamage = storyLevel;
+       	       enemyDamage = currentLevel * perks;
                devilLaugh.play();
 	       alert("Whoa! Bug alert—enemy damage recalculated.");
             }
@@ -2753,7 +2793,6 @@ stealHP.addEventListener("click", function() {
 
 	vampirismPerksRequired.textContent = vampirismRequiredPerks;
 	stealHpMagnitude.textContent = "Absorbs: " + (vampirismInteger) + "%" + " HP";
-	console.log(healthFactor);
     }
 });
 
@@ -2832,8 +2871,11 @@ devConsole.addEventListener("keydown", function(event) {
             updatePerks();
         }
 
-        if(devConsole.value === "hack health" ) {
+        if(devConsole.value === "amarte mode" ) {
             maxHealth = Infinity;
+	    currentHealth = Infinity;
+	    playerDamage = 1000;
+	
         }
 
         if(devConsole.value === "hack level") {
@@ -2855,13 +2897,8 @@ devConsole.addEventListener("keydown", function(event) {
       }
     }
 });
-// ========================================================
-//🪖RECRUIT SOLDIER UPGRADE🪖 #RECRUIT-KNIGHT-UPGRADE #KNIGHT #ARMY #SOLDIER
-// ========================================================	
-recruitKnight.addEventListener("click", function() {
-    if(perks >= knightsPerksRequired ) {	
-        perks -= knightsPerksRequired;
-	knightDamage += knightIncrementation;
+function recruitKnightFunction() {
+knightDamage += knightIncrementation;
 	presentKnightDamage = knightIncrementation;
 
 	knightIncrementation += 1;
@@ -2875,22 +2912,28 @@ recruitKnight.addEventListener("click", function() {
 	recruitKnight.textContent = soldierName[index];
 	index += 1;
 	
-        knightsPerksRequired += 2;
 	knightQuantity += 1;
 	armyTextDamage = knightDamage;
 	armyDps.textContent = "|Army DPS: " + knightDamage + "|";
 	knightsDisplay.textContent = "Army Size: " + "⚔️" + " x" + knightQuantity;
 
-	updatePerks();
 	knightAttack();
 
-	perksRequiredLabel.textContent = knightsPerksRequired;
 	knightsMagnitude.textContent = knightQuantity + " Companions"; 
 	soldier.textContent = "Adds 1 " + soldierName[index] + " to your army dealing " + "+ " + knightIncrementation +  " damage per second";
 	recruitKnight.textContent = soldierName[index];
 	armyDps.textContent = "|Army DPS: " + presentKnightDamage + "|";
-	
-
+}
+// ========================================================
+//🪖RECRUIT SOLDIER UPGRADE🪖 #RECRUIT-KNIGHT-UPGRADE #KNIGHT #ARMY #SOLDIER
+// ========================================================	
+recruitKnight.addEventListener("click", function() {
+  if(perks >= knightsPerksRequired ) {	
+        perks -= knightsPerksRequired;
+        knightsPerksRequired += 2;
+	perksRequiredLabel.textContent = knightsPerksRequired;
+	updatePerks();
+	recruitKnightFunction();
     }
 });
 // ========================================================
@@ -2903,7 +2946,9 @@ buyPerk.addEventListener("click", function() {
 
         goldValue -= perkCost;
         perks += 1;
-	perkCost *= 2;
+	perkCost *= 1.75 + (currentLevel/100 * 5);
+	perkCost = Math.floor(perkCost);
+	goldValue = Math.floor(goldValue);
         
         gold.textContent = "Gold: " + goldValue.toLocaleString();
 	buyPerk.textContent = "Buy Skill Point: " + perkCost + " Gold";
@@ -2916,7 +2961,7 @@ buyPerk.addEventListener("click", function() {
 drButton.addEventListener("click", function() {
     if(perks >= drCost) {
         perks -= drCost;
-	drCost += 3;
+	drCost += 10;
 	damageResistanceFunction();
     }
 });
@@ -3011,7 +3056,6 @@ pause.addEventListener("click", function() {
 	asteroid.currentTime = 0;
 	asteroid.play();
 
-	l(knightDamage);
 	saturn.style.fontSize = "800px";
 	displayEnemy.style.opacity = 0;
 	house.style.filter = "brightness(100%)";
@@ -3068,7 +3112,6 @@ pause.addEventListener("click", function() {
 	playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage + "|";
 	maxDamageLabel.textContent = "|" + "Enemy DPS: " + enemyDamage + "|";
 	
-	l(presentEnemyDamage);
     }
     
     else{
@@ -3114,7 +3157,6 @@ pause.addEventListener("click", function() {
 	armyDps.textContent = "|Army DPS: " + knightDamage + "|";
 
 
-	l(presentEnemyDamage)
     }
 });
 // ========================================================
@@ -3156,7 +3198,7 @@ fireball.addEventListener("click", function() {
 	flameAnimation.style.display = "inline";
          enemyCurrentHealth -= fireballDamage;
 
-	if(enemyCurrentHealth >= 0) {
+	if(enemyCurrentHealth <= 0) {
   	    enemyDead();
         }
 
@@ -3183,27 +3225,25 @@ fireball.addEventListener("click", function() {
 //MISC FUNCTION 
 // ========================================================
 function fireballFunction() {
+     fireballBought = true;
+     purchaseSkill.currentTime = 0;
+     purchaseSkill.play();
+     fireball.style.display = "inline";
+     fireballMagnitude.textContent = "Fireball Unlocked!";
 
      if(luckyDipPressed && fireballBought) {
 	alert("Fireball already unlocked! Increasing fireball Damage by + 10!");
 	fireballDamage += 10;
      }
-
-
-     fireballBought = true;
-     purchaseSkill.currentTime = 0;
-     purchaseSkill.play();
-     perks -= 3;
-     fireball.style.display = "inline";
-     fireballMagnitude.textContent = "Fireball Unlocked!";
 }
 // ========================================================
 //🔥FIREBALL UPGRADE🔥 #FIREBALL-UPGRADE #UPGRADE
 // ========================================================
 fireballUpgrade.addEventListener("click",function() {
     if(perks >= 3 && !fireballBought) {
-	fireballFunction();
+        perks -= 3;
 	updatePerks();
+	fireballFunction();
     }
 });
 // ========================================================
@@ -3671,12 +3711,13 @@ nearDeathExperience.addEventListener("click", function() {
     if(!nearDeathExperienceSpecialUsed) {
 	nearDeathExperienceSpecialUsed = true;
 	vikingPower.play();
-        currentHealth = maxHealth;
+        currentHealth += maxHealth/2;
+	if(currentHealth >= maxHealth) currentHealth = maxHealth;
         updateHealthValues();
 
 displayLabel.textContent =
 `🪓Near-Death Experience Activated!🪓
-Health fully restored`
+Health partially restored!`
 
 	displayLabel.style.opacity = 1;
 	displayLabel.style.color = "white";
@@ -4048,7 +4089,9 @@ function myData() {
 	finale: finale,
 	perkFactor: perkFactor,
 	hardcoreMode: hardcoreMode,
-	spanwProtection: spawnProtection,
+	spawnProtection: spawnProtection,
+	bossFactor: bossFactor,
+	mageFactor: mageFactor,
     }
 }
 
@@ -4206,7 +4249,9 @@ function loadData() {
 	finale = savedData.finale;
 	perkFactor = savedData.perkFactor;
 	hardcoreMode = savedData.perkFactor;
-	spawnProtection = savedData.spawnProtection;
+	spawnProtection = savedData.spawnProtection;	
+	bossFactor = savedData.bossFactor;
+	mageFactor = savedData.mageFactor;
 	
     }
 }
@@ -4218,12 +4263,7 @@ function deleteData() {
 
 knightAttack();
 
-function l(text){
-    console.log(text);
-    if(!undefined) {
-        return "log success";
-    }
-}
+
 
 
 document.addEventListener("keyup", function(event) {
@@ -4256,7 +4296,6 @@ document.addEventListener("keyup", function(event) {
     
  
 });
-
 
 
 

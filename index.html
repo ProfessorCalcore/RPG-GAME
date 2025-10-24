@@ -78,6 +78,14 @@
             <span id="hp">HP: 250/250</span>
         </div>
 <!------------------------------------------------>
+
+<!------------FORCE-FIELD-GUI---------------------->
+    <div id="force-field-container" style="width: 400px;">
+            <div id="force-field-bar"></div>
+            <span id="shield-strength">SHIELD: 50/50</span>
+        </div>
+<!------------------------------------------------>
+
 	<label id="saturn-lives">Saturn Lives:🪐🪐🪐</label>
 
 <!--------------ENEMY GUI------------------------>
@@ -120,16 +128,10 @@
        
 
 <!---------------------ACTION BUTTONS----------------------->
-	<button id="attack" style="background-color: #333; color: white; font-size: 30px; border-radius: 100%">🗡️
-        </button>
-
-	<button id="heal" style="background-color: #333; color: lime; font-size: 30px; border-radius: 50%">💖
-        </button>
-
+	<button id="attack" style="background-color: #333; color: white; font-size: 30px; border-radius: 100%">🗡️</button>
+	<button id="heal" style="background-color: #333; color: lime; font-size: 30px; border-radius: 50%">💖</button>
 	<button id="charge" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%">⚡</button>
-
 	<button id="fireball" style="background-color: #333; color: cyan; font-size: 30px; border-radius: 50%; display: none;">🔥</button>
-
 	<button id="freeze" style="background-color: #333; color: cyan; font-size: 30px; border-radius: 50%; display: none;">❄️</button>
         <button id="adrenaline" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display: none;">😤</button>
         <button id="lucky-dip" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">🎁</button>
@@ -137,7 +139,9 @@
         <button id="shield-wall" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">🛡️</button>
         <button id="marked-for-death" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">🥷</button>
 	<button id="near-death-experience" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">🪓</button>
+	<button id="bleeding-protection-button" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">🩸</button>
 	<button id="stop-time" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">⏱️</button>
+
 
         <button id="upgrades" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%">🛠️</button>
 
@@ -282,6 +286,26 @@
             <td id="dr-magnitude">🔒</td>
         </tr>
 
+        <tr>
+            <td><button id="shield-strength-upgrade" style="background-color: black; color: white;">🌌Shield Strength🌌[New]</button></td>
+            <td>Increases Max Sheild HP by +50</td>
+            <td id="shield-strength-perks-required">1</td>
+            <td id="shield-strength-magnitude">🔒</td>
+        </tr>
+
+        <tr>
+            <td><button id="energy-boost-upgrade" style="background-color: black; color: white;">🪫Energy Boost🪫[New]</button></td>
+            <td>Refills +5 to your Shield HP whenever you kill an enemy</td>
+            <td id="energy-boost-perks-required">2</td>
+            <td id="energy-boost-magnitude">🔒</td>
+        </tr>
+
+        <tr>
+            <td><button id="tesla-upgrade" style="background-color: black; color: white;">🔌Tesla Upgrade🔌[New]</button></td>
+            <td>Increases your Max Shield Strength by +5 everytime you Level Up!</td>
+            <td id="tesla-perks-required">3</td>
+            <td id="tesla-magnitude">🔒</td>
+        </tr>
 
 	<tr>
 	    <td><button id="guardian-angel-upgrade" style="background-color: black; color: white;">🕊️Guardian Angel🕊️</button></td>
@@ -535,6 +559,17 @@
     <td id="time-travel-magnitude">🔒</td>
 </tr>
 
+<tr>
+    <td><button id="bleeding-protection-upgrade" style="background-color: black; color: white;">🩸Bleeding Protection🩸[New]</button></td>
+    <td>Recharges your shield at the cost of sacrificing 15% of your max Health!</td>
+    <td id="bleeding-protection-perks-required">7</td>
+    <td id="bleeding-protection-magnitude">🔒</td>
+</tr>
+
+
+
+
+
 
 </table>
 
@@ -625,6 +660,8 @@
 	<audio id="freeze-time" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/time-freeze-tension-327055.mp3" preload="auto"></audio>
 	<audio id="asteroid" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/massive-explosion-2-397983.mp3" preload="auto"></audio>
 	<audio id="rock-smash" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/rock-destroy-6409.mp3" preload="auto"></audio>
+	<audio id="blood-sfx" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/blade-piercing-body-352462.mp3" preload="auto"></audio>
+	<audio id="power-down" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/power-down-7103.mp3" preload="auto"></audio>
 
 
 

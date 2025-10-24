@@ -208,6 +208,14 @@ let hardcoreMode = false;
 
 let bossFactor = 1;
 let mageFactor = false;
+
+let maxShieldHP = 50;
+let shieldHP = 50;
+let shieldPercentage = (shieldHP/maxShieldHP) * 100;
+let shieldRecoveryFactor = 0;
+
+let teslaRequiredPerks = 3;
+let teslaFactor = 1;
 // ========================================================
 // 🔢 ENEMY LIST ARRAY
 // ========================================================
@@ -400,6 +408,9 @@ const freezeTime = document.querySelector("#freeze-time");
 const unfreezeTime = document.querySelector("#unfreeze-time");
 const asteroid = document.querySelector("#asteroid");
 const rockSmash = document.querySelector("#rock-smash");
+const bloodSfx = document.querySelector("#blood-sfx");
+const powerDown = document.querySelector("#power-down");
+
 
 // ========================================================
 // 🔢 MAGNITUDE ELEMENTS (MOTIVATION BOOSTERS)
@@ -531,12 +542,27 @@ const timeTravelUpgrade = document.querySelector("#time-travel-upgrade");
 const timeTravelMagnitude = document.querySelector("#time-travel-magnitude");
 const saturnLives = document.querySelector("#saturn-lives");
 
+const forceFieldBar = document.querySelector("#force-field-bar");
+const shieldStrength = document.querySelector("#shield-strength");
+
+const shieldStrengthUpgrade = document.querySelector("#shield-strength-upgrade");
+const shieldStrengthPerksRequired = document.querySelector("#shield-perks-required");
+const shieldStrengthMagnitude = document.querySelector("#shield-strength-magnitude");
+
+const energyBoostUpgrade = document.querySelector("#energy-boost-upgrade");
+const energyBoostMagnitude = document.querySelector("#energy-boost-magnitude");
+
+const bleedingProtectionUpgrade = document.querySelector("#bleeding-protection-upgrade");
+const bleedingProtectionMagnitude = document.querySelector("#bleeding-protection-magnitude");
+const bleedingProtectionButton = document.querySelector("#bleeding-protection-button");
+
+const teslaUpgrade = document.querySelector("#tesla-upgrade");
+const teslaPerksRequired = document.querySelector("#tesla-perks-required");
+const teslaMagnitude = document.querySelector("#tesla-magnitude");
 
 
 swordKill.volume = 0.5;
 criticalSfx.volume = 0.3;
-
-
 
 
 loadData();
@@ -640,7 +666,9 @@ alert(
 💰 Skill Point cost reworked — each purchase now costs 1.75× than the previous cost!
 ⚠️ Hardcore Mode is now impossible and skill bonuses increased to +3 additional per level
 🛡️ Damage Resistance capped at 85%
-🔥 Fireball damage increased`);
+🔥 Fireball damage increased
+🌌 Added a brand new game mechanic that offers protection untill depleted!
+🛠️ Added several shield upgrades to improve it's effectiveness!`);
 
 
 
@@ -915,6 +943,8 @@ function enemyDead() {
 	swordKill.currentTime = 0;
     	if(!finale) swordKill.play();
 	enemiesKilled += 1;
+	shieldHP += shieldRecoveryFactor;
+	updateShieldValues();
 	degrees += 3;
 	moon.style.filter = `brightness(100%) hue-rotate(${degrees}deg)`;
 
@@ -1537,6 +1567,14 @@ Voltage Depleted`)
 // ========================================================
 // ⚡UPDATE RESOURCES/STATUS⚡#UPDATE STATS
 // ========================================================
+function updateShieldValues() {
+    shieldPercentage = (shieldHP/ maxShieldHP) * 100;
+    shieldStrength.textContent = "SHIELD: " + shieldHP + "/" + maxShieldHP;
+    forceFieldBar.style.width = shieldPercentage + "%";
+}
+
+
+
 //💖HEALTH UPDATES💖								                
 function updateHealthValues() {
     	HPPercentage = (currentHealth/maxHealth) * 100;
@@ -2172,7 +2210,10 @@ updateHealthValues();
 	timelines[storyLevel-1]();
 	displayEnemy.textContent = enemyEmojis[storyLevel];
 	if(!finale) enemyHP.textContent = enemyList[storyLevel-1].toUpperCase() + " HP" + ": " + enemyCurrentHealth + "/" + enemyMaxHealth;
-
+	
+	maxShieldHP += teslaFactor;
+	shieldHP = maxShieldHP;
+	updateShieldValues();
 
 	nearDeathExperienceSpecialUsed = false;
 	shieldWallSpecialUsed = false;
@@ -2742,11 +2783,25 @@ Gold Earned: ${goldEarnt.toLocaleString()}
            if(enemyDamage <= 0 && enemyCurrentHealth < Infinity && !spawnProtection && damageResistance < 90 && !freezeActive ) {
        	       enemyDamage = currentLevel * perks;
                devilLaugh.play();
-	       alert("Whoa! Bug alert—enemy damage recalculated.");
             }
+
 	    guardianRoll();
-            currentHealth -= enemyDamage * guardianFactor;
-	    enemyCurrentHealth -= reflectedDamage
+	    if(shieldHP - enemyDamage <=0) {
+	        shieldHP = 0;   
+	        updateShieldValues();
+            }
+
+	    if(shieldHP > 0) {
+	        shieldHP -= enemyDamage;
+		updateShieldValues();
+	    }
+	
+	    else if(shieldHP <= 0) {
+                currentHealth -= enemyDamage * guardianFactor;
+	        enemyCurrentHealth -= reflectedDamage
+            }
+
+
 
 	    if(enemyCurrentHealth <= 0) {
 	        enemyDead();
@@ -4092,6 +4147,11 @@ function myData() {
 	spawnProtection: spawnProtection,
 	bossFactor: bossFactor,
 	mageFactor: mageFactor,
+	maxShieldHP: maxShieldHP,
+	shieldHP: shieldHP,
+	shieldRecoveryFactor: shieldRecoveryFactor,
+	teslaFactor: teslaFactor,
+	teslaRequiredPerks: teslaRequiredPerks,
     }
 }
 
@@ -4252,6 +4312,11 @@ function loadData() {
 	spawnProtection = savedData.spawnProtection;	
 	bossFactor = savedData.bossFactor;
 	mageFactor = savedData.mageFactor;
+	maxShieldHP = savedData.maxShieldHP;
+	shieldHP = savedData.shieldHP;
+	shieldRecoveryFactor = savedData.shieldRecoveryFactor;
+        teslaFactor = savedData.teslaFactor;
+	teslaRequiredPerks = savedData.teslaRequiredPerks;
 	
     }
 }
@@ -4292,13 +4357,90 @@ document.addEventListener("keyup", function(event) {
     else if(event.key === "u") {
         openUpgradesFunction();  
     }
+});
+
+function shieldStrengthFunction() {
+    purchaseSkill.currentTime = 0;
+    purchaseSkill.play();
+    maxShieldHP += 50;
+    updateShieldValues();
+    shieldStrengthMagnitude.textContent = "Max Shield Strength: " + maxShieldHP;
+}
+
+
+
+shieldStrengthUpgrade.addEventListener("click", function() {
+    if(perks >= 1) {
+        perks -= 1;
+	updatePerks();
+	shieldStrengthFunction();
+    }
+});
+
+function energyBoostFunction() {
+    purchaseSkill.currentTime = 0;
+    purchaseSkill.play();
+    shieldRecoveryFactor += 5;
+    energyBoostMagnitude.textContent = "+ " + shieldRecoveryFactor;
+}
+
+energyBoostUpgrade.addEventListener("click", function() {
+    if(perks >= 2) {
+        perks -= 2;
+	updatePerks();
+	energyBoostFunction();
+    }
+});
+
+bleedingProtectionButton.addEventListener("click", function() {
+    bloodSfx.currentTime = 0;
+    bloodSfx.play();
+
+    maxHealth = Math.floor(maxHealth *= 0.85);
+    shieldHP = maxShieldHP;
+    if(currentHealth > maxHealth) currentHealth = maxHealth;
     
     
- 
+    updateHealthValues();
+    updateShieldValues();
 });
 
 
 
+function bleedingProtectionFunction() {
+    purchaseSkill.currentTime = 0;
+    purchaseSkill.play();
+    bleedingProtectionButton.style.display = "inline";
+    bleedingProtectionMagnitude.textContent = "Bleeding Protection Unlocked!";
+}
+
+bleedingProtectionUpgrade.addEventListener("click", function() {
+    if(perks >= 5) {
+        perks -= 5;
+	updatePerks();
+	bleedingProtectionFunction();
+    }
+});
+
+
+function teslaFunction() {
+    purchaseSkill.currentTime = 0;
+    purchaseSkill.play();
+    teslaFactor += 5;
+    teslaMagnitude.textContent = teslaFactor;
+
+}
+
+teslaUpgrade.addEventListener("click", function() {
+    if(perks >= teslaRequiredPerks) {
+        perks-= teslaRequiredPerks;
+        teslaRequiredPerks += 1;
+	teslaPerksRequired.textContent = teslaRequiredPerks;
+
+	updatePerks();
+	teslaFunction();
+    }    
+});
 
 
 

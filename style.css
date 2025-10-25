@@ -985,6 +985,23 @@
 		transform: scale(1.1);		
 	}
 
+	#shield-rays-upgrade:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px red;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#duel-wield-upgrade:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px purple;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+
 	#rewind{
 		font-size: 40px;
 		background: #333;

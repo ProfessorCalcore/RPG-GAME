@@ -215,7 +215,7 @@ let shieldPercentage = (shieldHP/maxShieldHP) * 100;
 let shieldRecoveryFactor = 0;
 
 let teslaRequiredPerks = 3;
-let teslaFactor = 1;
+let teslaFactor = 0;
 // ========================================================
 // 🔢 ENEMY LIST ARRAY
 // ========================================================
@@ -4441,6 +4441,7 @@ teslaUpgrade.addEventListener("click", function() {
 	teslaFunction();
     }    
 });
+
 
 
 

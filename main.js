@@ -21,10 +21,10 @@ let minDamage = 1;
 let maxDamage = 10;
 let heal = 20;
 let active = 1; 
-let concentrationFactor = 1; 
+let concentrationFactor = 1;
+let concentrationPerks = 2; 
 let goldFactor = 1;
 let requiredXP = 200;
-let concentrationPerks = 2;
 
 
 let adrenalineFactor = 2;
@@ -124,6 +124,105 @@ let mageFurySpecialUsed = false;
 
 let bloodthirstyRequiredPerks = 8;
 let bloodthirstyFactor = 0;
+
+let criticalDamageRequiredPerks = 5;
+let criticalDamageFactor = 2;
+
+let criticalChanceRequiredPerks = 5;
+let criticalChanceFactor = 1;
+let criticalHit = 2;
+
+let playerName = "";
+let upgradesOpen = false;
+let totalHealth = 0;
+
+let eyeForEyeRequiredPerks = 1;
+let eyeForEyeFactor = 0
+let eyeForEyePercentage = 0;
+
+let mosquitoRequiredPerks = 15;
+let nearDeathActive  = false;
+let markedForDeathActive = false;
+let shieldWallActivated = false;
+let luckyDipBought = false;
+
+let realEstateRequiredPerks = 1;
+let realEstateInterval;
+let incomeFactor = 0;
+let antibodiesRequiredPerks = 2;
+let executionRequiredPerks = 2;
+
+
+let shockwaveFactor = 1;
+let shockwaveRequiredPerks = 4;
+let luckyFingersRequiredPerks = 1;
+let noMercyRequiredPerks = 5;
+
+let currentDamage;
+let adrenalineActivated = false;
+let superNovaRequiredPerks = 3
+let activatedFireball = false;
+
+let fireballDps = 1;
+let paused = false;
+let spawnProtection = true;
+
+let windowWidth = window.innerWidth;
+
+let knightIncrementation = 1;
+let index = 0;
+let difference = 0;
+
+let knightsPerksRequired = 2;
+let knightInterval;
+let armyDamage = 0;
+
+let knightDamage = 0;
+let checkOpacity;
+
+let vampirismPercentage = 0;
+let vampirismInteger = 0;
+let vampirismRequiredPerks = 4;
+let removePause = false;
+let splitSecondsBought = false;
+let splitSecondsDuration = 5000;
+let draggedEternityRequiredPerks = 5;
+
+let frozenFactor = 2000;
+
+let classSelected = false;
+let classType;
+let previousEnemyDamage;
+let accessGranted = false;
+let size = 100;
+let saturnSize = 10;
+let saturnDeg = 0;
+let finale = false;
+
+let timeTravelActivated = false;
+let freezeUnlocked = false;
+
+let saturnLivesLeft = 3;
+let attackReady = true;
+let perkFactor = 0;
+let hardcoreMode = false;
+
+let bossFactor = 1;
+let mageFactor = false;
+
+let maxShieldHP = 50;
+let shieldHP = 50;
+let shieldPercentage = (shieldHP/maxShieldHP) * 100;
+let shieldRecoveryFactor = 0;
+
+let teslaRequiredPerks = 3;
+let teslaFactor = 0;
+let difficultyMode = 1.5;
+
+let shieldRaysFactor = 0;
+let shieldRaysRequiredPerks = 1;
+let difficultyChosen = false;
+
 
 
 
@@ -4469,4 +4568,5 @@ function deleteData() {
 
 
 knightAttack();
+
 

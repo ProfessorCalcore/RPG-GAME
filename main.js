@@ -216,6 +216,13 @@ let shieldRecoveryFactor = 0;
 
 let teslaRequiredPerks = 3;
 let teslaFactor = 0;
+let difficultyMode = 1.5;
+
+let shieldRaysFactor = 0;
+let shieldRaysRequiredPerks = 1;
+let difficultyChosen = false;
+
+
 // ========================================================
 // 🔢 ENEMY LIST ARRAY
 // ========================================================
@@ -261,6 +268,7 @@ const enemyEmojis = [
   "🦁","🔥","❄️","⚡","🌑","🌌","🌙","🏔️","💥","🐉",
   "💪","🔥","⚡","💪","☠️","🐉","💪","Ω","∅"
 ];
+
 
 // ========================================================
 // 🧍 PLAYER / ENEMY UI ELEMENTS
@@ -560,6 +568,15 @@ const teslaUpgrade = document.querySelector("#tesla-upgrade");
 const teslaPerksRequired = document.querySelector("#tesla-perks-required");
 const teslaMagnitude = document.querySelector("#tesla-magnitude");
 
+const difficulty = document.querySelector("#difficulty");
+
+const shieldRaysUpgrade = document.querySelector("#shield-rays-upgrade");
+const shieldRaysMagnitude = document.querySelector("#shield-rays-magnitude");
+const shieldRaysPerksRequired = document.querySelector("#shield-rays-perks-required");
+
+const duelWieldUpgrade = document.querySelector("#duel-wield-upgrade");
+const duelWieldMagnitude = document.querySelector("#duel-wield-magnitude");
+
 
 swordKill.volume = 0.5;
 criticalSfx.volume = 0.3;
@@ -653,23 +670,88 @@ const xpTable = document.querySelector("#xp-table");
 // 🎬INTRO🎬 #INTRO
 // ========================================================
 alert(
-`CHAPTER V – Death Wars: harder, faster, stronger! (v1.13)
-🔥 Challenge ramped up significantly
-💪 Boss stats boosted — prepare for a tougher fight
-⏱️ Spawn protection removed on level-up (health refill balances this)
-📈 Enemy health & DPS formulas revamped: now scale ×1.35 per level
-🐛 Various bug fixes implemented
-🛡️ Viking: critical damage bonus; special ability nerfed — heals only 50% of max health
-🔥 Mage: improved healing powers + equipped with fireball; starts off with better defense against enemy dps
-🤺 Knight: starts with a companion from the beginning
-🏆 Defeating a boss now doubles your skill points! But beware — bosses are stronger than ever.
-💰 Skill Point cost reworked — each purchase now costs 1.75× than the previous cost!
-⚠️ Hardcore Mode is now impossible and skill bonuses increased to +3 additional per level
-🛡️ Damage Resistance capped at 85%
-🔥 Fireball damage increased
-🌌 Added a brand new game mechanic that offers protection untill depleted!
-🛠️ Added several shield upgrades to improve it's effectiveness!`);
+`Chapter VI — The Easy way or the Hard way... (v1.14)
+🔥 Added difficulty settings.
+🛡️ Introduced a new skill: Shield Rays.
+🐛 Fixed the zombie bug.
+📉 Nerfed mage voltage back to 200 — still balanced thanks to the mage's high healing power.
+📉 Nerfed the rewards with the mysterious wish storyline
+😭 Hardcore Mode — retired (for now). Too redundant in its current form, but might make a glorious comeback later. ⚔️
+🎁 The Lucky Dip just got juicier — more surprises added!`);
 
+if(!difficultyChosen) {
+difficultyPrompt = prompt(`
+💀 How brave are you today? 💀
+[1] 🍼 Very Easy
+[2] 😊 Easy  
+[3] ⚔️ Normal  
+[4] 😤 Hard  
+[5] 🔥 Very Hard  
+[6] ☠️ Death-Wish  
+[7] 💀 Death-In-Split-Seconds (Idiot Edition)
+`)
+difficultyChosen = true;
+
+if(difficultyPrompt === "1") {
+    alert("Toddler Mode Activated!")
+    difficultyMode = 1.15;
+    enemyCurrentHealth -=80;
+    enemyMaxHealth -= 80;
+    difficulty.textContent = "|" + "Difficulty: Very Easy" + "|";
+}
+else if(difficultyPrompt === "2") {
+    alert("Coward Mode Activated!")
+    difficultyMode = 1.25;
+    enemyCurrentHealth -=50;
+    enemyMaxHealth -=50;
+    difficulty.textContent = "|" + "Difficulty: Easy" + "|";
+
+    
+}
+
+else if(difficultyPrompt === "3") {
+    alert("Hero Mode Activated!")
+    difficultyMode = 1.4;
+    enemyCurrentHealth -= 25;
+    enemyMaxHealth -= 25;
+    difficulty.textContent = "|" + "Difficulty: Normal" + "|";
+
+}
+
+else if(difficultyPrompt === "4") {
+    alert("Brave Mode Activated")
+    difficultyMode = 1.65;
+    perkFactor = 1
+    difficulty.textContent = "|" + "Difficulty: Hard" + "|";
+
+    
+}
+
+else if(difficultyPrompt === "5") {
+    alert("Adrenaline Junkie Mode Activated")
+    difficultyMode = 1.85;
+    perkFactor = 2
+    difficulty.textContent = "|" + "Difficulty: Very Hard" + "|";
+
+}
+
+else if(difficultyPrompt === "6") {
+    alert("Death Mode Activated")
+    difficultyMode = 2.25;
+    perkFactor = 3
+    difficulty.textContent = "|" + "Difficulty: Death-Wish" + "|";
+
+}
+
+else if(difficultyPrompt === "7") {
+    alert("Impossible Mode Activated")
+    difficultyMode = 3;
+    
+    perkFactor = 4
+    difficulty.textContent = "|" + "Difficulty: Death-In-Split-Seconds" + "|";
+
+}
+}
 
 
 introDecision = prompt(`
@@ -677,7 +759,6 @@ Welcome to the Game! Would you like to skip the intro?
 [1] ⚡ Skip the lame intro — let's get to the action!
 [2] 🖊️ No way — I'm naming my legend!
 [3] 🎲 Fate's call — roll the dice!
-[4] 😏 A 'game'? Please… this is amateur hour[HARDCORE MODE]
 `)
 
 function level1Story() {
@@ -795,8 +876,8 @@ Special Ability: 🥷Marked For Death🥷 - Critical Chance improved by 25% for 
 	classSelected = true;
 	currentHealth = 75;
 	maxHealth = 75;
-	voltage = 300;
-	maxVoltage = 300;
+	voltage = 200;
+	maxVoltage = 200;
 	playerDamage = 1;
 	heal = 40;
 	enemyDamage = 2;
@@ -815,7 +896,7 @@ Special Ability: 🥷Marked For Death🥷 - Critical Chance improved by 25% for 
 alert(`🔮Mage Stats🔮 
 Health: 75
 Damage: 1
-Voltage: 300
+Voltage: 250
 Healing Potency: 40
 Bonus: 🔥 Fireball | 💖 High Healing | 🛡️ Decreased Enemy DPS | ⚔️ Initial Strikes -15 HP
 Special Ability: 🔮Sorceror's Fury🔮 - Rapidly regenerate Voltage for a short period of time.`);
@@ -900,37 +981,6 @@ else if(introDecision === "3") {
     else if(!diceRoll) {
         alert("Tails🪙");
     }
-}
-
-else if(introDecision === "4" && !hardcoreMode) {
-    alert("Very well, mortal. You crave pain and glory — the game will show you both in ways you cannot imagine!");
-    alert("😈🔥Max Health decreased to 100😈🔥");
-        maxHealth = 100;
-        currentHealth = 100;
-    alert("😈🔥Max Voltage decreased to 50!😈🔥");
-        maxVoltage = 50;
-        voltage = 50;
-    alert("😈🔥Skill Points decreased to -5😈🔥");
-        perks -= 5;
-    alert("😈🔥Required XP increased to 300😈🔥");
-        requiredXP = 300;
-    alert("😈🔥Enemy Health Increased to 250😈🔥");
-        enemyCurrentHealth = 250;
-        enemyMaxHealth = 250;
-        hardcoreMode = true;
-
-    updateHealthValues();
-    updateVoltageValues();
-    updateXPValues();
-    updateEnemyHealthValues();
-    updatePerks();
-
-alert("😈💀Welcome to Hardcore Mode!😈💀");
-alert(
-`The challenge is brutal… but your rewards are greater!
-You now gain an extra 3 Skill Points Per Level!`);
-
-    perkFactor += 3;
 }
 
 
@@ -1364,6 +1414,15 @@ incomeUpgrades.addEventListener("click", function() {
 // ========================================================
 // 🛠️FUNCTIONS🛠️ #FUNCTIONS
 // ========================================================
+// 🧬ANTIBODIES FUNCTION🧬
+function antibodiesFunction () {
+	purchaseSkill.currentTime = 0;
+	purchaseSkill.play();
+	antibodiesMagnitude.textContent = "+" + antibodiesFactor + " HP";   
+	antibodiesFactor += 5;
+
+}
+
 //🩸BLOODTHIRSTY FUNCTION🩸#BLOODTHIRSTY
 function bloodthirstyFunction() {
     purchaseSkill.currentTime = 0;
@@ -1372,6 +1431,14 @@ function bloodthirstyFunction() {
     bloodthirstyFactor += 1;
     bloodthirstyPerksRequired.textContent = bloodthirstyRequiredPerks;
     bloodthirstyMagnitude.textContent = "+ " + bloodthirstyFactor + " HP";
+}
+
+//🩸BLEEDING PROTECTION FUNCTION🩸#BLEED
+function bleedingProtectionFunction() {
+    purchaseSkill.currentTime = 0;
+    purchaseSkill.play();
+    bleedingProtectionButton.style.display = "inline";
+    bleedingProtectionMagnitude.textContent = "Bleeding Protection Unlocked!";
 }
 
 //🎯CRITICAL CHANCE FUNCTION🎯 #CHANCE #CRITICAL
@@ -1563,6 +1630,21 @@ Voltage Depleted`)
 	       luckyDipPressed = false;
 	   }
        }
+}
+//🌌SHIELD RAY FUNCTION🌌
+function shieldRaysFunction() {
+    purchaseSkill.currentTime = 0;
+    purchaseSkill.play();
+    shieldRaysFactor += 1;
+    shieldRaysMagnitude.textContent = shieldRaysFactor + " DMG";
+}
+//🌌TESLA FUNCTION🌌
+function teslaFunction() {
+    purchaseSkill.currentTime = 0;
+    purchaseSkill.play();
+    teslaFactor += 5;
+    teslaMagnitude.textContent = teslaFactor;
+
 }
 // ========================================================
 // ⚡UPDATE RESOURCES/STATUS⚡#UPDATE STATS
@@ -1811,6 +1893,8 @@ function level3Story() {
 	    alert("You slide the coin down your pocket! It's only a coin but you never know. May bring you good luck!");
 	    alert("+ 1 Gold");	
 	    goldValue += 1;
+	    enemyDamage -= 2;
+	    maxDamageLabel.textContent = "|Enemy DPS: " + enemyDamage + "|";
 	    gold.textContent = "Gold: " + goldValue.toLocaleString();
 
 	    alert("After putting a coin in your pocket, the spiders smell you out and block all exits. The only way out is to kill the Queen and her brothers. Grab that knife and stab them where it hurts!")
@@ -1818,8 +1902,8 @@ function level3Story() {
 
 	else if (decisions3 === "4") {
             alert("You destroy the coin using your knife! Preventing others from gaining fortune or losing it!")
-	    alert("A blessing descends from the heavens! All gold looted from enemies is now 10% greater!");
-	    goldFactor += 0.1;
+	    alert("A blessing descends from the heavens! All gold looted from enemies is now 25% greater!");
+	    goldMultiplier += 0.25;
 
 	    alert("Caution! " + enemyList[storyLevel].toLowerCase() + "s" + " Giant Spiders now surround you. Their fangs are poisonous but their skin is pathetic. Find their weakness and destroy them before you become their new breeding ground. Yuck!")
         }
@@ -1864,31 +1948,31 @@ function level5Story() {
 	alert("Before you embark on the long journey, a mysterious opportunity appears—you may make a single wish! Choose wisely…");
 
 	let decisions5 = prompt(`
-[1] 💖Double Health
-[2] 💥Double Damage
-[3] ⚡Double Max Voltage
+[1] 💖+ 200 Health
+[2] 💥+ 10 Damage
+[3] ⚡+ 100 Max Voltage
 `);
 
 	if (decisions5 === "1") {
 	    alert("Your skin hardens and transforms into impenetrable rock!");
-	    maxHealth *= 2;
+	    maxHealth += 200;
 	    updateHealthValues();
-	    alert("Max Health doubled!");
+	    alert("Max Health increased!");
 
 	    alert("Suddenly, a dark-grey " + enemyList[storyLevel].toLowerCase() + " ambushes you in the forest. The shadows are thick, so you set a tree ablaze to illuminate the area. Let's see if your rock-like hide can save you…");
 
 	} else if (decisions5 === "2") {
 	    alert("Your weapon fuses with the venom of death itself!");
-	    playerDamage *= 2;
+	    playerDamage += 10;
 	    playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage + "|";
-	    alert("You now deal twice as much damage!");
+	    alert("You now deal much more damage!");
 
 	    alert("A bright-green " + enemyList[storyLevel].toLowerCase() + " ambushes you in the forest. It's almost pitch-dark, so you light a torch and place it on a tree. Let's see if your venomous weapon strikes true…");
 
 	} else if (decisions5 === "3") {
 	    alert("A surge of energy courses through your body, electrifying every vein!");
-	    maxVoltage *= 2;
-	    alert("Voltage capacity doubled!");
+	    maxVoltage += 100;
+	    alert("Voltage capacity increased!");
 
 	    alert("A giant " + enemyList[storyLevel].toLowerCase() + "s" + " ambushes you in the forest. The darkness is nearly complete, but your super-charged battery powers your flashlight. Time to see if raw energy can illuminate your victory…");
 	}
@@ -1909,16 +1993,16 @@ function level6Story() {
 [4] 🩸 Make a blood offering to spare yourself.
 `)
 
-let chamber = Math.floor(Math.random()  + 1);
+let chamber = Math.floor(Math.random() * 6  + 1);
 
 	if(decision6 === "1") {
 	    if(chamber === 1) {
-		alert("You point the revolver at your head and fire...");
+		console.log("Hello");
 	        revolverSfx.play();
-	        revolverSfx.play();
-	        revolverSfx.play();
-		currentHealth = 0;
+		enemyDamage = Infinity;
+	  	updateHealthValues();
 	    }
+	
 	
 	    else{
 		alert("You point the revolver at ur head and fire...");
@@ -1932,8 +2016,6 @@ let chamber = Math.floor(Math.random()  + 1);
 	else if(decision6 === "2") {
 	    if(chamber === 1) {
 		alert("Zombie points the revolver at his head and fires...");
-	        revolverSfx.play();
-	        revolverSfx.play();
 	        revolverSfx.play();
 		setTimeout(function() {
 		
@@ -2093,6 +2175,7 @@ function level8Story() {
 [2] Continue Story
 `)
     if(level8StoryPrompt === "1") {
+	difficultyChosen = false;
         alert("...");
 alert("...");
 alert("Light swallows you whole. Your consciousness peels apart as time folds in on itself, dragging your mind backward through everything you’ve ever been.");
@@ -2229,12 +2312,13 @@ updateHealthValues();
         levelUpButton.style.display = "none";
         levelUpSfx.play();
 
-	enemyMaxHealth *= 1.35;
-	if(!finale) enemyDamage *= 1.35;
-	baseEnemyDamage *= 1.35;
+	enemyMaxHealth *= difficultyMode;
+	if(!finale) enemyDamage *= difficultyMode;
+	baseEnemyDamage *= difficultyMode;
 	maxHealth += antibodiesFactor;
 	voltage = maxVoltage += soulPactFactor;
 	currentHealth = maxHealth;  
+	
 
 	damageResistanceFunction2();
 	enemyDamage = presentEnemyDamage;
@@ -2793,12 +2877,13 @@ Gold Earned: ${goldEarnt.toLocaleString()}
 
 	    if(shieldHP > 0) {
 	        shieldHP -= enemyDamage;
+	        enemyCurrentHealth -= shieldRaysFactor
 		updateShieldValues();
 	    }
 	
 	    else if(shieldHP <= 0) {
                 currentHealth -= enemyDamage * guardianFactor;
-	        enemyCurrentHealth -= reflectedDamage
+	        enemyCurrentHealth -= reflectedDamage 
             }
 
 
@@ -3280,16 +3365,18 @@ fireball.addEventListener("click", function() {
 //MISC FUNCTION 
 // ========================================================
 function fireballFunction() {
+     if(luckyDipPressed && fireballBought) {
+	alert("Fireball already unlocked! Increasing fireball Damage by + 10!");
+	fireballDamage += 10;
+     }
+
      fireballBought = true;
      purchaseSkill.currentTime = 0;
      purchaseSkill.play();
      fireball.style.display = "inline";
      fireballMagnitude.textContent = "Fireball Unlocked!";
 
-     if(luckyDipPressed && fireballBought) {
-	alert("Fireball already unlocked! Increasing fireball Damage by + 10!");
-	fireballDamage += 10;
-     }
+
 }
 // ========================================================
 //🔥FIREBALL UPGRADE🔥 #FIREBALL-UPGRADE #UPGRADE
@@ -3455,23 +3542,17 @@ executionUpgrade.addEventListener("click", function() {
 	updatePerks();
     }
 });
-
 // ========================================================
 // 🧬ANTIBODIES UPGRADE🧬 #ANTIBODIES-UPGRADE
 // ========================================================
 antibodiesUpgrade.addEventListener("click", function() {
     if(perks >= antibodiesRequiredPerks){
-      perks -= antibodiesRequiredPerks;
-	purchaseSkill.currentTime = 0;
-	purchaseSkill.play();
+        perks -= antibodiesRequiredPerks;
 	antibodiesRequiredPerks += 6;
-	antibodiesFactor += 5;
-	updatePerks();
-
 	antibodiesPerksRequired.textContent = antibodiesRequiredPerks;
-	antibodiesMagnitude.textContent = "+" + antibodiesFactor + " HP";   
-    }
-      
+	antibodiesFunction();
+	updatePerks();
+    }    
 });
 // ========================================================
 // 😈SELL SOUL UPGRADE😈 #SELL-SOUL-UPGRADE #UPGRADE-SOUL
@@ -3482,9 +3563,9 @@ sellSoulUpgrade.addEventListener("click", function() {
     }
 })
 // ========================================================
-// 🎁LUCKY DIP BUTTON🎁 #LUCKY-DIP-BUTTON
+// 🎁LUCKY DIP BUTTON🎁 #LUCKY-DIP-BUTTON 
 // ========================================================
-let randomUpgrades = [sellSoulFunction, executionFunction, fireballFunction, guardianFunction, damageResistanceFunction, voltageRegenerationFunction, healUpgradeFunction, criticalDamageFunction, criticalChanceFunction, luckyFingersFunction];
+let randomUpgrades = [sellSoulFunction, executionFunction, fireballFunction, guardianFunction, damageResistanceFunction, voltageRegenerationFunction, healUpgradeFunction, criticalDamageFunction, criticalChanceFunction, luckyFingersFunction, shieldRaysFunction, teslaFunction, antibodiesFunction, bloodthirstyFunction];
 
 luckyDipButton.addEventListener("click", function(){
     if(perks >= luckyDipPerkCost) {
@@ -3553,9 +3634,34 @@ alert(
 
 else if(randomUpgradeSelection === 9) {
 alert(
-`🍀 Lucky Fingers upgraded — gold looted increased!🍀`
+`🍀Lucky Fingers upgraded — gold looted increased!🍀`
 );
 }
+
+else if(randomUpgradeSelection === 10) {
+alert(
+`🌌Shield Rays Upgraded - increased shield damage towards enemies!🌌`
+);
+}
+
+else if(randomUpgradeSelection === 11) {
+alert(
+`🌌Better Shields Upgraded — Your shields get stronger with every level-up!🌌`
+);
+}
+
+else if(randomUpgradeSelection === 12) {
+alert(
+`🧬Antibodies Upgraded — Every level strengthens your body, granting more max health!🧬`
+);
+}
+
+else if(randomUpgradeSelection === 13) {
+alert(
+`🩸Bloodthirsty Upgraded — Critical strikes feed your blood, boosting the max HP gained per hit!🩸`
+);
+}
+
 
 updatePerks();
 randomUpgrades[randomUpgradeSelection]();
@@ -3999,21 +4105,142 @@ timeTravelUpgrade.addEventListener("click", function() {
 
 
 
+// ========================================================
+// KEYBOARD SHORTCUPS
+// ========================================================
+document.addEventListener("keyup", function(event) {
+    if(event.key === "a" && attackReady === true) {
+	attackReady = false;
+        attackEnemyFunction();	
+	setTimeout(function() {
+	    attackReady = true;    
+	},100);
+    }
+
+    else if(event.key === "h" && attackReady === true) {
+	healPlayerFunction();
+    }
+
+    else if(event.key === "l") {
+	if(currentXP >= requiredXP) {
+	    levelUpFunction();
+	}
+    }
+
+    else if(event.key === "c" && attackReady === true) {
+        chargeVoltageFunction();   
+    }
+
+    else if(event.key === "u") {
+        openUpgradesFunction();  
+    }
+});
 
 
+function shieldStrengthFunction() {
+    purchaseSkill.currentTime = 0;
+    purchaseSkill.play();
+    maxShieldHP += 50;
+    updateShieldValues();
+    shieldStrengthMagnitude.textContent = "Max Shield Strength: " + maxShieldHP;
+}
 
 
+// ========================================================
+// SHIELD STRENGTH UPGRADE
+// ========================================================
+shieldStrengthUpgrade.addEventListener("click", function() {
+    if(perks >= 1) {
+        perks -= 1;
+	updatePerks();
+	shieldStrengthFunction();
+    }
+});
 
+function energyBoostFunction() {
+    purchaseSkill.currentTime = 0;
+    purchaseSkill.play();
+    shieldRecoveryFactor += 5;
+    energyBoostMagnitude.textContent = "+ " + shieldRecoveryFactor;
+}
 
+// ========================================================
+// ENERGY BOOST UPGRADE
+// ========================================================
+energyBoostUpgrade.addEventListener("click", function() {
+    if(perks >= 2) {
+        perks -= 2;
+	updatePerks();
+	energyBoostFunction();
+    }
+});
 
+// ========================================================
+// BLEEDING PROTECTION BUTTON
+// ========================================================
+bleedingProtectionButton.addEventListener("click", function() {
+    bloodSfx.currentTime = 0;
+    bloodSfx.play();
 
+    maxHealth = Math.floor(maxHealth *= 0.85);
+    shieldHP = maxShieldHP;
+    if(currentHealth > maxHealth) currentHealth = maxHealth;
+    
+    
+    updateHealthValues();
+    updateShieldValues();
+});
+// ========================================================
+//🩸BLEEDING PROTECTION UPGRADE🩸
+// ========================================================
+bleedingProtectionUpgrade.addEventListener("click", function() {
+    if(perks >= 5) {
+        perks -= 5;
+	updatePerks();
+	bleedingProtectionFunction();
+    }
+});
+// ========================================================
+// 🌌TESLA UPGRADE🌌 #TESLA-SHIELDS
+// ========================================================
+teslaUpgrade.addEventListener("click", function() {
+    if(perks >= teslaRequiredPerks) {
+        perks-= teslaRequiredPerks;
+        teslaRequiredPerks += 1;
+	teslaPerksRequired.textContent = teslaRequiredPerks;
+	updatePerks();
+	teslaFunction();
+    }    
+});
+// ========================================================
+// 🌌SHIELD RAYS UPGRADE🌌 #SHIELD-RAYS #RAYS #SHIELD-DAMAGE
+// ========================================================
+shieldRaysUpgrade.addEventListener("click", function() {
+    if(perks >= shieldRaysRequiredPerks) {
+        perks -= shieldRaysRequiredPerks;
+        shieldRaysPerksRequired.textContent = shieldRaysRequiredPerks;
+        updatePerks();
+	shieldRaysFunction();
+    }
+})
+// ========================================================
+//⚔️ DUEL WIELD UPGRADE⚔️  #DUEL-WIELD #WIELD #CORRUPTION
+// ========================================================
+duelWieldUpgrade.addEventListener("click", function() {
+    if(currentLevel >= 5) {
+        purchaseSkill.currentTime = 0;
+	purchaseSkill.play();
+        maxShieldHP = -Infinity;
+	shieldHP = -Infinity;
+	updateShieldValues();
+	presentPlayerDamage *= 2;
+        playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage + "|";     
+    }
+});
 
-
-
-
-
-
-
+// ========================================================
+// 💽SAVES DATA - END OF SCRIPT💽  #SAVE #LOAD #DELETE #END #DATA
+// ========================================================
 function myData() {
     return {
         active: active,
@@ -4152,6 +4379,10 @@ function myData() {
 	shieldRecoveryFactor: shieldRecoveryFactor,
 	teslaFactor: teslaFactor,
 	teslaRequiredPerks: teslaRequiredPerks,
+	difficultyMode: difficultyMode,
+        shieldRaysFactor: shieldRaysFactor,
+	shieldRaysRequiredPerks: shieldRaysRequiredPerks,
+	difficultyChosen: difficultyChosen,
     }
 }
 
@@ -4317,6 +4548,10 @@ function loadData() {
 	shieldRecoveryFactor = savedData.shieldRecoveryFactor;
         teslaFactor = savedData.teslaFactor;
 	teslaRequiredPerks = savedData.teslaRequiredPerks;
+	difficultyMode = savedData.difficultyMode;
+	shieldRaysFactor = savedData.shieldRaysFactor;
+	shieldRaysRequiredPerks = savedData.shieldRaysRequiredPerks;
+	difficultyChosen = savedData.difficultyChosen;
 	
     }
 }
@@ -4327,121 +4562,5 @@ function deleteData() {
 
 
 knightAttack();
-
-
-
-
-document.addEventListener("keyup", function(event) {
-    if(event.key === "a" && attackReady === true) {
-	attackReady = false;
-        attackEnemyFunction();	
-	setTimeout(function() {
-	    attackReady = true;    
-	},100);
-    }
-
-    else if(event.key === "h" && attackReady === true) {
-	healPlayerFunction();
-    }
-
-    else if(event.key === "l") {
-	if(currentXP >= requiredXP) {
-	    levelUpFunction();
-	}
-    }
-
-    else if(event.key === "c" && attackReady === true) {
-        chargeVoltageFunction();   
-    }
-
-    else if(event.key === "u") {
-        openUpgradesFunction();  
-    }
-});
-
-function shieldStrengthFunction() {
-    purchaseSkill.currentTime = 0;
-    purchaseSkill.play();
-    maxShieldHP += 50;
-    updateShieldValues();
-    shieldStrengthMagnitude.textContent = "Max Shield Strength: " + maxShieldHP;
-}
-
-
-
-shieldStrengthUpgrade.addEventListener("click", function() {
-    if(perks >= 1) {
-        perks -= 1;
-	updatePerks();
-	shieldStrengthFunction();
-    }
-});
-
-function energyBoostFunction() {
-    purchaseSkill.currentTime = 0;
-    purchaseSkill.play();
-    shieldRecoveryFactor += 5;
-    energyBoostMagnitude.textContent = "+ " + shieldRecoveryFactor;
-}
-
-energyBoostUpgrade.addEventListener("click", function() {
-    if(perks >= 2) {
-        perks -= 2;
-	updatePerks();
-	energyBoostFunction();
-    }
-});
-
-bleedingProtectionButton.addEventListener("click", function() {
-    bloodSfx.currentTime = 0;
-    bloodSfx.play();
-
-    maxHealth = Math.floor(maxHealth *= 0.85);
-    shieldHP = maxShieldHP;
-    if(currentHealth > maxHealth) currentHealth = maxHealth;
-    
-    
-    updateHealthValues();
-    updateShieldValues();
-});
-
-
-
-function bleedingProtectionFunction() {
-    purchaseSkill.currentTime = 0;
-    purchaseSkill.play();
-    bleedingProtectionButton.style.display = "inline";
-    bleedingProtectionMagnitude.textContent = "Bleeding Protection Unlocked!";
-}
-
-bleedingProtectionUpgrade.addEventListener("click", function() {
-    if(perks >= 5) {
-        perks -= 5;
-	updatePerks();
-	bleedingProtectionFunction();
-    }
-});
-
-
-function teslaFunction() {
-    purchaseSkill.currentTime = 0;
-    purchaseSkill.play();
-    teslaFactor += 5;
-    teslaMagnitude.textContent = teslaFactor;
-
-}
-
-teslaUpgrade.addEventListener("click", function() {
-    if(perks >= teslaRequiredPerks) {
-        perks-= teslaRequiredPerks;
-        teslaRequiredPerks += 1;
-	teslaPerksRequired.textContent = teslaRequiredPerks;
-
-	updatePerks();
-	teslaFunction();
-    }    
-});
-
-
 
 

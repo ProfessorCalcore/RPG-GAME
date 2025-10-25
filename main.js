@@ -24,6 +24,7 @@ let active = 1;
 let concentrationFactor = 1; 
 let goldFactor = 1;
 let requiredXP = 200;
+let concentrationPerks = 2;
 
 
 let adrenalineFactor = 2;
@@ -4468,3 +4469,4 @@ function deleteData() {
 
 
 knightAttack();
+

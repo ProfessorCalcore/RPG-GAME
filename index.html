@@ -50,10 +50,13 @@
 
 
 <!--------------HP LABELS------------------------------------------------------------------------------------------------------->
+	<label id="difficulty" style="margin-right: 10px; background-color: #333; color: white;">|Difficulty: Normal| </label>
+
         <label id="heal-cost" style="margin-right: 10px; background-color: #333; color: white;">|Heal Cost: 25 V| </label>
 	<label id="heal-power" style="margin-right: 10px; background-color: #333; color: white;">|Heal Power: 20 HP|</label>
 	<label id="player-damage" style="margin-right: 10px; background-color: #333; color: white;">|Player Damage: 2| </label>
 	<label id="army-damage" style="margin-right: 10px; background-color: #333; color: white;">|Army DPS: 0| </label>
+
 
         <label id="max-damage" style="margin-right: 10px; background-color: #333; color: white;">|Enemy DPS: 1| </label>
 	<label id="lucky-dip-label" style="margin-right:10px; background-color: #333; color: white;">|Lucky Dip Cost: 5|</label>
@@ -206,6 +209,16 @@
 	    <td id="ghost-magnitude">🔒</td>
 	</tr>
 
+
+	<tr>
+	    <td><button id="duel-wield-upgrade" style="background-color: black; color: white;">⚔️Duel Wield⚔️</button></td>
+	    <td>Trade your shield for raw power. Damage is doubled… but your shield abilities are gone for good!</td>
+	    <td id="duel-wield-requirements-cost">Lvl 5</td>
+	    <td id="duel-wield-magnitude">🔒</td>
+	</tr>
+
+	
+
 	<tr>
 	    <td><button id="sell-soul" style="background-color: black; color: white;">😈Soul Pact😈</button></td>
 	    <td>Surrender your arcane and electrical power to the devil. In return, your flesh hardens, your Max Health quintupled, your mortality nearly erased.</td>
@@ -263,6 +276,13 @@
 	    <td id="execution-perks-required">2</td>
 	    <td id="execution-magnitude">🔒</td>	
 	</tr>
+
+	<tr>
+	    <td><button id="shield-rays-upgrade" style="background-color: black; color: white;">🌌Shield Rays🌌</button></td>
+	    <td>Your shield hurts enemies</td>
+	    <td id="shield-rays-perks-required">1</td>
+	    <td id="shield-rays-magnitude">🔒</td>	
+	</tr>
 </table>
 <!-------------------------------------------------------------------------------------------------------->
 
@@ -301,7 +321,7 @@
         </tr>
 
         <tr>
-            <td><button id="tesla-upgrade" style="background-color: black; color: white;">🔌Tesla Upgrade🔌[New]</button></td>
+            <td><button id="tesla-upgrade" style="background-color: black; color: white;">🔌Better Shields🔌[New]</button></td>
             <td>Increases your Max Shield Strength by +5 everytime you Level Up!</td>
             <td id="tesla-perks-required">3</td>
             <td id="tesla-magnitude">🔒</td>
@@ -661,10 +681,7 @@
 	<audio id="asteroid" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/massive-explosion-2-397983.mp3" preload="auto"></audio>
 	<audio id="rock-smash" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/rock-destroy-6409.mp3" preload="auto"></audio>
 	<audio id="blood-sfx" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/blade-piercing-body-352462.mp3" preload="auto"></audio>
-	<audio id="power-down" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/power-down-7103.mp3" preload="auto"></audio>
-
-
-
+	<audio id="power-down" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/power-down-7103.mp3" preload="auto"></audio
 
 
         <script src="main.js"></script>

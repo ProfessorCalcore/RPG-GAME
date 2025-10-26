@@ -150,7 +150,7 @@ let realEstateRequiredPerks = 1;
 let realEstateInterval;
 let incomeFactor = 0;
 let antibodiesRequiredPerks = 2;
-let executionRequiredPerks = 2;
+let executionRequiredPerks = 6;
 
 
 let shockwaveFactor = 1;
@@ -220,9 +220,23 @@ let teslaFactor = 0;
 let difficultyMode = 1.5;
 
 let shieldRaysFactor = 0;
-let shieldRaysRequiredPerks = 1;
+let shieldRaysRequiredPerks = 2;
 let difficultyChosen = false;
 
+let lastStandFactor = 1;
+let lastStandActivated = false;
+let lastStandPurchased = false;
+
+let ragePercentage;
+let currentRage = 0;
+let maxRage = 1000;
+
+let untamableLionRequiredPerks = 6;
+let rageDuration = 20000;
+
+let deathWrathFactor = 0;
+let deathWrathPurchased = false;
+let casinoBought = false;
 
 
 
@@ -423,6 +437,7 @@ const asteroid = document.querySelector("#asteroid");
 const rockSmash = document.querySelector("#rock-smash");
 const bloodSfx = document.querySelector("#blood-sfx");
 const powerDown = document.querySelector("#power-down");
+const rageSfx = document.querySelector("#rage-sfx");
 
 
 // ========================================================
@@ -582,10 +597,29 @@ const shieldRaysPerksRequired = document.querySelector("#shield-rays-perks-requi
 const duelWieldUpgrade = document.querySelector("#duel-wield-upgrade");
 const duelWieldMagnitude = document.querySelector("#duel-wield-magnitude");
 
+const lastStandUpgrade = document.querySelector("#last-stand-upgrade");
+const lastStandMagnitude = document.querySelector("#last-stand-magnitude");
+
+const lastStandLabel = document.querySelector("#last-stand-label");
+
+const rageContainer = document.querySelector("#rage-container");
+const rageBar = document.querySelector("#rage-bar");
+const rageText = document.querySelector("#rage-text");
+const rageMode = document.querySelector("#rage-mode");
+
+const untamableLionUpgrade = document.querySelector("#untamable-lion-upgrade");
+const untamableLionPerksRequired = document.querySelector("#untamable-lion-perks-required");
+const untamableLionMagnitude = document.querySelector("#untamable-lion-magnitude");
+
+const deathWrathUpgrade = document.querySelector("#death-wrath-upgrade");
+const deathWrathMagnitude = document.querySelector("#death-wrath-magnitude");
+
+const casinoUpgrade = document.querySelector("#casino-upgrade");
+const casinoMagnitude = document.querySelector("#casino-magnitude");
+const casinoPlay = document.querySelector("#casino-play");
 
 swordKill.volume = 0.5;
 criticalSfx.volume = 0.3;
-
 
 
 loadData();
@@ -708,7 +742,7 @@ if(difficultyPrompt === "1") {
 else if(difficultyPrompt === "2") {
     alert("Coward Mode Activated!")
     difficultyMode = 1.25;
-    enemyCurrentHealth -=50;
+    enemyCurrentHealth -=60;
     enemyMaxHealth -=50;
     difficulty.textContent = "|" + "Difficulty: Easy" + "|";
 
@@ -718,8 +752,8 @@ else if(difficultyPrompt === "2") {
 else if(difficultyPrompt === "3") {
     alert("Hero Mode Activated!")
     difficultyMode = 1.4;
-    enemyCurrentHealth -= 25;
-    enemyMaxHealth -= 25;
+    enemyCurrentHealth -= 40;
+    enemyMaxHealth -= 40;
     difficulty.textContent = "|" + "Difficulty: Normal" + "|";
 
 }
@@ -727,6 +761,8 @@ else if(difficultyPrompt === "3") {
 else if(difficultyPrompt === "4") {
     alert("Brave Mode Activated")
     difficultyMode = 1.65;
+    enemyCurrentHealth -= 30;
+    enemyMaxHealth -= 30;
     perkFactor = 1
     difficulty.textContent = "|" + "Difficulty: Hard" + "|";
 
@@ -735,6 +771,8 @@ else if(difficultyPrompt === "4") {
 
 else if(difficultyPrompt === "5") {
     alert("Adrenaline Junkie Mode Activated")
+    enemyCurrentHealth -= 20;
+    enemyMaxHealth -= 20;
     difficultyMode = 1.85;
     perkFactor = 2
     difficulty.textContent = "|" + "Difficulty: Very Hard" + "|";
@@ -742,6 +780,8 @@ else if(difficultyPrompt === "5") {
 }
 
 else if(difficultyPrompt === "6") {
+    enemyCurrentHealth -= 10;
+    enemyMaxHealth -= 10;
     alert("Death Mode Activated")
     difficultyMode = 2.25;
     perkFactor = 3
@@ -813,6 +853,19 @@ function startIntro() {
     alert("You have no idea who you are...who are you...tell us..");
     playerName = prompt("Enter your forgotten name...");
     alert("Welcome " + playerName + "!");
+    if(playerName.toLowerCase() === "cloudy") {
+        alert("Btw Mr Red told me all about you! Here...take some gold for playing!");
+        goldValue += 5000;
+        gold.textContent = "Gold: " + goldValue;
+	playerName = "🌧️";  
+     }
+
+    else if(playerName.toLowerCase() === "darko") {
+        alert("Btw Mr Red told me all about you! Here...take some gold for playing!");
+        goldValue += 5000;
+        gold.textContent = "Gold: " + goldValue;    
+    }
+
     let playerClass = prompt
 (`Choose a class to determine your fate:
 1] Assassin 🥷
@@ -1003,6 +1056,9 @@ function enemyDead() {
 	updateShieldValues();
 	degrees += 3;
 	moon.style.filter = `brightness(100%) hue-rotate(${degrees}deg)`;
+	currentRage += deathWrathFactor;
+	updateRageValues();
+
 
 
 	if(finale){
@@ -1655,12 +1711,31 @@ function teslaFunction() {
 // ========================================================
 // ⚡UPDATE RESOURCES/STATUS⚡#UPDATE STATS
 // ========================================================
+function updatePlayerDamage(){
+    playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage;
+}
+
+function updateGoldValues(){
+    gold.textContent = "Gold: " + goldValue;
+
+}
+
+
 function updateShieldValues() {
     shieldPercentage = (shieldHP/ maxShieldHP) * 100;
     shieldStrength.textContent = "SHIELD: " + shieldHP + "/" + maxShieldHP;
     forceFieldBar.style.width = shieldPercentage + "%";
 }
 
+
+function updateRageValues() {
+    if(currentRage >= maxRage) {
+        currentRage = maxRage;
+        rageMode.style.display = "inline";
+    }
+    ragePercentage = (currentRage/maxRage) * 100;
+    rageBar.style.width = ragePercentage + "%";
+}
 
 
 //💖HEALTH UPDATES💖								                
@@ -1670,6 +1745,9 @@ function updateHealthValues() {
     	hp.textContent = playerName.toUpperCase() + " HP: " + currentHealth.toLocaleString() + "/" + maxHealth.toLocaleString();
     	healthBar.style.width = HPPercentage + "%";
 
+
+console.log(lastStandFactor);
+
 if(currentHealth === Infinity) {
     hp.textContent = playerName.toUpperCase() + " HP: " + " ∞";
 }
@@ -1678,29 +1756,50 @@ else if(currentHealth === -Infinity) {
     hp.textContent = playerName.toUpperCase() + " HP: " + " -∞";
 }
 
+
+
 if (HPPercentage > 90) {
     healthBar.style.background = "linear-gradient(to bottom, #65ff00, #32cd32)";
     hp.style.color = "black";
+    if(lastStandActivated) lastStandFactor = 1;
+    lastStandLabel.textContent = `|Last Stand Multiplier: x${lastStandFactor}|`
+
 } 
 else if (HPPercentage > 65 && HPPercentage <= 85){
     healthBar.style.background = "linear-gradient(to bottom, #9dff00, #65ff00)";
     hp.style.color = "black";
+    if(lastStandActivated) lastStandFactor = 1.2;
+    lastStandLabel.textContent = `|Last Stand Multiplier: x${lastStandFactor}|`
+
 } 
 else if (HPPercentage > 50 && HPPercentage <= 65){
     healthBar.style.background = "linear-gradient(to bottom, #f6ff00, #9dff00)";
     hp.style.color = "black";
+    if(lastStandActivated) lastStandFactor = 1.4;
+    lastStandLabel.textContent = `|Last Stand Multiplier: x${lastStandFactor}|`
+
+
 } 
 else if (HPPercentage > 35 && HPPercentage <= 50){
     healthBar.style.background = "linear-gradient(to bottom, #ffbf00, #ffdd33)";
     hp.style.color = "white";
+    if(lastStandActivated) lastStandFactor = 1.6;
+    lastStandLabel.textContent = `|Last Stand Multiplier: x${lastStandFactor}|`
+
 } 
 else if (HPPercentage > 15 && HPPercentage <= 35){
     healthBar.style.background = "linear-gradient(to bottom, #ff7f00, #ffbf00)";
     hp.style.color = "white";
+    if(lastStandActivated) lastStandFactor = 1.8;
+    lastStandLabel.textContent = `|Last Stand Multiplier: x${lastStandFactor}|`
+
 } 
 else if (HPPercentage > 0 && HPPercentage <= 15){
     healthBar.style.background = "linear-gradient(to bottom, black, #ff0000)";
     hp.style.color = "white";
+    if(lastStandActivated) lastStandFactor = 2.0;
+    lastStandLabel.textContent = `|Last Stand Multiplier: x${lastStandFactor}|`
+
 }	
 }
 
@@ -1928,16 +2027,16 @@ function level4Story() {
         }
 
 	else if(decision4 === "right") {
-	    alert("You got lost further in the maze causing you to get hungry and tired. -20 HP and -10 V");
-	    currentHealth -= 20;
-	    voltage -= 10;
+	    alert("You got lost further in the maze causing you to get hungry and tired. -20 HP");
+	    maxHealth -= 20;
+            updateHealthValues();
 	    alert("A " + enemyList[storyLevel].toLowerCase() + " finds your lost soul, ignore how weak you are right now and grab that pathetic knife of yours to kill the " + enemyList[storyLevel].toLowerCase() + " before it kills you!");
         
         }
 
 	else if(decision4 === "stay") {
-	    alert("You catch your breath and recharge. +50 Voltage flows through your veins!");
-	    voltage += 50;
+	    alert("You catch your breath and recharge. +15 Voltage flows through your veins!");
+	    maxVoltage += 15;
 	    updateVoltageValues();
 	        
 	    alert("As you are taking a sip from your bottle you notice a black slivering shadow approach you from behind.")
@@ -2209,13 +2308,13 @@ let level8StoryPrompt2 = prompt
 `)
 
 if(level8StoryPrompt2 === "1") {
-    alert(" You crunch on the juicy apple! Knowledge explodes through your veins and leveling up feels instant… but the apple bites back! You've aged 20 years, losing 10 max HP and voltage. Power never comes free!");
+    alert(" You crunch on the juicy apple! Knowledge explodes through your veins and leveling up feels instant… but the apple bites back! You've aged 50 years, losing 100 max HP and 100 voltage. Power never comes free!");
     alert("Your journey accelerates! Leveling up now demands 500 less XP — feel the surge of unstoppable power!")    
     alert("From the shadows behind the ancient trees, a low growl rises. You sense the ground shake beneath unseen feet… brace yourself, chaos is about to strike!");
 
     requiredXP -= 500;
-    maxHealth -= 10;
-    maxVoltage -= 10;
+    maxHealth -= 100;
+    maxVoltage -= 100;
 
     updateHealthValues();
     updateVoltageValues();
@@ -2395,6 +2494,8 @@ levelUpButton.addEventListener("click", function() {
 function attackEnemyFunction() {
 currentHealth += mosquitoFactor;
 updateHealthValues;
+        currentRage += 1;
+        updateRageValues();
 
 	if(mageFactor && enemyCurrentHealth === enemyMaxHealth) enemyCurrentHealth -= 15;
 	
@@ -2443,7 +2544,7 @@ updateHealthValues;
     }
 
     if(enemyCurrentHealth - playerDamage * criticalHit > 0) {
-        enemyCurrentHealth -= playerDamage * criticalHit;
+        enemyCurrentHealth -= (playerDamage * lastStandFactor) * criticalHit;
 	updateEnemyHealthValues();
 	
     }
@@ -3115,7 +3216,7 @@ drButton.addEventListener("click", function() {
 //🧠CONCENTRATION UPGRADE🧠 #CONCENTRATION-UPGRADE #BRAIN #XP
 // ========================================================	
 concentrationButton.addEventListener("click", function() {
-    if(perks >= concentrationPerks) {
+    if(perks >= concentrationPerksCost) {
 	purchaseSkill.currentTime = 0;
 	purchaseSkill.play();
         perks -= concentrationPerks;
@@ -3132,7 +3233,7 @@ concentrationButton.addEventListener("click", function() {
 //👻GHOST UPGRADE👻 #GHOST-UPGRADE #CORRUPTION
 // ========================================================	
 ghostButton.addEventListener("click", function() {
-    if(!ghostPurchased && currentLevel >= 4) {
+    if(!ghostPurchased && currentLevel >= 5) {
  
     ghostWhisper.play();
     alert("💀 You become a ghost, your body gone forever. Your strikes are weaker, but blades and attacks barely touch you.");
@@ -3449,8 +3550,8 @@ adrenaline.addEventListener("click", function() {
 // 😤ADRENALINE UPGRADE😤 #ADRENALINE-UPGRADE #UPGRADE
 // ========================================================
 adrenalineUpgrade.addEventListener("click", function() {
-    if(perks >= 5) {
-        perks -= 5;
+    if(perks >= 15) {
+        perks -= 15;
 	purchaseSkill.currentTime = 0;
 	purchaseSkill.play();
 	adrenaline.style.display = "inline";
@@ -3466,10 +3567,10 @@ adrenalineUpgrade.addEventListener("click", function() {
 // ❄️FREEZE UPGRADE❄️ #FREEZE-UPGRADE
 // ========================================================
 freezeUpgrade.addEventListener("click", function() {
-    if(perks >= 5) {
+    if(perks >= 10) {
 	purchaseSkill.currentTime = 0;
         purchaseSkill.play();
-	perks -= 5;
+	perks -= 10;
 	freeze.style.display = "inline";
 	freezeMagnitude.textContent = "Ice Age Unlocked";
 	updatePerks();
@@ -3564,7 +3665,7 @@ antibodiesUpgrade.addEventListener("click", function() {
 // 😈SELL SOUL UPGRADE😈 #SELL-SOUL-UPGRADE #UPGRADE-SOUL
 // ========================================================
 sellSoulUpgrade.addEventListener("click", function() {
-    if(currentLevel >= 7 && !boughtSellSoul) {
+    if(currentLevel >= 25 && !boughtSellSoul) {
 	sellSoulFunction();
     }
 })
@@ -3678,13 +3779,14 @@ luckyDipLabel.textContent = "|" + "Lucky Dip Cost: " + luckyDipPerkCost;
 // 🎁LUCKY DIP UPGRADE🎁 #LUCKY-DIP-UPGRADE
 // ========================================================
 luckyDipSpellUpgrade.addEventListener("click", function() {
-    if(perks >= 1 && !luckyDipBought) {
+    if(perks >= 7 && !luckyDipBought) {
 	luckyDipBought = true;
+        luckyDipLabel.style.display = "inline";
 	alert("You’ve unlocked the Gift of Fate! Spend skill points on these gift boxes to receive a completely random upgrade. The skill point cost increases only for Lucky Dips, not for individual skills.")
 	purchaseSkill.currentTime = 0;
 	purchaseSkill.play();
 
-        perks -= 1;
+        perks -= 7;
 	luckyDipButton.style.display = "inline";
 	luckyDipMagnitude.textContent = "Gift of Fate Unlocked!";
 	updatePerks();
@@ -3998,10 +4100,10 @@ stopTimeButton.addEventListener("click", function() {
 // ⏱️SPLIT-SECONDS UPGRADE #SPLIT-SECONDS-UPGRADE⏱️
 // ========================================================
 splitSeconds.addEventListener("click", function() {
-    if(perks >= 5 && !splitSecondsBought) {
+    if(perks >= 12 && !splitSecondsBought) {
 	splitSecondsBought = true;
 	purchaseSkill.play();
-        perks -= 5;
+        perks -= 12;
 	stopTimeButton.style.display = "inline";
 	updatePerks();
 	splitSecondsMagnitude.textContent = 2;
@@ -4233,7 +4335,7 @@ shieldRaysUpgrade.addEventListener("click", function() {
 //⚔️ DUEL WIELD UPGRADE⚔️  #DUEL-WIELD #WIELD #CORRUPTION
 // ========================================================
 duelWieldUpgrade.addEventListener("click", function() {
-    if(currentLevel >= 5) {
+    if(currentLevel >= 10) {
         purchaseSkill.currentTime = 0;
 	purchaseSkill.play();
         maxShieldHP = -Infinity;
@@ -4243,6 +4345,143 @@ duelWieldUpgrade.addEventListener("click", function() {
         playerDamageLabel.textContent = "|" + "Player Damage: " + playerDamage + "|";     
     }
 });
+
+//🥵LAST STAND FUNCTION🥵
+function lastStandFunction () {
+    purchaseSkill.currentTime = 0;
+    purchaseSkill.play();
+    lastStandActivated = true;
+    lastStandMagnitude.textContent = "Last Stand Unlocked!";
+}
+
+
+// ========================================================
+//🥵 LAST STAND UPGRADE🥵
+// ========================================================
+lastStandUpgrade.addEventListener("click", function() {
+    if(perks >= 100 && !lastStandPurchased) {
+        lastStandPurchased = true;
+	perks -= 100;
+        updatePerks();
+        lastStandLabel.style.display = "inline";
+        lastStandFunction();
+    }
+});
+// ========================================================
+//🤬RAGE MODE🤬
+// ========================================================
+rageMode.addEventListener("click", function() {
+    if(currentRage >= maxRage) {
+        currentRage = 0;
+	rageSfx.play();
+        updateRageValues();
+	playerDamage *= 2;
+        currentHealth *=2;
+        maxHealth *= 2;
+	upgrades.style.display = "none";
+
+	updatePlayerDamage();
+	updateHealthValues();
+
+        setTimeout(function() {
+            playerDamage/= 2;
+	    maxHealth /= 2;
+	    currentHealth /= 2;
+	    updatePlayerDamage();
+	    updateHealthValues();
+	    rageSfx.play();
+	    upgrades.style.display = "inline";
+	},rageDuration);
+    }
+
+});
+
+
+//UNTAMABLE LION FUNCTION
+function untamableLionFunction() {
+    purchaseSkill.currentTime = 0;
+    purchaseSkill.play();
+    rageDuration += 5000;
+    untamableLionMagnitude.textContent = `${rageDuration/1000} secs`
+}
+
+// ========================================================
+//🦁UNTAMABLE LION UPGRADE🦁
+// ========================================================
+untamableLionUpgrade.addEventListener("click", function() {
+    if(perks >= untamableLionRequiredPerks) {
+        perks -= untamableLionRequiredPerks;
+        untamableLionRequiredPerks += 2;
+        untamableLionPerksRequired.textContent = untamableLionRequiredPerks;
+        updatePerks();
+        untamableLionFunction();
+
+    }
+});
+// ========================================================
+//💀DEATH WRATH UPGRADE💀
+// ========================================================
+deathWrathUpgrade.addEventListener("click", function() {
+    if(perks >= 12 && !deathWrathPurchased) {
+	purchaseSkill.play();
+	deathWrathPurchased = true;
+        perks -= 12;
+	deathWrathFactor = 15;
+	deathWrathMagnitude.textContent = "Death Wrath Unlocked!";
+	updatePerks();
+	
+    }   
+});
+
+// ========================================================
+//🎰CASINO UPGRADE🎰
+// ========================================================
+casinoUpgrade.addEventListener("click", function() {
+    if(perks >= 15 && !casinoBought) {
+	casinoBought = true;
+        perks -= 15;
+        purchaseSkill.play();
+	casinoMagnitude.textContent = "Casino Purchased";
+	casinoPlay.style.display = "inline";
+	updatePerks();
+	
+    }
+});
+
+casinoPlay.addEventListener("click", function() {
+    let bet = prompt
+(`How much gold would you like to gamble?
+Select a bet between 1 and ${goldValue}
+`);
+
+
+bet = parseInt(bet);
+if(bet > goldValue | bet < 1) return;
+
+let luckyNumber = prompt
+(`We are about to flip the lucky coin! Please select your lucky number(1-2)`);
+
+luckyNumber = parseInt(luckyNumber);
+
+alert("Rolling the lucky coin. If your number is chosen - DOUBLE YOUR GOLD. If not, you lose your gold!")
+
+let luckyToss = Math.floor(Math.random() * 2 + 1);
+
+if(luckyNumber === luckyToss) {
+    alert(`You Won + ${bet} gold!`);
+    goldValue += bet;
+    updateGoldValues();
+    
+}
+
+else if(luckyNumber != luckyToss) {
+    alert(`You Just Lost - ${bet} gold!`);
+    goldValue -= bet;
+    updateGoldValues();
+}
+});
+
+
 
 // ========================================================
 // 💽SAVES DATA - END OF SCRIPT💽  #SAVE #LOAD #DELETE #END #DATA
@@ -4389,6 +4628,17 @@ function myData() {
         shieldRaysFactor: shieldRaysFactor,
 	shieldRaysRequiredPerks: shieldRaysRequiredPerks,
 	difficultyChosen: difficultyChosen,
+        lastStandActivated: lastStandActivated,
+        lastStandFactor: lastStandFactor,
+	lastStandPurchased: lastStandPurchased,
+	maxRage: maxRage,
+	currentRage: currentRage,
+	ragePercentage: ragePercentage,
+	untamableLionRequiredPerks: untamableLionRequiredPerks,
+	rageDuration: rageDuration,
+	deathWrathFactor: deathWrathFactor,
+	deathWrathPurchased: deathWrathPurchased,
+	casinoBought: casinoBought,
     }
 }
 
@@ -4558,6 +4808,17 @@ function loadData() {
 	shieldRaysFactor = savedData.shieldRaysFactor;
 	shieldRaysRequiredPerks = savedData.shieldRaysRequiredPerks;
 	difficultyChosen = savedData.difficultyChosen;
+        lastStandFactor = savedData.lastStandFactor;
+        lastStandActivated = savedData.lastStandActivated;
+        lastStandPurchased = savedData.lastStandPurchased;
+	maxRage = savedData.maxRage;
+	currentRage = savedData.currentRage;
+	ragePercentage = savedData.ragePercentage;
+	untamableLionRequiredPerks = savedData.untamableLionRequiredPerks;
+	rageDuration = savedData.rageDuration;
+	deathWrathFactor = savedData.deathWrathFactor;
+	deathWrathPurchased = savedData.deathWrathPurchased;
+	casinoBought = savedData.casinoBought;
 	
     }
 }

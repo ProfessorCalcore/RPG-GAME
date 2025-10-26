@@ -100,6 +100,39 @@
                 width: 100%;  
            }
 
+
+           #rage-container{
+                position: relative;
+    		background-color: grey;
+    		width: 400px;
+    		height: 20px;
+		margin-top: 1px;
+                margin-bottom: 1px;
+		border: 2px solid black;
+		border-radius: 10px;
+            }
+
+
+            #rage-bar{
+    		position: relative;
+	        background-size: 400px 100%;
+   		width: 0%;
+    		height: 100%;
+		transition: all 1s ease;
+		border-radius: 10px;
+    		background:linear-gradient(to top, red, darkred);
+	    }
+
+	   #rage-text{
+                position: absolute;
+                top: 0;
+		left: 0;
+		color: white;
+                width: 100%;  
+           }
+
+
+
             #health-bar{
     		position: relative;
 	        background-size: 400px 100%;
@@ -996,6 +1029,56 @@
 	#duel-wield-upgrade:hover{
 		background-color:white !important;
 		box-shadow: 0 0 10px 5px purple;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+
+	#last-stand-upgrade:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px red;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#rage-mode:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px red;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+
+	#death-wrath-upgrade:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px red;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#casino-upgrade:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px lime;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#untamable-lion-upgrade:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px red;
+		font-weight: bold;
+		color: black !important;
+		transform: scale(1.1);		
+	}
+
+	#casino-play:hover{
+		background-color:white !important;
+		box-shadow: 0 0 10px 5px lime;
 		font-weight: bold;
 		color: black !important;
 		transform: scale(1.1);		

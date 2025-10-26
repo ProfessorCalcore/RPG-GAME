@@ -55,11 +55,13 @@
         <label id="heal-cost" style="margin-right: 10px; background-color: #333; color: white;">|Heal Cost: 25 V| </label>
 	<label id="heal-power" style="margin-right: 10px; background-color: #333; color: white;">|Heal Power: 20 HP|</label>
 	<label id="player-damage" style="margin-right: 10px; background-color: #333; color: white;">|Player Damage: 2| </label>
+	<label id="last-stand-label" style="margin-right: 10px; background-color: #333; color: white; display: none;">|Last Stand Multiplier: x1| </label>
+
 	<label id="army-damage" style="margin-right: 10px; background-color: #333; color: white;">|Army DPS: 0| </label>
 
 
         <label id="max-damage" style="margin-right: 10px; background-color: #333; color: white;">|Enemy DPS: 1| </label>
-	<label id="lucky-dip-label" style="margin-right:10px; background-color: #333; color: white;">|Lucky Dip Cost: 5|</label>
+	<label id="lucky-dip-label" style="margin-right:10px; background-color: #333; color: white; display: none;">|Lucky Dip Cost: 5|</label>
 
 	<label id="knights-display" style="display: block;font-family:arial; background-color: transparent; color: white;">Army Size:⚔️ x0</label>
 
@@ -81,16 +83,6 @@
             <span id="hp">HP: 250/250</span>
         </div>
 <!------------------------------------------------>
-
-<!------------FORCE-FIELD-GUI---------------------->
-    <div id="force-field-container" style="width: 400px;">
-            <div id="force-field-bar"></div>
-            <span id="shield-strength">SHIELD: 50/50</span>
-        </div>
-<!------------------------------------------------>
-
-	<label id="saturn-lives">Saturn Lives:🪐🪐🪐</label>
-
 <!--------------ENEMY GUI------------------------>
         <div id="enemy-health-container">
             <div id="enemy-health-bar"></div>
@@ -98,6 +90,23 @@
         </div>
 
 <!------------------------------------------------>
+
+<!------------FORCE-FIELD-GUI---------------------->
+    <div id="force-field-container" style="width: 400px;">
+            <div id="force-field-bar"></div>
+            <span id="shield-strength">SHIELD: 50/50</span>
+        </div>
+<!------------------------------------------------>
+<!----------------RAGE GUI------------------>
+       <div id="rage-container">
+           <div id="rage-bar"></div>
+           <span id="rage-text">RAGE:</span>
+       </div>
+<!-------------------------------------------->
+
+	<label id="saturn-lives">Saturn Lives:🪐🪐🪐</label>
+
+
 
 
 <!--------------XP LABELS----------------------------------------------------------------------------------->
@@ -128,10 +137,13 @@
        </div>
 <!-------------------------------------------->
 
+
        
 
 <!---------------------ACTION BUTTONS----------------------->
-	<button id="attack" style="background-color: #333; color: white; font-size: 30px; border-radius: 100%">🗡️</button>
+	<button id="attack" style="background-color: #333; color: white; font-size: 30px; border-radius: 100%;">🗡️</button>
+	<button id="rage-mode" style="background-color: #333; color: white; font-size: 30px; border-radius: 100%; display: none;">🤬</button>
+
 	<button id="heal" style="background-color: #333; color: lime; font-size: 30px; border-radius: 50%">💖</button>
 	<button id="charge" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%">⚡</button>
 	<button id="fireball" style="background-color: #333; color: cyan; font-size: 30px; border-radius: 50%; display: none;">🔥</button>
@@ -144,6 +156,8 @@
 	<button id="near-death-experience" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">🪓</button>
 	<button id="bleeding-protection-button" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">🩸</button>
 	<button id="stop-time" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">⏱️</button>
+        <button id="casino-play" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%; display:none;">🎲</button>
+
 
 
         <button id="upgrades" style="background-color: #333; color: yellow; font-size: 30px; border-radius: 50%">🛠️</button>
@@ -205,7 +219,7 @@
 	<tr>
 	    <td><button id="ghost-button" style="background-color: black; color: white;">👻Ghost👻</button></td>
 	    <td>Permenantly Doubles your Health but you deal half as much damage from now on</td>
-	    <td id="ghost-requirements-cost">Lvl 4</td>
+	    <td id="ghost-requirements-cost">Lvl 5</td>
 	    <td id="ghost-magnitude">🔒</td>
 	</tr>
 
@@ -213,7 +227,7 @@
 	<tr>
 	    <td><button id="duel-wield-upgrade" style="background-color: black; color: white;">⚔️Duel Wield⚔️</button></td>
 	    <td>Trade your shield for raw power. Damage is doubled… but your shield abilities are gone for good!</td>
-	    <td id="duel-wield-requirements-cost">Lvl 5</td>
+	    <td id="duel-wield-requirements-cost">Lvl 10</td>
 	    <td id="duel-wield-magnitude">🔒</td>
 	</tr>
 
@@ -222,7 +236,7 @@
 	<tr>
 	    <td><button id="sell-soul" style="background-color: black; color: white;">😈Soul Pact😈</button></td>
 	    <td>Surrender your arcane and electrical power to the devil. In return, your flesh hardens, your Max Health quintupled, your mortality nearly erased.</td>
-	    <td>Lvl 7</td>
+	    <td>Lvl 25</td>
 	    <td id="sell-soul-magnitude">🔒</td>
 	</tr>
 
@@ -273,15 +287,36 @@
 	<tr>
 	    <td><button id="execution-upgrade" style="background-color: black; color: white;">💀Execution💀</button></td>
 	    <td>Chance to Instantly Kill an enemy!</td>
-	    <td id="execution-perks-required">2</td>
+	    <td id="execution-perks-required">6</td>
 	    <td id="execution-magnitude">🔒</td>	
 	</tr>
 
 	<tr>
 	    <td><button id="shield-rays-upgrade" style="background-color: black; color: white;">🌌Shield Rays🌌</button></td>
 	    <td>Your shield hurts enemies</td>
-	    <td id="shield-rays-perks-required">1</td>
+	    <td id="shield-rays-perks-required">2</td>
 	    <td id="shield-rays-magnitude">🔒</td>	
+	</tr>
+
+	<tr>
+	    <td><button id="last-stand-upgrade" style="background-color: black; color: white;">🥵Last Stand🥵</button></td>
+	    <td>You do more damage the lower your health</td>
+	    <td id="last-stand-perks-required">100</td>
+	    <td id="last-stand-magnitude">🔒</td>	
+	</tr>
+
+	<tr>
+	    <td><button id="untamable-lion-upgrade" style="background-color: black; color: white;">🦁Untamable Lion🦁</button></td>
+	    <td>Rage Mode lasts 5 seconds longer!</td>
+	    <td id="untamable-lion-perks-required">6</td>
+	    <td id="untamable-lion-magnitude">🔒</td>	
+	</tr>
+
+	<tr>
+	    <td><button id="death-wrath-upgrade" style="background-color: black; color: white;">💀Death Wrath💀</button></td>
+	    <td>Killing enemies refills some of your rage bar!</td>
+	    <td id="death-wrath-perks-required">12</td>
+	    <td id="death-wrath-magnitude">🔒</td>	
 	</tr>
 </table>
 <!-------------------------------------------------------------------------------------------------------->
@@ -447,6 +482,13 @@
 	    <td id="real-estate-perks-required">1</td>
 	    <td id="real-estate-magnitude">🔒</td>
 	</tr>
+
+	<tr>
+	    <td><button id="casino-upgrade" style="background-color: black; color: white;">🎰Casino🎰</button></td>
+	    <td>Adds a casino that lets you gamble your gold!</td>
+	    <td id="casino-perks-required">15</td>
+	    <td id="casino-magnitude">🔒</td>
+	</tr>
   
 </table>
 
@@ -526,14 +568,14 @@
 <tr>
     <td><button id="freeze-upgrade" style="background-color: black; color: white;">❄️Ice Age❄️</button></td>
     <td>Freezes an enemy for 10 seconds but drains 50% of your voltage!</td>
-    <td>5</td>
+    <td>10</td>
     <td id="freeze-magnitude">🔒</td>
 </tr>
 
 <tr>
     <td><button id="adrenaline-upgrade" style="background-color: black; color: white;">😤Adrenaline😤</button></td>
     <td>Doubles your damage for 10 seconds!</td>
-    <td>5</td>
+    <td>15</td>
     <td id="adrenaline-magnitude">🔒</td>
 </tr>
 
@@ -547,14 +589,14 @@
 <tr>
     <td><button id="lucky-dip-spell-upgrade" style="background-color: black; color: white;">🎁Lucky Dip🎁</button></td>
     <td>Allows you to purchase random upgrades and bonuses!</td>
-    <td>1</td>
+    <td>7</td>
     <td id="lucky-dip-magnitude">🔒</td>
 </tr>
 
 <tr>
     <td><button id="split-seconds" style="background-color: black; color: white;">🕐Split-Seconds🕐</button></td>
     <td>Time bends for 5 seconds; your strikes hit 50% faster</td>
-    <td id="split-seconds-cost">5</td>
+    <td id="split-seconds-cost">12</td>
     <td id="split-seconds-magnitude">🔒</td>
 </tr>
 
@@ -682,8 +724,7 @@
 	<audio id="rock-smash" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/rock-destroy-6409.mp3" preload="auto"></audio>
 	<audio id="blood-sfx" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/blade-piercing-body-352462.mp3" preload="auto"></audio>
 	<audio id="power-down" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/power-down-7103.mp3" preload="auto"></audio>
-
-
+	<audio id="rage-sfx" src="https://raw.githubusercontent.com/ProfessorCalcore/RPG-GAME/main/resources/monster-growl-382706.mp3" preload="auto"></audio>
 
 
 
